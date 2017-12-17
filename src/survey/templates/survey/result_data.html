@@ -1,0 +1,90 @@
+{% load static %}
+
+<!doctype html>
+<html xml:lang="nl-NL" lang="nl-NL">
+  <head>
+    <!-- https://datatables.net/ -->
+    <link rel="stylesheet" type="text/css" href="{% static 'datatables/datatables.min.css' %}"/>
+	<style>
+      @font-face {
+        font-family: "RO Sans";
+        font-style: normal;
+        font-weight: normal;
+	    src: url("{% static 'mainscreen/presentation/shared-ro/webfonts/RO-SansWebText-Regular.eot?' %}") format("embedded-opentype"),
+	         url("{% static 'mainscreen/presentation/shared-ro/webfonts/RO-SansWebText-Regular.woff' %}") format("opentype"),
+		     url("{% static 'mainscreen/presentation/shared-ro/webfonts/RO-SansWebText-Regular.ttf' %}") format("truetype")
+      }
+      body,
+      table {
+        font-family: 'RO Sans',Calibri,sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <table id="example" class="display" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          {% for headcol in headrow %}
+          <th>{{headcol}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          {% for headcol in headrow %}
+          <th>{{headcol}}</th>
+          {% endfor %}
+        </tr>
+      </tfoot>
+      <tbody>
+        {% for row in datarows %}
+        <tr>
+          {% for col in row %}
+          <td>{{col}}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script type="text/javascript" language="javascript" src="{% static 'datatables/jQuery-1.12.3/jquery-1.12.3.min.js' %}">
+    </script>
+    <script type="text/javascript" src="{% static 'datatables/datatables.min.js' %}"></script>
+    <script type="text/javascript" class="init">
+      $(document).ready(function() {
+        $('#example').DataTable( {
+	      responsive: true,
+          dom: 'Bfrtip',
+          buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+          ],
+          "language": {
+            "sProcessing": "Bezig...",
+            "sLengthMenu": "_MENU_ resultaten weergeven",
+            "sZeroRecords": "Geen resultaten gevonden",
+            "sInfo": "_START_ tot _END_ van _TOTAL_ resultaten",
+            "sInfoEmpty": "Geen resultaten om weer te geven",
+            "sInfoFiltered": " (gefilterd uit _MAX_ resultaten)",
+            "sInfoPostFix": "",
+            "sSearch": "Zoeken:",
+            "sEmptyTable": "Geen resultaten aanwezig in de tabel",
+            "sInfoThousands": ".",
+            "sLoadingRecords": "Een moment geduld aub - bezig met laden...",
+            "oPaginate": {
+              "sFirst": "Eerste",
+              "sLast": "Laatste",
+              "sNext": "Volgende",
+              "sPrevious": "Vorige"
+            },
+            "oAria": {
+              "sSortAscending":  ": activeer om kolom oplopend te sorteren",
+              "sSortDescending": ": activeer om kolom aflopend te sorteren"
+            }
+          }
+        } );
+      } );
+    </script>
+  </body>
+</html>

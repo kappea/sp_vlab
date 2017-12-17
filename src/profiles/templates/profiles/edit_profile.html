@@ -1,0 +1,47 @@
+{% extends "profiles/profiles_base.html" %}
+
+{% load crispy_forms_tags %}
+{% load thumbnail %}
+
+{% block title %}Profiel wijzigen | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <span>Profiel wijzigen</span>
+</nav>
+{% endblock %}
+
+{% block container %}
+
+<div class="container form-box">
+  <h1 class="text-primary">Edit Profile</h1>
+  <hr>
+  <div class="row">
+    <!-- left column -->
+    <div class="col-md-3">
+      <div class="text-center">
+        <img title="profile picture" class="img-circle img-responsive" src="{% thumbnail user.profile.picture|default:'default_profile.png' 140x140 crop %}">
+      </div>
+    </div>
+    <!-- edit form column -->
+    <div class="col-md-9">
+      <h3>Persoonlijke informatie</h3>
+      <form enctype="multipart/form-data" method="post">
+	{% crispy user_form %}
+	{% crispy profile_form %}
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container profile-body">
+  <div class="row">
+    <div class="col-md-12">
+      <a class="btn btn-default pull-right" href="{% url 'accounts:password-change' %}">Wijzig wachtwoord</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

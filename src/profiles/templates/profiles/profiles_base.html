@@ -1,0 +1,23 @@
+{% extends "mainscreen/base.html" %}
+
+{% load staticfiles %}
+
+<!-- Custom styles for this site -->
+{% block styles %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!--[if (gt IE 8)|!(IE)]><!-->
+  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2017.11.4.min.css' %}" type="text/css" media="all"/>
+  <!--<![endif]-->
+  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20171212.css' %}" type="text/css" media="all">
+    <link href="{% static 'site/css/main.css' %}" rel="stylesheet">
+{% endblock styles %}
+
+{% block scripts %}
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'jquery-1.12.4/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+{% endblock scripts %}
+

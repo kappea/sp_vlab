@@ -1,0 +1,31 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+
+{% block title %}UBR|V-Lab | UBR | UBRijk{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <span class="assistive">Navigatie</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'mainscreen:welkom' %}">Welkom</a></li>
+      </ul>
+      <ul>
+        <li><a href="{% url 'evenementen:evenementen' %}">Evenementen</a></li>
+      </ul>
+	</div>
+  </div>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+<p><img src="{% static 'mainscreen/binaries/png/vlab_org.png' %}" width="100%" alt="Logo" /></p>
+</div>
+{% endblock %}

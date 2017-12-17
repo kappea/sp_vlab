@@ -1,0 +1,23 @@
+{% extends "mainscreen/base.html" %}
+
+{% block title %}{{ evenement.naam }} | Evenement | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <a href="/evenementen">Evenementen</a>
+  <span class="assistive">{{ evenement.naam }}</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <div class="container" id="wrap">
+	   {% block wrapper %} {% endblock %}
+        <div class="well" id="container-main">
+	       {% block body %}	{% endblock %}
+	   </div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "mainscreen/base.html" %}
+
+{% block title %}Evenementen | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <span>Evenementen</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <p>Alle evenementen (trainingen, workshops en bijeenkomsten) van V-Lab worden hier gepresenteerd. <br>Als een evenement nog niet compleet vermeld staat kun je je wel al aanmelden. Hou deze lijst in de gaten, deze zal nog flink gaan groeien de komende tijd! Voor alle evenementen geldt: wijzigingen voorbehouden. Als je bent aangemeld houden we je per mail op de hoogte van eventuele wijzigingen bij het door jou gekozen evenement.</p>
+  <p><i>Aan deelname zijn geen kosten verbonden, maar na opgave verwachten we wel een afmelding bij eventuele afzegging.</i></p>
+	<div class="common results">
+	{% if evenement_list %}
+		{% for evenement in evenement_list|dictsort:"start_datum" %}
+              <a href="{{ evenement.get_absolute_url }}" class="activity">
+                <h3>{{ evenement.naam }}</h3>
+				{% if evenement.intro %}{{evenement.intro|safe|truncatewords_html:30}}
+				{% else %}{{ evenement.omschrijving|safe|truncatewords_html:30 }}
+				{% endif %}
+                <p class="meta">
+				{{ evenement.start_datum|date:"d F Y" }}
+				{% if evenement.einde_datum %} - {{ evenement.einde_datum|date:"d F Y" }}{% endif %}
+				{% if evenement.locatie %} | {{ evenement.locatie }}{% endif %}
+				<br>Evenement
+				</p>
+              </a>
+		{% endfor %}
+	{% else %}
+		<p>Er zijn geen evenementen beschikbaar.</p>
+	{% endif %}
+	</div>
+</div>
+{% if perms.evenementen.add_evenement %}
+<div id="aside">
+	<div class="block">
+		<h2>Beheer</h2>
+		<ul class="common">
+			<li>
+				<a href="{% url 'admin:evenementen_evenement_add' %}" class="common">Toevoegen evenement</a>
+			</li>
+		</ul>
+	</div>
+</div>
+{% endif %}
+{% endblock %}

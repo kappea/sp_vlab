@@ -1,0 +1,72 @@
+{% extends "mainscreen/base.html" %}
+
+{% block title %}{{ evenement.naam }} | Evenement | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
+  <span>{{ evenement.naam }}</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if evenement.aanmelding_formulier.id %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'survey:survey-detail' id=evenement.aanmelding_formulier.id %}">Aanmelden</a></li>
+		{% if perms.evenementen.change_evenement %}
+        <li><a href="{% url 'evenementen:evenement_aanmeldingen' slug=evenement.slug %}">Toon aanmeldingen</a></li>
+		{% endif %}
+      </ul>
+	</div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">{{ evenement.naam }}</h1>
+  <p class="article-meta">Evenement</p>
+  <dl>
+    <dt>Datum:</dt>
+    <dd>
+      <time itemprop="startDate">{{ evenement.start_datum|date:"d F Y" }}</time>
+      {% if evenement.einde_datum %} - <time itemprop="endDate">{{ evenement.einde_datum|date:"d F Y" }}</time>{% endif %}
+    </dd>
+	{% if evenement.locatie %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ evenement.locatie }}</dd>
+	{% endif %}
+  </dl>
+  {% if evenement.intro %}
+  <div class="intro">
+    <p>{{ evenement.intro|safe }}</p>
+  </div>
+  {% endif %}
+{{ evenement.omschrijving|safe }}
+</div>
+{% if perms.evenementen.change_evenement %}
+<div id="aside">
+  <div class="brick linkBlock">
+    <h2>Beheer</h2>
+    <ul class="common">
+      <li>
+	    <a href="{% url 'admin:evenementen_evenement_change' evenement.pk %}" class="common">Wijzigen evenement</a>
+      </li>
+	  {% if evenement.aanmelding_formulier.pk %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_change' evenement.aanmelding_formulier.pk %}" class="common">Wijzigen aanmelding formulier</a>
+      </li>
+	  {% else %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_add' %}" class="common">Toevoegen aanmelding formulier</a>
+      </li>
+	  {% endif %}
+    </ul>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

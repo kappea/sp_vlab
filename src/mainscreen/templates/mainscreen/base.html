@@ -1,0 +1,140 @@
+<!doctype html>
+<!--[if IE]><![endif]-->
+<!--[if IE 7]><html xml:lang="nl-NL" lang="nl-NL" class="ie ie7"><![endif]-->
+<!--[if IE 8]><html xml:lang="nl-NL" lang="nl-NL" class="ie ie8"><![endif]-->
+<!--[if (lt IE 7)|(gt IE 8)|!(IE)]><!-->
+<html class="no-js" xml:lang="nl-NL" lang="nl-NL">
+<!--<![endif]-->
+{% load staticfiles %}
+{% load thumbnail %}
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noydir, noodp" />
+  <title>{% block title %}UBR|V-Lab | UBR | UBRijk{% endblock %}</title>
+  <meta name="DCTERMS.language" title="XSD.language" content="nl-NL" />
+  <meta name="DCTERMS.creator" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties"/>
+  <meta name="DCTERMS.available" title="DCTERMS.Period" content="start=2017-03-06;"/>
+  <meta name="DCTERMS.modified" title="XSD.dateTime" content="2017-06-22T10:31"/>
+  <meta name="DCTERMS.issued" title="XSD.dateTime" content="2017-03-06T13:50"/>
+  <meta name="DCTERMS.spatial" title="OVERHEID.Koninkrijksdeel" content="Nederland"/>
+  <meta name="DCTERMS.publisher" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties"/>
+  <meta name="DCTERMS.rights" content="CC0 1.0 Universal"/>
+  <meta name="DCTERMS.rightsHolder" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties"/>
+  <meta name="DCTERMS.type" title="RIJKSOVERHEID.Informatietype" content="webpagina"/>
+  <meta name="referrer" content="origin"/>
+  <link rel="shortcut icon" href="{% static 'mainscreen/favicon.ico' %}" type="image/x-icon"/>
+  <link rel="icon" sizes="192x192" href="{% static 'mainscreen/touch-icon.png' %}"/>
+  <link rel="apple-touch-icon" href="{% static 'mainscreen/apple-touch-icon.png' %}"/>
+
+  <!-- Custom styles for this site -->
+  {% block styles %}
+  <!--[if (gt IE 8)|!(IE)]><!-->
+  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2017.11.4.min.css' %}" type="text/css" media="all"/>
+  <!--<![endif]-->
+  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20171212.css' %}" type="text/css" media="all">
+  {% endblock styles %}
+
+  <!-- Custom tags for the head tag -->
+  {% block extrahead %}
+  {% endblock extrahead %}
+  {{ form.media }}
+</head>
+
+<body id="government" data-scriptpath="{% static 'mainscreen/behaviour' %}" data-scriptversion="2017.11.4" class="portalclass home"
+data-measure-statistics="false" data-statssiteid="0" data-hartbeattrackingtimer="0" data-cookieinfourl="cookies"
+data-showcookiebar="false" data-cookiebody=
+"{sitenaam} gebruikt cookies om het gebruik van de website te analyseren en het gebruiksgemak te verbeteren. Lees meer over"
+data-cookieurltext="cookies">
+  <div class="site message login">
+    <p>
+      {% if not user.is_authenticated %}
+      <a href="{% url 'accounts:login' %}?next={{ request.path }}">Inloggen</a>
+      {% else %}
+      <a href="{% url 'profiles:show_self' %}">Ingelogd als {{user.email}}</a>
+      <a href="{% url 'accounts:logout' %}">Uitloggen</a>
+      {% endif %}
+    </p>
+  </div>
+  <div id="mainwrapper">
+    <div id="header">
+      <a href="/" title="Naar de homepage van Ubrijk">
+        <div class="logo">
+          <div class="wrapper">
+            <img data-fallback="{% static 'mainscreen/binaries/svg/content/gallery/ubrijk/channel-afbeeldingen/logo/beeldmerk-rijksoverheid.svg' %}"
+		    src="{% static 'mainscreen/binaries/svg/content/gallery/ubrijk/channel-afbeeldingen/logo/logo-ubr.svg' %}"
+		    alt="Naar de homepage van Ubrijk" id="logotype"/>
+          </div>
+        </div>
+	  </a>
+	  <!--[if lt IE 9]><p><strong>UBRijk omarmt moderne standaarden en technieken.<br>
+	  Uw webbrowser ondersteunt deze standaarden niet. Stap daarom over op een recente browser.</strong></p><![endif]-->
+      <div class="skiplinks">
+        <p>
+		  <span class="assistive">Ga direct naar</span>
+		  <a href="#content">inhoud</a>
+		  <span class="assistive">of</span>
+		  <a href="#navigation" id="skip-to-menu">menu</a>
+		</p>
+      </div>
+    </div>
+    <div id="navBar">
+      <div class="wrapper">{% block navbar %}{% endblock %}</div>
+    </div>
+    <div id="main">
+      {% block subnavigation %}{% endblock %}
+      <div class="wrapper">{% block content %}{% endblock %}</div>
+    </div>
+    {% block messages %}
+    {% if messages %}
+	{% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">  <!-- singular -->
+      <a class="close" data-dismiss="alert">×</a>
+      {{ message|safe }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endblock %}
+    {% block container %}
+    {% endblock container %}
+    <!-- Site footer -->
+    {% block footer %}
+    <div id="footer">
+      <div class="wrapper">
+        <div class="column">
+          <h2>Service</h2>
+          <ul>
+            <li>
+              <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab/contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+        <div class="column">
+          <h2>Over deze site</h2>
+          <ul>
+            <li>
+              <a href="https://www.ubrijk.nl/copyright">Copyright</a>
+            </li>
+            <li>
+              <a href="https://www.ubrijk.nl/privacy">Privacy</a>
+            </li>
+            <li>
+              <a href="https://www.ubrijk.nl/cookies">Cookies</a>
+            </li>
+            <li>
+              <a href="https://www.ubrijk.nl/toegankelijkheid">Toegankelijkheid</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endblock footer %}
+  </div>
+  {% block scripts %}
+  <!--[if (gt IE 6)|!(IE)]><!-->
+  <script src="{% static 'mainscreen/behaviour/core-2017.11.4.min.js' %}"></script>
+  <!--<![endif]-->
+  {% endblock scripts %}
+</body>
+</html>
