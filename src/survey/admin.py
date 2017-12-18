@@ -10,6 +10,7 @@ from .actions import make_published
 class QuestionInline(admin.TabularInline):
     model = Question
     ordering = ('order', 'category', )
+    fields = ('text', 'order', 'type', 'required', 'category', 'choices', 'help_text')
     extra = 1
 
 
@@ -78,4 +79,4 @@ class ResponseAdmin(admin.ModelAdmin):
 #admin.site.register(Question, QuestionInline)
 #admin.site.register(Category, CategoryInline)
 admin.site.register(Survey, SurveyAdmin)
-admin.site.register(Response, ResponseAdmin)
+#admin.site.register(Response, ResponseAdmin)
