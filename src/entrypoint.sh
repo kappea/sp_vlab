@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Collect static files
 #echo "Collect static files"
@@ -13,4 +13,4 @@ python3 manage.py migrate
 # Start server
 echo "Starting server"
 #python3 manage.py runserver 0.0.0.0:8000
-gunicorn vlab.wsgi:application -b 0.0.0.0:8000
+gunicorn config.wsgi:application -b 0.0.0.0:8000
