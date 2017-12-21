@@ -3,7 +3,10 @@ from .base import *
 import sys
 import logging.config
 
-ALLOWED_HOSTS = ['v-lab']
+ALLOWED_HOSTS = ['v-lab',
+                 'localhost',
+                 'vlab-test-001.external-cloud.nl',
+                 ]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
