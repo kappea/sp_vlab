@@ -186,3 +186,6 @@ THUMBNAIL_EXTENSION = 'png'     # Or any extn for your thumbnails
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# outgoing mail SMTP host
+EMAIL_HOST = env('DJANGO_EMAIL_HOST', default='localhost')
+EMAIL_PORT = env.int('DJANGO_EMAIL_PORT', default=25)
