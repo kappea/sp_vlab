@@ -6,6 +6,7 @@ import logging.config
 ALLOWED_HOSTS = ['v-lab',
                  'localhost',
                  'vlab-test-001.external-cloud.nl',
+                 'l-daily-test-001-int-dz.external-cloud.nl'
                  ]
 
 # SECURITY WARNING: don't run with debug turned on in production!
