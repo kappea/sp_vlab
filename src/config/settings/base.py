@@ -17,8 +17,8 @@ import environ, django
 from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(ROOT_DIR, ...)
-ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR
+ROOT_DIR = environ.Path('/var/www/vlab/')
+APPS_DIR = environ.Path(__file__) - 3
 
 env = environ.Env()
 # This section added from an update to standards in CookieCutter Django to ensure no errors are encountered at runserver/migrations
@@ -166,7 +166,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 MEDIA_URL = '/media/'
-MEDIA_ROOT = str(APPS_DIR('media'))
+MEDIA_ROOT = str(ROOT_DIR('mediafiles'))
 
 # Crispy Form Theme - Bootstrap 3
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -184,7 +184,7 @@ LOGIN_URL = reverse_lazy("accounts:login")
 
 THUMBNAIL_EXTENSION = 'png'     # Or any extn for your thumbnails
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'mainscreen.util.DjsCompressedManifestStaticFilesStorage'
 
 # outgoing mail SMTP host
 EMAIL_HOST = env('DJANGO_EMAIL_HOST', default='localhost')

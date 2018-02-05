@@ -400,8 +400,6 @@ class Response(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     survey = models.ForeignKey(Survey, related_name="responses")
-    settings.AUTH_USER_MODEL
-    #user = models.ForeignKey(User, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     interview_uuid = models.CharField(_(u"Interview unique identifier"),
                                       max_length=36)

@@ -22,7 +22,7 @@ class LoginForm(AuthenticationForm):
             Field('password', placeholder="Voer wachtwoord in"),
             HTML('<a href="{}">Wachtwoord vergeten?</a>'.format(
                 reverse("accounts:password-reset"))),
-            Field('onthouden'),
+            Field('remember_me'),
             Submit('sign_in', 'Aanmelden',
                    css_class="btn btn-lg btn-primary btn-block"),
             )
