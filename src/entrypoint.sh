@@ -2,6 +2,7 @@
 
 # Collect static files
 echo "Collect static files"
+mkdir -p /var/www/vlab/staticfiles /var/www/vlab/mediafiles /var/www/vlab/logs
 python manage.py collectstatic --noinput
 
 sleep 5
