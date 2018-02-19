@@ -1,11 +1,11 @@
 #
 # Copyright (C) 2014-2017 Ministerie van Infrastructuur en Milieu.
 #
-FROM sp-ontwikkel-docker-registry.external-cloud.nl:5000/ienm/sp/components/lang/python:3.7.0a2-alpine
+FROM python:3.6.4-alpine3.7
 
 MAINTAINER Albert Kappe <albert.kappe@rijksoverheid.nl>
 
-RUN apk update && apk add build-base postgresql-dev libffi-dev jpeg-dev openjpeg-dev libpng-dev zlib-dev nginx
+RUN apk update && apk add bash build-base postgresql-dev libffi-dev jpeg-dev openjpeg-dev libpng-dev zlib-dev nginx
 
 # Create- and set working and logs dir.
 ENV INSTALL_PATH /code

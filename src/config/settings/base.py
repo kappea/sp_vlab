@@ -13,7 +13,7 @@ Django project skeleton: http://django-edge.readthedocs.io/en/latest/
 Also: https://github.com/djstein/modern-django
 """
 
-import environ, django
+import os, environ, django
 from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(ROOT_DIR, ...)
@@ -112,6 +112,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+# Substitute postgres password if DATABASE_URL contains {password}
+os.environ['DATABASE_URL']=env('DATABASE_URL').format(
+    password=env('POSTGRES_PASSWORD',default=''))
 
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in

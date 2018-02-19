@@ -21,6 +21,14 @@ SESSION_COOKIE_SECURE = True
 
 CSRF_COOKIE_SECURE = True
 
+# Enable health checking
+INSTALLED_APPS += (
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
+)
+
 # Log everything to the logs directory at the top
 LOGFILE_ROOT = ROOT_DIR.path('logs')
 

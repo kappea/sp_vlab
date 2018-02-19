@@ -120,14 +120,17 @@ class SurveyResultData(View):
         for response in responses:
             row = []
             for question in questions:
-                answer = Answer.objects.get(question=question, response=response)
-                if len(answer.values) == 1:
-                    row.append(answer.values[0])
-                else:
-                    lijst = ''
-                    for value in answer.values:
-                        lijst = lijst + value + ';'
-                        row.append(lijst)
+                try:
+                    answer = Answer.objects.get(question=question, response=response)
+                    if len(answer.values) == 1:
+                        row.append(answer.values[0])
+                    else:
+                        lijst = ''
+                        for value in answer.values:
+                            lijst = lijst + value + ';'
+                            row.append(lijst)
+                except Answer.DoesNotExist:
+                    row.append('')
             row.append(response.updated.strftime('%Y-%m-%d %H:%M'))
             row.append(response.user)
             datarows.append(row)

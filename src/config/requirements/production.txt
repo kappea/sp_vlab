@@ -1,5 +1,6 @@
 -r base.txt
 
 # Extra stuff required for production like Prod Database interfacing packages
-psycopg2
+psycopg2==2.7.4
+django-health-check==3.5.0
 

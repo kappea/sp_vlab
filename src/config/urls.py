@@ -24,3 +24,9 @@ if settings.DEBUG:
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ]
+
+# Enable health checking
+if not settings.DEBUG:
+    urlpatterns += [
+        url(r'^health/?', include('health_check.urls')),
+    ]
