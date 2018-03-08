@@ -1,0 +1,79 @@
+{% extends "mainscreen/base.html" %}
+{% load thumbnail %}
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- Custom styles for this site -->
+{% block styles %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!--[if (gt IE 8)|!(IE)]><!-->
+  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2017.11.4.min.css' %}" type="text/css" media="all"/>
+  <!--<![endif]-->
+  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20171212.css' %}" type="text/css" media="all">
+    <link href="{% static 'site/css/main.css' %}" rel="stylesheet">
+{% endblock styles %}
+
+{% block scripts %}
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'jquery-1.12.4/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+{% endblock scripts %}
+
+
+{% block title %}Spreker: {{ speaker.name }} | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
+  <a href="{{ evenement.get_absolute_url }}">{{ evenement.naam }}</a>
+  <span>{{ speaker.name }}</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if evenement.programma %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'schedule:schedule_conference' slug=evenement.slug %}">Programma</a></li>
+      </ul>
+	</div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <div class="row">
+        <div class="col-md-2">
+            {% if speaker.photo %}
+                <img src="{% thumbnail speaker.photo '128x128' %}" alt="{{ speaker.name }}" />
+            {% else %}
+                &nbsp;
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1>{{ speaker.name }}</h1>
+            <div class="bio">{{ speaker.biography|safe }}</div>
+
+            <h2>Presentatie(s)</h2>
+            {% for presentation in presentations %}
+                <h3><a href="{% url "schedule:schedule_presentation_detail" evenement.slug presentation.pk %}">{{ presentation.title }}</a></h3>
+                {% if presentation.slot %}
+                    <p>
+                        {{ presentation.slot.day.date|date:"l" }}
+                        {{ presentation.slot.start}}&ndash;{{ presentation.slot.end }} uur in {{ presentation.slot.rooms|join:", " }}
+                    </p>
+                {% endif %}
+            {% empty %}
+                <p>No presentations. This page is only visible to staff until there is a presentation.<p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

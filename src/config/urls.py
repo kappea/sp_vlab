@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^survey/', include('survey.urls', namespace="survey")),
     url(r'^summernote/', include('django_summernote.urls')),
     url(r'^', include(accounts.urls, namespace='accounts')),
+    url(r"^schedule/", include("schedule.urls", namespace="schedule")),
+    url(r"^speaker/", include("speakers.urls", namespace="speakers")),
 ]
 
 # User-uploaded files like profile pics need to be served in development

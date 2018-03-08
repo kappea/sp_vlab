@@ -1,4 +1,5 @@
 from django import forms
+from django_summernote.widgets import SummernoteWidget
 
 from .models import Evenement
 
@@ -8,10 +9,11 @@ class EvenementForm(forms.ModelForm):
             
     class Meta:
         model = Evenement
-        fields = ['naam', 'omschrijving', 'start_datum', 'einde_datum']
+        fields = '__all__'
         widgets = {
             # https://github.com/summernote/django-summernote
-            #'omschrijving': SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
+            'intro': SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
+            'omschrijving': SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
             'start_datum': forms.DateInput(attrs={'class': 'date',
                                                   'size': 20,
                                                   'placeholder': 'DD-MM-JJJJ',

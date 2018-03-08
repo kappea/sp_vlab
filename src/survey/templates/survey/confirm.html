@@ -1,17 +1,17 @@
 {% extends 'survey/base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Aanmelding verzonden" %} | UBR|V-Lab{% endblock %}
+{% block title %}{% trans "Formulier verzonden" %} | UBR|V-Lab{% endblock %}
 
 {% block body %}
-<h1>{% trans "Aanmelding verzonden"%}</h1>
+<h1>{% trans "Formulier verzonden"%}</h1>
 <p>
     <div class="alert alert-success">
-       {% trans "Bedankt voor uw aanmelding!" %}
+       {% trans "Bedankt voor uw reactie!" %}
     </div>
 	{% if not user.is_anonymous %}
     <div class="alert alert-info">
-       {% trans "U kunt altijd terugkomen om de aanmelding aan te passen" %}
+       {% trans "U kunt altijd terugkomen om het formulier aan te passen" %}
     </div>
 	{% endif %}
 </p>

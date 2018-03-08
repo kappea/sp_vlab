@@ -63,6 +63,10 @@ LOCAL_APPS = (
     'survey',
     'profiles',
     'accounts',
+    'conference',
+    'schedule',
+    'proposals',
+    'speakers',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -193,3 +197,9 @@ STATICFILES_STORAGE = 'mainscreen.util.DjsCompressedManifestStaticFilesStorage'
 # outgoing mail SMTP host
 EMAIL_HOST = env('DJANGO_EMAIL_HOST', default='localhost')
 EMAIL_PORT = env.int('DJANGO_EMAIL_PORT', default=25)
+
+PROPOSAL_FORMS = {
+    "tutorial": "proposals.forms.TutorialProposalForm",
+    "talk": "proposals.forms.TalkProposalForm",
+    "poster": "proposals.forms.PosterProposalForm",
+}

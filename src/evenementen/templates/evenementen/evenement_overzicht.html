@@ -12,14 +12,34 @@
 {% endblock %}
 
 {% block subnavigation %}
-{% if evenement.aanmelding_formulier.id %}
+{% if evenement.aanmelding_formulier  or evenement.evaluatie_formulier %}
   <div class="subNavigation">
     <div class="wrapper">
       <ul>
+	    {% if evenement.aanmelding_formulier.is_published %}
         <li><a href="{% url 'survey:survey-detail' id=evenement.aanmelding_formulier.id %}">Aanmelden</a></li>
-		{% if perms.evenementen.change_evenement %}
+	    {% elif evenement.evaluatie_formulier.is_published %}
+        <li><a href="{% url 'survey:survey-detail' id=evenement.evaluatie_formulier.id %}">Evaluatie</a></li>
+		{% endif %}
+		{% if evenement.aanmelding_formulier.id and perms.evenementen.change_evenement %}
         <li><a href="{% url 'evenementen:evenement_aanmeldingen' slug=evenement.slug %}">Toon aanmeldingen</a></li>
 		{% endif %}
+		{% if evenement.evaluatie_formulier.id and perms.evenementen.change_evenement %}
+        <li><a href="{% url 'evenementen:evenement_evaluaties' slug=evenement.slug %}">Toon evaluaties</a></li>
+		{% endif %}
+      </ul>
+	  {% if evenement.programma %}
+      <ul>
+        <li><a href="{% url 'schedule:schedule_conference' slug=evenement.slug %}">Programma</a></li>
+      </ul>
+	  {% endif %}
+	</div>
+  </div>
+{% elif evenement.programma %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'schedule:schedule_conference' slug=evenement.slug %}">Programma</a></li>
       </ul>
 	</div>
   </div>
@@ -63,6 +83,24 @@
 	  {% else %}
       <li>
 	    <a href="{% url 'admin:survey_survey_add' %}" class="common">Toevoegen aanmelding formulier</a>
+      </li>
+	  {% endif %}
+	  {% if evenement.programma %}
+      <li>
+	    <a href="/admin/schedule" class="common">Wijzigen programma</a>
+      </li>
+	  {% else %}
+      <li>
+	    <a href="{% url 'admin:conference_conference_add' %}" class="common">Toevoegen programma</a>
+      </li>
+	  {% endif %}
+	  {% if evenement.evaluatie_formulier.pk %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_change' evenement.evaluatie_formulier.pk %}" class="common">Wijzigen evaluatie formulier</a>
+      </li>
+	  {% else %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_add' %}" class="common">Toevoegen evaluatie formulier</a>
       </li>
 	  {% endif %}
     </ul>

@@ -1,0 +1,535 @@
+
+/* The edit button that site admins are given. */
+
+.edit-btn, .edit-toggle {
+    display: block;
+
+    /* float: right; */
+    position: absolute;
+    right: 0;
+
+    margin-left: 0.3em;
+    border-radius: 8px;
+    background: #eee;
+    padding: 0.5em;
+    color: #308898;
+    text-decoration: none;
+}
+.edit-btn:hover, .edit-toggle:hover {
+    background: #ddd;
+}
+
+/* Forms, when there are no errors */
+fieldset {
+  border: none;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: #D7E5E4;
+  border: 2px solid #CADDDC;
+  display: block;
+  margin: 0 auto 20px;
+  max-width: 800px;
+  padding: 20px;
+  width: 100%;
+}
+fieldset > *:first-child {
+  margin-top: 0;
+}
+legend {
+  margin: 0 auto 16px;
+  font-weight: bold;
+  max-width: 600px;
+  width: 100%;
+}
+.control-group {
+  margin: 0 auto 20px;
+}
+.control-group:last-child {
+  margin-bottom: 0;
+}
+label {
+  color: #012A29;
+  display: block;
+  font-size: 0.813rem;
+  font-weight: bold;
+  line-height: 1.25;
+  margin: 0 0 5px 0;
+  width: 100%;
+}
+.hide {
+    display: none;
+}
+input[type=text],
+input[type=email],
+input[type=password],
+input[type=url],
+textarea {
+  -webkit-appearance: none;
+  border: 2px solid #FFF;
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  display: block;
+  padding: 4px 10px;
+  width: 100%;
+}
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus,
+input[type=url]:focus,
+input[type=file]:focus,
+textarea:focus {
+  outline: none;
+  border: 2px solid #012A29;
+}
+input[type=file] {
+  border: 2px solid transparent;
+  box-shadow: none;
+  display: block;
+  width: 100%;
+}
+input[type=file]::-webkit-file-upload-button {
+  background: #3592B3;
+  border: none;
+  color: #FFF;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 300;
+  padding: 3px 15px 6px;
+  text-align: center;
+  text-decoration: none;
+  transition: all .25s ease-in-out;
+}
+input[type=file]::-webkit-file-upload-button:hover {
+  background: #307D98;
+}
+select {
+  background: #FFF;
+  border: 2px solid #FFF;
+  border-radius: 0;
+  padding: 4px 10px;
+  box-sizing: border-box;
+  width: 100%;
+}
+select:focus {
+  outline: none;
+  border: 2px solid #012A29;
+}
+input[type=checkbox],
+input[type=radio] {
+  margin: 0 7px 5px 0;
+}
+.help-block {
+  font-size: .75rem;
+}
+.help-block[id^=error_] {
+  align-items: center;
+  background: #EA6446;
+  border-radius: 10px;
+  border: 2px solid #D25438;
+  color: #FFF;
+  display: flex;
+  margin: 10px;
+  padding: 10px 10px 10px 10px;
+}
+.text-error {
+  align-items: center;
+  background: #EA6446;
+  border-radius: 10px;
+  border: 2px solid #D25438;
+  color: #FFF;
+  display: flex;
+  margin: 10px;
+  padding: 10px 10px 10px 10px;
+}
+.controls .help-block {
+  margin: 5px 0 0 0;
+}
+.form-actions {
+  text-align: center;
+}
+.form-actions .help-block {
+  font-size: .813rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 400px
+}
+/* Specific Form: Edit Speaker Profile */
+fieldset #div_id_photo .controls a {
+  display: block;
+}
+fieldset #div_id_photo .controls label {
+  display: inline-block;
+  width: auto;
+  margin-bottom: 20px;
+}
+fieldset #div_id_interested_mentee .controls label {
+  font-weight: normal;
+}
+fieldset #div_id_interested_mentor .controls label {
+  font-weight: normal;
+}
+/* MarkedIt styling */
+.markedit .ui-widget-header {
+  background: #78ACA8;
+  border-color: #78ACA8;
+  border-radius: 0;
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+  padding: 5px 0 0 0;
+}
+.markedit .toolbar-group {
+  float: none;
+}
+.markedit button.ui-state-default {
+  background: #012A29;
+  border-color: #012A29;
+  border-radius: 0;
+  color: #FFF;
+  padding: 0;
+}
+.markedit button.ui-state-default:focus {
+  outline: 2px solid #FFF;
+} 
+.box-content .markedit > textarea {
+  /* override the jQuery UI "markedit > textarea" styling */
+  margin: 0 0 20px;
+  padding: 4px 10px;
+}
+.markedit .markedit-preview {
+  /* override the jQuery UI "ui-widget-content" styling */
+  margin: 1em 0;
+  border: 2px dashed #012A29;
+  background: none;
+  box-sizing: border-box;
+  padding: 0 1em;
+  min-height: 40px;
+  color: #012A29;
+}
+.input-prepend {
+  align-items: stretch;
+  display: flex;
+}
+.input-prepend > span:first-child {
+  background: #FFF;
+  margin-right: 2px;
+  padding: 4px 8px 0;
+  white-space: nowrap;
+}
+
+
+/* Forms, when an error message needs to display. */
+.control-group.error input[type=text], .control-group.error textarea {
+    border: 3px solid red;
+}
+span.help-inline {
+    color: red;
+    display: block;
+}
+
+/* Most proposal text-area fields should honor line breaks. */
+
+.proposal-fields dd.significant-whitespace {
+    padding-top: .5em;
+    white-space: pre-wrap;
+    white-space: pre-line;
+}
+
+.proposal-fields dt {
+    padding-top: 1em;
+}
+
+/* Except for the Description, which gets Markdown processing. */
+
+.proposal-fields dd.description {
+    white-space: normal;
+}
+
+/* The dashboard. */
+
+.dashboard-panel {
+  margin: 10px 0 0 0;
+  border: 2px solid #CADDDC;
+  border-radius: 10px;
+  background-color: #D7E5E4;
+  padding: 10px;
+}
+@media (min-width: 750px) {
+  .dashboard-panel {
+    margin: 20px 0 0 0;
+    padding: 20px;
+  }
+}
+.dashboard-panel .icon-briefcase {
+  display: none;
+}
+.dashboard-panel h3 {
+  margin: 0 0 0.5em;
+}
+.dashboard-panel a.action {
+  margin: 0 5px 5px 0;
+}
+.btn,
+.dashboard-panel a.action,
+.dataTables_paginate .paginate_button,
+.dt-button {
+  background: #3592B3;
+  border: 2px solid #3592B3;
+  color: #FFF;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 300;
+  padding: 3px 15px 6px;
+  margin: 2px 5px 3px 0px;
+  text-align: center;
+  text-decoration: none;
+  transition: all .25s ease-in-out;
+}
+.btn:hover,
+.dashboard-panel a.action:hover,
+.dataTables_paginate .paginate_button:hover,
+.dt-button:hover {
+  background: #307D98;
+  border-color: #307D98;;
+}
+.btn.warn{
+  background: #7AABA7;
+  border-color: #7AABA7;
+}
+.btn.danger {
+  background: #EA6446;
+  border-color: #EA6446;
+}
+.btn.danger:hover {
+  background: #D25438;
+  border-color: #D25438;
+}
+.btn.secondary {
+  background: none;
+  color: #3592B3;
+}
+.btn.secondary:hover {
+  background: none;
+  color: #307D98;
+}
+button:focus,
+.btn:focus,
+.btn.danger:focus,
+.btn.secondary:focus,
+.dashboard-panel a.action:focus,
+.dataTables_paginate .paginate_button:focus,
+.dt-button:focus {
+  border-color: #012A29;
+  outline: none;
+}
+.btn[disabled] {
+  box-shadow: none;
+  border: 1px solid #aaa;
+  background: #fcce8e;
+  color: black;
+}
+/* List of Buttons, used on proposal submit page */
+.btn-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+}
+.btn-list li {
+  white-space: nowrap;
+  margin: 0 5px 5px 0;
+}
+
+.btn-mini {
+  padding: .33em;
+  font-size: smaller;
+  margin: 0 2px 2px 0;
+}
+
+/* Paginated tables within the dashboard. */
+
+.pagination li {
+    display: inline;
+}
+.pagination a {
+    padding: 0.5em;
+}
+.pagination a:hover {
+    background: #eef;
+}
+
+/* -------------------- Styles for use in CMS editing -------------------- */
+
+.box-content .label {  /* White words in a tight box, used in text. */
+    border-radius: 3px;
+    padding: 2px 10px;
+    background: #EA6446;
+    color: white;
+    font-weight: bold;
+}
+.callout {  /* Paragraph in a rectangle with a light blue background. */
+    border: 2px solid #B4D3C6;
+    border-radius: 2em;
+    padding: 1em 2em;
+    background-color: #e6fff9;
+    /* ^ chroma('#B4D3C6').brighten().hex() */
+}
+.hotel {
+  background-color: #D7E5E4;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 0;
+  max-width: 420px;
+  padding: 20px;
+  width: 100%;
+}
+.hotel h3 {
+    color: #CE624D;
+}
+
+/* The very wide schedule grid. */
+
+.schedule-page #content {
+    max-width: none;
+    font-size: 14px;  /* slightly smaller */
+}
+table td {
+    background-color: white;
+}
+table.schedule td {
+    border: 1px solid #012A29;
+    text-align: center ! important;
+}
+table.schedule th {
+    background-color: white;
+    border: 0px solid #012A29;
+    padding: 0 0.4em;
+    text-align: center;
+}
+td.slot .title {
+    font-weight: bold;
+}
+td.slot .title,
+td.slot .speaker {
+    display: block;
+}
+td.slot-Ontbijt,
+td.slot-Pauze,
+td.slot-Lunch {
+    background-color: #136E8E;
+    color: #fff;
+    font-weight: bold;
+    text-align: center ! important;
+}
+td.slot-plenary {
+    background-color: #CE624D;
+    color: #fff;
+    font-weight: bold;
+    text-align: center ! important;
+}
+td.time {
+    font-weight: bold;
+}
+.schedule-page .badges .btn {
+    font-size: 0.8em;
+    min-width: 1em;
+}
+
+/* The presentation lists for Talks, Tutorials, and Posters. */
+
+.presentation-list #content {
+    font-size: 16px;  /* slightly smaller */
+}
+
+/* The Job Listing page. */
+
+.job-fair h1 {
+    text-align: center;
+}
+.job-fair .sponsor-logo {
+    float: right;
+    margin: 0 0 1em 1em;
+}
+/*
+.job-fair .callout {
+    margin-bottom: 1em;
+}
+@media (min-width: 600px) {
+    .job-fair .callout {
+        width: 30%;
+        float: right;
+        margin-left: 1em;
+        padding: 0.3em;
+    }
+}
+*/
+
+/* The sponsors page. */
+
+.sponsor-level {
+    text-align: center;
+}
+.sponsor-level h2 {
+    border-top: 2px solid #012A29;
+    border-bottom: 2px solid #012A29;
+}
+.sponsor {
+    display: inline-block;
+    margin-top: 1em;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    vertical-align: top;
+    max-width: 22em;
+}
+.sponsor > a {
+    display: block;
+}
+.sponsor h3 {
+    margin-bottom: 0.5em;
+}
+.sponsor > p {
+    text-align: left;
+}
+
+
+/* Reviews Content */
+#content.reviews-content {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+/* Group Registrations Hax */
+#registrations {
+  border: none;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: #D7E5E4;
+  border: 2px solid #CADDDC;
+  display: block;
+  margin: 20px;
+  max-width: 800px;
+  padding: 20px;
+  width: 100%;
+}
+
+#registrations .form-inline {
+  padding-top: 10px;
+  position: relative;
+}
+
+#registrations input {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 2px;
+  width: 90%;
+  border-radius: 5px;
+}
+
+#registrations span {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border-radius: 5px;
+}

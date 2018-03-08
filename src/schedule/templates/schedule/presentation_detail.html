@@ -1,0 +1,61 @@
+{% extends "mainscreen/base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+<!-- Custom styles for this site -->
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static 'site/css/slight.css' %}" type="text/css" media="all">
+{% endblock extrahead %}
+
+{% block title %}Presentatie: {{ presentation.title }} | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
+  <a href="{{ evenement.get_absolute_url }}">{{ evenement.naam }}</a>
+  <span>{{ presentation.title }}</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if evenement.programma %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'schedule:schedule_conference' slug=evenement.slug %}">Programma</a></li>
+      </ul>
+	</div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">{{ presentation.title }}</h1>
+  <p class="article-meta">Presentatie</p>
+  <dl>
+    {% if presentation.slot %}
+	<dt>Tijd:</dt>
+    <dd>
+      <time itemprop="startDate">{{ presentation.slot.day.date|date:"l" }} {{ presentation.slot.start }}</time>
+      {% if presentation.slot.end %} - <time itemprop="endDate">{{ presentation.slot.end }}</time> uur{% endif %}
+    </dd>
+	{% endif %}
+	{% if presentation.slot.rooms %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ presentation.slot.rooms|join:", " }}</dd>
+	{% endif %}
+	{% if presentation.speakers %}
+    <dt>Spreker(s):</dt>
+    <dd itemprop="speakers">{% for speaker in presentation.speakers %}
+	  <a href="{% url "speakers:speaker_profile" evenement.slug speaker.pk %}">{{ speaker }}</a>
+	  {% if not forloop.last %}, {% endif %}{% endfor %}</dd>
+	{% endif %}
+  </dl>
+  <h3>Beschrijving</h3>
+  {{ presentation.description|safe }}
+</div>
+{% endblock %}

@@ -6,6 +6,7 @@ import itertools
 # Create your models here.
 
 from survey.models import Survey
+from conference.models import Conference
 
 class Evenement(models.Model):
     naam = models.CharField(max_length=200)
@@ -15,7 +16,11 @@ class Evenement(models.Model):
     start_datum = models.DateField()
     einde_datum = models.DateField(blank=True, null=True)
     aanmelding_formulier = models.ForeignKey(Survey, blank=True, null=True,
-                                             related_name="evenementen")
+                                             related_name="aanmelding_evenement")
+    evaluatie_formulier = models.ForeignKey(Survey, blank=True, null=True,
+                                            related_name="evaluatie_evenement")
+    programma = models.ForeignKey(Conference, blank=True, null=True,
+                                            related_name="programma_evenement")
     slug = models.SlugField(unique=True)
     def __str__(self):
         return self.naam
