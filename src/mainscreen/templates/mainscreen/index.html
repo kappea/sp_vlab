@@ -20,6 +20,11 @@
       <ul>
         <li><a href="{% url 'evenementen:evenementen' %}">Evenementen</a></li>
       </ul>
+	  {% if page and page.published %}
+      <ul>
+        <li><a href="{% url 'designsprints:index' %}">{{ page.titel}}</a></li>
+      </ul>
+	  {% endif %}
 	</div>
   </div>
 {% endblock %}

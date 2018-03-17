@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^', include(accounts.urls, namespace='accounts')),
     url(r"^schedule/", include("schedule.urls", namespace="schedule")),
     url(r"^speaker/", include("speakers.urls", namespace="speakers")),
+    url(r"^design-sprints/", include("designsprints.urls", namespace="designsprints")),
 ]
 
 # User-uploaded files like profile pics need to be served in development

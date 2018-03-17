@@ -13,6 +13,10 @@ CSRF_TRUSTED_ORIGINS = ['v-lab.ubrijk.nl',
                         'localhost',
                         ]
 
+DEFAULT_FROM_EMAIL = 'noreply@v-lab.ubrijk.nl'
+SERVER_EMAIL = 'django@v-lab.ubrijk.nl'
+ADMINS = [('Albert', 'albert.kappe@rijksoverheid.nl'), ]
+
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 SECURE_BROWSER_XSS_FILTER = True
