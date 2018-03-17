@@ -1,0 +1,5 @@
+/var/www/vlab/logs/web.access.log /var/www/vlab/logs/web.error.log {
+    monthly
+    size 1M
+    rotate 5
+}
