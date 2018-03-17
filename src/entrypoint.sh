@@ -44,5 +44,5 @@ cp -ru media/* /var/www/vlab/mediafiles/
 echo "Starting server"
 #python3 manage.py runserver 0.0.0.0:8000
 #gunicorn --access-logfile=- config.wsgi:application -b 0.0.0.0:8000
-gunicorn --access-logfile /var/www/vlab/logs/web.access.log --error-logfile /var/www/vlab/logs/web.error.log --bind unix:django_app.sock config.wsgi:application &
+gunicorn --workers 4 --access-logfile /var/www/vlab/logs/web.access.log --error-logfile /var/www/vlab/logs/web.error.log --bind unix:django_app.sock config.wsgi:application &
 nginx

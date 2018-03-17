@@ -1,5 +1,6 @@
 from .base import *
 import logging.config
+from concurrent_log_handler import ConcurrentRotatingFileHandler
 
 ALLOWED_HOSTS = ['v-lab.ubrijk.nl',
                  'acc.v-lab.external-cloud.nl',
@@ -57,13 +58,17 @@ LOGGING = {
     'handlers': {
         'django_log_file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.ConcurrentRotatingFileHandler',
+            'maxBytes': 1024 * 1024,  # 1024 * 1024 = 1MB
+            'backupCount': 5,
             'filename': str(LOGFILE_ROOT('django.log')),
             'formatter': 'verbose'
         },
         'proj_log_file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.ConcurrentRotatingFileHandler',
+            'maxBytes': 1024 * 1024,  # 1024 * 1024 = 1MB
+            'backupCount': 5,
             'filename': str(LOGFILE_ROOT('project.log')),
             'formatter': 'verbose'
         },
