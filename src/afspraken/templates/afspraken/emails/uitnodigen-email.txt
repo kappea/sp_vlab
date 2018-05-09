@@ -1,0 +1,18 @@
+{% load i18n %}{% autoescape off %}
+Geachte {{ deelnemer.naam  }},
+
+{{ afspraak.organisator.name }} ({{ afspraak.organisator.email }}) nodigt u uit om
+te helpen om een datum vast te stellen voor: {{ afspraak.naam }}
+
+{% if afspraak.intro %}{{ afspraak.intro|striptags }}
+{% endif %}
+{% if afspraak.locatie %}Locatie: {{ afspraak.locatie }}
+{% endif %}
+Geef uw beschikbaarheid aan door op deze link te klikken:
+
+{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}
+
+Met vriendelijke groet,
+
+V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+{% endautoescape %}

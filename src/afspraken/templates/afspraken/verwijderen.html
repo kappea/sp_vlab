@@ -1,0 +1,60 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+
+{% block title %}{{ afspraak.naam }}{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'afspraken:dashboard' %}">Datum prikken</a>
+  <a href="{% url 'afspraken:overzicht' token=token %}">{{ afspraak.naam }}</a>
+  <span>Afspraak verwijderen</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">{{ afspraak.naam }}</h1>
+  <p class="article-meta">Afspraak</p>
+  <dl>
+    <dt>Organisator:</dt>
+    <dd>{{ afspraak.organisator.name }}	&lt;{{ afspraak.organisator.email }}&gt;</dd>
+    {% if afspraak.gekozen %}
+    <dt>Vastgesteld:</dt>
+    <dd>
+      <time itemprop="startDate">{{ afspraak.gekozen.datum|date:"l d F Y" }},
+        {{ afspraak.gekozen.start|date:"H:i" }}
+        {% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
+      </time>
+    </dd>
+    {% endif %}
+    {% if afspraak.locatie %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ afspraak.locatie }}</dd>
+	  {% endif %}
+  </dl>
+  {% if afspraak.intro %}
+  <div class="intro">
+    <p>{{ afspraak.intro|safe }}</p>
+  </div>
+  {% endif %}
+  <div class="form fancy">
+    <div id="usage_simple" style="position:relative;">
+      <form action="{% url 'afspraken:verwijderen' token=token %}" method="post" id="verwijderen_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="formWrapper eform">
+          <div id="page0" class="eforms-page">
+            <div class="eformText">
+              <h2 class="req">Bevestig verwijdering van deze afspraak</h2>
+            </div>
+            <br/><br/>
+          </div>
+          <div class="eforms-buttons">
+            <input type="submit" id="confirm-button" name="confirm" class="" value="Verwijderen"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

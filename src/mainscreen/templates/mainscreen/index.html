@@ -12,25 +12,65 @@
 {% endblock %}
 
 {% block subnavigation %}
-  <div class="subNavigation">
-    <div class="wrapper">
-      <ul>
-        <li><a href="{% url 'mainscreen:welkom' %}">Welkom</a></li>
-      </ul>
-      <ul>
-        <li><a href="{% url 'evenementen:evenementen' %}">Evenementen</a></li>
-      </ul>
-	  {% if page and page.published %}
-      <ul>
-        <li><a href="{% url 'designsprints:index' %}">{{ page.titel}}</a></li>
-      </ul>
-	  {% endif %}
-	</div>
+<div class="subNavigation">
+  <div class="wrapper">
+    {% if welkomContent and welkomContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'welkom:index' %}">{{ welkomContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
+    {% if evenementenContent and evenementenContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'evenementen:evenementen' %}">{{ evenementenContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
+    {% if pitchitContent and pitchitContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'pitchit:index' %}">{{ pitchitContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
+    {% if afsprakenContent and afsprakenContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'afspraken:dashboard' %}">{{ afsprakenContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
+    {% if designsprintsContent and designsprintsContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'designsprints:index' %}">{{ designsprintsContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
+    {% if elearningContent and elearningContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'elearning:index' %}">{{ elearningContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
+    {% if toolsContent and toolsContent.published %}
+    <ul>
+      <li>
+        <a href="{% url 'tools:index' %}">{{ toolsContent.titel}}</a>
+      </li>
+    </ul>
+    {% endif %}
   </div>
+</div>
 {% endblock %}
 
 {% block content %}
 <div id="content" class="article">
-<p><img src="{% static 'mainscreen/binaries/png/vlab_org.png' %}" width="100%" alt="Logo" /></p>
+  <p>
+    <img src="{% static 'mainscreen/binaries/png/vlab_org.png' %}" width="100%" alt="V-Lab Logo" />
+  </p>
 </div>
 {% endblock %}

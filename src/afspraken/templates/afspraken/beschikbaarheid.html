@@ -1,0 +1,82 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+
+{% block title %}{{ afspraak.naam }}{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'afspraken:overzicht' token=mijnDeelneming.token %}">{{ afspraak.naam }}</a>
+  <span>Aanpassen beschikbaarheid</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+		<h1 class="news">{{ afspraak.naam }}</h1>
+		<p class="article-meta">Afspraak</p>
+		<dl>
+			<dt>Organisator:</dt>
+			<dd>{{ afspraak.organisator.name }}	&lt;{{ afspraak.organisator.email }}&gt;</dd>
+			{% if afspraak.gekozen %}
+			<dt>Vastgesteld:</dt>
+			<dd>
+				<time itemprop="startDate">{{ afspraak.gekozen.datum|date:"l d F Y" }},
+				{{ afspraak.gekozen.start|date:"H:i" }}
+				{% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
+			</time>
+			</dd>
+			{% endif %}
+			{% if afspraak.locatie %}
+			<dt>Locatie:</dt>
+			<dd itemprop="location">{{ afspraak.locatie }}</dd>
+			{% endif %}
+		</dl>
+		{% if afspraak.intro %}
+		<div class="intro">
+			<p>{{ afspraak.intro|safe }}</p>
+		</div>
+		{% endif %}
+		<h2>{{ mijnDeelneming.deelnemer }}, geef uw beschikbaarheid aan:</h2><br>
+  <div class="form fancy">
+    <div id="usage_simple" style="position:relative;">
+      <form action="{% url 'afspraken:beschikbaarheid' token=mijnDeelneming.token %}" method="post" id="beschikbaar_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="eform">
+          <div id="page0" class="eforms-page">
+			<table style="width:100%">
+			  <tbody>
+				<tr>
+				  <td style="text-align: center;width:10%;"><img src="{% static 'afspraken/yes.png' %}" width="28" height="25" alt=""></td>
+				  <td style="text-align: center;width:10%;"><img src="{% static 'afspraken/maybe.png' %}" width="28" height="25" alt=""></td>
+				  <td style="text-align: center;width:10%;"><img src="{% static 'afspraken/no.png' %}" width="28" height="25" alt=""></td>
+				  <td style="width:70%">&nbsp;</td>
+				</tr>
+				{% for field in form %}
+				<tr>
+				  {% for radio in field %}
+				  <td>
+					<div>
+					  {{ radio.tag }}
+					  <label for="{{ radio.id_for_label }}"></label>
+					</div>
+				  </td>
+				  {% endfor %}
+				  <td>{{ field.field.optie.datum|date:"l" }} {{ field.field.optie.datum|date:"j F" }}<br>
+					  {{ field.field.optie.start|date:"H:i" }}
+					  {% if field.field.optie.einde %} - {{ field.field.optie.einde|date:"H:i" }}{% endif %}
+				  </td>
+				</tr>
+				{% endfor %}
+			  </tbody>
+			</table>
+          </div>
+          <div class="eforms-buttons">
+            <input type="submit" id="confirm-button" name="confirm" class="" value="Ga verder"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

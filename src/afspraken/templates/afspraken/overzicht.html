@@ -1,0 +1,110 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+
+{% block title %}{{ afspraak.naam }}{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'afspraken:dashboard' %}">Datum prikken</a>
+  <span>{{ afspraak.naam }}</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if organisator or not afspraak.gekozen %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      {% if not afspraak.gekozen and mijnDeelneming %}
+      <ul>
+        <li><a href="{% url 'afspraken:beschikbaarheid' token=token %}">Aanpassen beschikbaarheid</a></li>
+      </ul>
+      {% endif %}
+      {% if organisator %}
+      <ul>
+        <li><a href="{% url 'afspraken:verwijderen' token=token %}">Verwijderen afspraak</a></li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">{{ afspraak.naam }}</h1>
+  <p class="article-meta">Afspraak</p>
+  <dl>
+    <dt>Organisator:</dt>
+    <dd>{{ afspraak.organisator.name }}	&lt;{{ afspraak.organisator.email }}&gt;</dd>
+    {% if afspraak.gekozen %}
+    <dt>Vastgesteld:</dt>
+    <dd>
+      <time itemprop="startDate">{{ afspraak.gekozen.datum|date:"l d F Y" }},
+      {{ afspraak.gekozen.start|date:"H:i" }}
+      {% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
+	  </time>
+    </dd>
+    {% endif %}
+    {% if afspraak.locatie %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ afspraak.locatie }}</dd>
+	  {% endif %}
+  </dl>
+  {% if afspraak.intro %}
+  <div class="intro">
+    <p>{{ afspraak.intro|safe }}</p>
+  </div>
+  {% endif %}
+  <h2>Overzicht beschikbaarheid</h2>
+  {% if organisator and not afspraak.gekozen %}
+  <p style="text-align:right;color:#01689b">Kies een optie om deze vast te stellen</p>
+  {% else %}
+  <br/>
+  {% endif %}
+    <table>
+      <thead>
+        <tr>
+          <th><div style="text-align: right;">Opties</div><br><br>Deelnemers</th>
+          {% for optie in headrow %}
+          {% if organisator and not afspraak.gekozen %}
+          <th style="text-align: center;">
+            <a href="{% url 'afspraken:vaststellen' token=token optie_id=optie.pk %}">
+            {{ optie.datum|date:"l" }}<br>
+              {{ optie.datum|date:"j F" }}<br>
+              {{ optie.start|date:"H:i" }}
+              {% if optie.einde %} - {{ optie.einde|date:"H:i" }}{% endif %}<br>
+              {{ optie.get_ja_count }}</a>
+          </th>
+          {% else %}
+          <th style="text-align: center;">{{ optie.datum|date:"l" }}<br>
+            {{ optie.datum|date:"j F" }}<br>
+            {{ optie.start|date:"H:i" }}
+            {% if optie.einde %} - {{ optie.einde|date:"H:i" }}{% endif %}<br>
+            {{ optie.get_ja_count }}
+        </th>
+        {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in datarows %}
+        <tr>
+          {% for col in row %}
+		  {% if forloop.counter == 1 %}
+          <th>{{ col.deelnemer }}</th>
+          {% else %}
+		  {% if col %}
+          <td style="text-align: center;"><img src="{% static col.src %}" alt="{{ col.alt }}"></td>
+          {% else %}
+          <td>&nbsp;</td>
+          {% endif %}
+          {% endif %}
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+{% endblock %}

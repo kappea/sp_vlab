@@ -1,0 +1,23 @@
+{% load i18n %}{% autoescape off %}
+Geachte {{ afspraak.organisator.name }},
+
+De uitnodigingen om te helpen om een datum vast te stellen voor: {{ afspraak.naam }} zijn verzonden.
+
+{% if afspraak.intro %}{{ afspraak.intro|striptags }}
+{% endif %}
+{% if afspraak.locatie %}Locatie: {{ afspraak.locatie }}
+{% endif %}
+{% if deelnemer %}
+U kunt uw beschikbaarheid aanpassen door op deze link te klikken:
+
+{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}
+{% else %}
+Ga voor een overzicht van beschikbaarheid van de deelnemers naar:
+
+{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}
+{% endif %}
+
+Met vriendelijke groet,
+
+V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+{% endautoescape %}

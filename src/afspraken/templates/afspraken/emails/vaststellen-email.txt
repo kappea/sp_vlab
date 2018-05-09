@@ -1,0 +1,18 @@
+{% load i18n %}{% autoescape off %}
+Geachte {{ deelnemer.naam  }},
+
+{{ afspraak.organisator.name }} ({{ afspraak.organisator.email }}) heeft een datum vastgesteld voor: {{ afspraak.naam }}
+
+{% if afspraak.intro %}{{ afspraak.intro|striptags }}
+{% endif %}
+Vastgesteld: {{ afspraak.gekozen.datum|date:"l d F Y" }}, {{ afspraak.gekozen.start|date:"H:i" }}{% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
+{% if afspraak.locatie %}Locatie: {{ afspraak.locatie }}
+{% endif %}
+Ga voor een overzicht van beschikbaarheid van de deelnemers naar:
+
+{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}
+
+Met vriendelijke groet,
+
+V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+{% endautoescape %}

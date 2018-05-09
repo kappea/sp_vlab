@@ -1,0 +1,70 @@
+{% extends "mainscreen/base.html" %}
+
+{% block title %}{{ page.titel }} | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <span>{{ page.titel }}</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'afspraken:plannen' %}">Nieuwe afspraak plannen</a></li>
+      </ul>
+	</div>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="article">
+  {% if page.intro %}
+  <div class="intro">
+    <p>{{ page.intro|safe }}</p>
+  </div>
+  {% endif %}
+{{ page.content|safe }}
+{% if afspraken|length > 0 %}
+<h3>Overzicht datum prikkers:</h3>
+<div class="common results">
+  {% for afspr in afspraken %}
+  {% if afspr.token %}
+  <a href="{% url 'afspraken:overzicht' afspr.token %}" class="activity">
+    <strong>{{ afspr.afspraak }}</strong>,
+    {% if afspr.afspraak.gekozen %}
+    <i>vastgesteld op: {{ afspr.afspraak.gekozen.datum|date:"l d F Y" }},
+    {{ afspr.afspraak.gekozen.start|date:"H:i" }}
+    {% if afspr.afspraak.gekozen.einde %}
+    - {{ afspr.afspraak.gekozen.einde|date:"H:i" }}
+    {% endif %}
+    uur.</i>
+    {% else %}
+    <i>te plannen tussen {{ afspr.afspraak.vanaf.datum|date:"l d F Y" }}
+    en {{ afspr.afspraak.tot.datum|date:"l d F Y" }}</i>
+    {% endif %}
+  </a>
+  {% else %}
+  <p>{{ afspraak }}</p>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+</div>
+{% if perms.afspraken.change_pagecontent %}
+<div id="aside">
+  <div class="brick linkBlock">
+    <h2>Beheer</h2>
+    <ul class="common">
+      <li>
+	    <a href="{% url 'admin:afspraken_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

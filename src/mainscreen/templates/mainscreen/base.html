@@ -3,7 +3,7 @@
 <!--[if IE 7]><html xml:lang="nl-NL" lang="nl-NL" class="ie ie7"><![endif]-->
 <!--[if IE 8]><html xml:lang="nl-NL" lang="nl-NL" class="ie ie8"><![endif]-->
 <!--[if (lt IE 7)|(gt IE 8)|!(IE)]><!-->
-<html class="no-js" xml:lang="nl-NL" lang="nl-NL">
+<html class="no-js" xml:lang="nl-NL" lang="nl-NL" style="font-size:100%;">
 <!--<![endif]-->
 {% load staticfiles %}
 {% load thumbnail %}
@@ -28,20 +28,22 @@
   <link rel="icon" sizes="192x192" href="{% static 'mainscreen/touch-icon.png' %}"/>
   <link rel="apple-touch-icon" href="{% static 'mainscreen/apple-touch-icon.png' %}"/>
 
+  {% block prehead %}
+  {% endblock prehead %}
+
   <!-- Custom styles for this site -->
   {% block styles %}
   <!--[if (gt IE 8)|!(IE)]><!-->
-  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2017.11.4.min.css' %}" type="text/css" media="all"/>
+  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2018.3.2.min.css' %}" type="text/css" media="all"/>
   <!--<![endif]-->
-  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20171212.css' %}" type="text/css" media="all">
+  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20180502.css' %}" type="text/css" media="all">
   {% endblock styles %}
-
   <!-- Custom tags for the head tag -->
   {% block extrahead %}
   {% endblock extrahead %}
 </head>
 
-<body id="government" data-scriptpath="{% static 'mainscreen/behaviour' %}" data-scriptversion="2017.11.4" class="portalclass home"
+<body id="government" data-scriptpath="{% static 'mainscreen/behaviour' %}" data-scriptversion="2018.3.2" class="portalclass home"
 data-measure-statistics="false" data-statssiteid="0" data-hartbeattrackingtimer="0" data-cookieinfourl="cookies"
 data-showcookiebar="false" data-cookiebody=
 "{sitenaam} gebruikt cookies om het gebruik van de website te analyseren en het gebruiksgemak te verbeteren. Lees meer over"
@@ -61,9 +63,9 @@ data-cookieurltext="cookies">
       <a href="/" title="Naar de homepage van Ubrijk">
         <div class="logo">
           <div class="wrapper">
-            <img data-fallback="{% static 'mainscreen/binaries/svg/content/gallery/ubrijk/channel-afbeeldingen/logo/beeldmerk-rijksoverheid.svg' %}"
-		    src="{% static 'mainscreen/binaries/svg/content/gallery/ubrijk/channel-afbeeldingen/logo/logo-ubr.svg' %}"
-		    alt="Naar de homepage van Ubrijk" id="logotype"/>
+            <img data-fallback="{% static 'mainscreen/binaries/content/gallery/ubrijk/channel-afbeeldingen/logo/fallback-beeldmerk.svg' %}"
+            src="{% static 'mainscreen/binaries/content/gallery/ubrijk/channel-afbeeldingen/logo/logo-ubrijk.svg' %}"
+            alt="Naar de homepage van Ubrijk" id="logotype"/>
           </div>
         </div>
 	  </a>
@@ -146,9 +148,11 @@ data-cookieurltext="cookies">
     {% endblock footer %}
   </div>
   {% block scripts %}
-  <!--[if (gt IE 6)|!(IE)]><!-->
-  <script src="{% static 'mainscreen/behaviour/core-2017.11.4.min.js' %}"></script>
+  <!--[if (gt IE 10)|!(IE)]><!-->
+  <script src="{% static 'mainscreen/behaviour/core-2018.3.2.min.js' %}"></script>
   <!--<![endif]-->
   {% endblock scripts %}
+  {% block extrascripts %}
+  {% endblock extrascripts %}
 </body>
 </html>

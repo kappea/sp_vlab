@@ -1,24 +1,34 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 
 # Create your views here.
 
-from .models import Evenement
+from .models import PageContent, Evenement
 from .forms import EvenementForm
 
+
 def evenementen(request):
+    page = get_object_or_404(PageContent, naam='index')
+    if not page.published:
+        raise Http404()
     template_name = 'evenementen/evenementen.html'
     evenement_list = Evenement.objects.all()
-    context = {'evenement_list': evenement_list}
+    context = {
+        'page': page,
+        'evenement_list': evenement_list
+    }
     return render(request, template_name, context)
+
 
 def evenement_overzicht(request, slug):
     template_name = 'evenementen/evenement_overzicht.html'
     evenement = get_object_or_404(Evenement, slug=slug)
     context = {'evenement': evenement}
     return render(request, template_name, context)
+
 
 @permission_required('evenementen.change_evenement')
 def evenement_aanmeldingen(request, slug):
@@ -27,12 +37,14 @@ def evenement_aanmeldingen(request, slug):
     context = {'evenement': evenement}
     return render(request, template_name, context)
 
+
 @permission_required('evenementen.change_evenement')
 def evenement_evaluaties(request, slug):
     template_name = 'evenementen/evenement_evaluaties.html'
     evenement = get_object_or_404(Evenement, slug=slug)
     context = {'evenement': evenement}
     return render(request, template_name, context)
+
 
 @permission_required('evenementen.add_evenement')
 def evenement_voegtoe(request):
@@ -47,6 +59,7 @@ def evenement_voegtoe(request):
         form = EvenementForm()
     context = {'form': form}
     return render(request, template_name, context)
+
 
 @permission_required('evenementen.change_evenement')
 def evenement_wijzig(request, slug):

@@ -1,34 +1,27 @@
 from __future__ import unicode_literals
+
 import hashlib
 import random
 import sys
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
-from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseForbidden
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import static
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
+from django.db.models import Q
+from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
+from django.views import static
 
 from profiles.models import Profile
-
-from proposals.models import (
-    ProposalBase, ProposalSection, ProposalKind
-)
-from proposals.models import SupportingDocument, AdditionalSpeaker
+from proposals.forms import AddSpeakerForm, SupportingDocumentCreateForm
+from proposals.models import (AdditionalSpeaker, ProposalBase, ProposalKind,
+                              ProposalSection, SupportingDocument)
 from speakers.models import Speaker
-from utils.mail import send_email
-
-from proposals.forms import (
-    AddSpeakerForm, SupportingDocumentCreateForm
-)
 
 
 def get_form(name):
@@ -164,6 +157,7 @@ def proposal_speaker_manage(request, pk):
                 message_ctx["token"] = token
                 # fire off email letting user know about site and to create
                 # account and speaker profile
+                send_mail(subject, message, from_email, recipient_list, html_message=None)
                 send_email(request, 
                     [email_address], "speaker_invite",
                     context=message_ctx

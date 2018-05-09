@@ -1,0 +1,1 @@
+Vaststelling: {{ afspraak.naam }}

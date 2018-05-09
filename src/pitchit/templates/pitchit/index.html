@@ -1,0 +1,35 @@
+{% extends "mainscreen/base.html" %}
+
+{% block title %}{{ page.titel }} | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <span>{{ page.titel }}</span>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="article">
+  {% if page.intro %}
+  <div class="intro">
+    <p>{{ page.intro|safe }}</p>
+  </div>
+  {% endif %}
+{{ page.content|safe }}
+</div>
+{% if perms.pitchit.change_pagecontent %}
+<div id="aside">
+  <div class="brick linkBlock">
+    <h2>Beheer</h2>
+    <ul class="common">
+      <li>
+	      <a href="{% url 'admin:pitchit_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

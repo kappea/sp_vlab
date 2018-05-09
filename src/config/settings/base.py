@@ -13,7 +13,9 @@ Django project skeleton: http://django-edge.readthedocs.io/en/latest/
 Also: https://github.com/djstein/modern-django
 """
 
-import os, environ, django
+import os
+import environ
+import django
 from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(ROOT_DIR, ...)
@@ -33,7 +35,8 @@ if READ_DOT_ENV_FILE:
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='c5@mt%9mh(@uv^vgrcwdk4!k5q=l+ay1vhj#w&f-i7z)#$zt#y')
+SECRET_KEY = env('DJANGO_SECRET_KEY',
+                 default='c5@mt%9mh(@uv^vgrcwdk4!k5q=l+ay1vhj#w&f-i7z)#$zt#y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DJANGO_DEBUG', False)
@@ -59,6 +62,7 @@ THIRD_PARTY_APPS = (
 
 LOCAL_APPS = (
     'mainscreen',
+    'welkom',
     'evenementen',
     'survey',
     'profiles',
@@ -67,7 +71,11 @@ LOCAL_APPS = (
     'schedule',
     'proposals',
     'speakers',
-	'designsprints',
+    'designsprints',
+    'afspraken',
+    'elearning',
+    'pitchit',
+    'tools',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -119,8 +127,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 # Substitute postgres password if DATABASE_URL contains {password}
-os.environ['DATABASE_URL']=env('DATABASE_URL').format(
-    password=env('POSTGRES_PASSWORD',default=''))
+os.environ['DATABASE_URL'] = env('DATABASE_URL').format(
+    password=env('POSTGRES_PASSWORD', default=''))
 
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in

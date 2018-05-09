@@ -1,19 +1,51 @@
 from django.shortcuts import render
 
-# Create your views here.
+from afspraken.models import PageContent as AfsprakenContent
+from designsprints.models import PageContent as DesignsprintsContent
+from elearning.models import PageContent as ElearningContent
+from evenementen.models import PageContent as EvenementenContent
+from pitchit.models import PageContent as PitchitContent
+from tools.models import PageContent as ToolsContent
+from welkom.models import PageContent as WelkomContent
 
-from designsprints.models import PageContent
 
 def index(request):
     try:
-        page = PageContent.objects.get(naam='index')
-    except PageContent.DoesNotExist:
-        page = None
+        afsprakenContent = AfsprakenContent.objects.get(naam='dashboard')
+    except AfsprakenContent.DoesNotExist:
+        afsprakenContent = None
+    try:
+        designsprintsContent = DesignsprintsContent.objects.get(naam='index')
+    except DesignsprintsContent.DoesNotExist:
+        designsprintsContent = None
+    try:
+        elearningContent = ElearningContent.objects.get(naam='index')
+    except ElearningContent.DoesNotExist:
+        elearningContent = None
+    try:
+        evenementenContent = EvenementenContent.objects.get(naam='index')
+    except EvenementenContent.DoesNotExist:
+        evenementenContent = None
+    try:
+        pitchitContent = PitchitContent.objects.get(naam='index')
+    except PitchitContent.DoesNotExist:
+        pitchitContent = None
+    try:
+        toolsContent = ToolsContent.objects.get(naam='index')
+    except ToolsContent.DoesNotExist:
+        toolsContent = None
+    try:
+        welkomContent = WelkomContent.objects.get(naam='index')
+    except WelkomContent.DoesNotExist:
+        welkomContent = None
 
-    ctx = {
-        'page': page,
+    context = {
+        'afsprakenContent': afsprakenContent,
+        'designsprintsContent': designsprintsContent,
+        'elearningContent': elearningContent,
+        'evenementenContent': evenementenContent,
+        'pitchitContent': pitchitContent,
+        'toolsContent': toolsContent,
+        'welkomContent': welkomContent,
     }
-    return render(request, 'mainscreen/index.html', ctx)
-
-def welkom(request):
-    return render(request, 'mainscreen/welkom.html')
+    return render(request, 'mainscreen/index.html', context)

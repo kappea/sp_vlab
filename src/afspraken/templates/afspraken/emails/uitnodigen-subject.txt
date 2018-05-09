@@ -1,0 +1,1 @@
+Uitnodiging: {{ afspraak.naam }}

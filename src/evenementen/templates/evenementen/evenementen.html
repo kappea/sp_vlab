@@ -12,8 +12,12 @@
 
 {% block content %}
 <div id="content" class="article">
-  <p>Alle evenementen (trainingen, workshops en bijeenkomsten) van V-Lab worden hier gepresenteerd. <br>Als een evenement nog niet compleet vermeld staat kun je je wel al aanmelden. Hou deze lijst in de gaten, deze zal nog flink gaan groeien de komende tijd! Voor alle evenementen geldt: wijzigingen voorbehouden. Als je bent aangemeld houden we je per mail op de hoogte van eventuele wijzigingen bij het door jou gekozen evenement.</p>
-  <p><i>Aan deelname zijn geen kosten verbonden, maar na opgave verwachten we wel een afmelding bij eventuele afzegging.</i></p>
+	{% if page.intro %}
+	<div class="intro">
+		<p>{{ page.intro|safe }}</p>
+	</div>
+	{% endif %}
+	{{ page.content|safe }}
 	<div class="common results">
 	{% if evenement_list %}
 		{% for evenement in evenement_list|dictsort:"start_datum" %}
@@ -40,9 +44,16 @@
 	<div class="block">
 		<h2>Beheer</h2>
 		<ul class="common">
+			{% if perms.evenementen.add_evenement %}
 			<li>
 				<a href="{% url 'admin:evenementen_evenement_add' %}" class="common">Toevoegen evenement</a>
 			</li>
+			{% endif %}
+			{% if perms.evenementen.change_pagecontent %}
+			<li>
+				<a href="{% url 'admin:evenementen_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+			</li>
+			{% endif %}
 		</ul>
 	</div>
 </div>

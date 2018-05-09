@@ -1,12 +1,31 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
 import itertools
 
 # Create your models here.
 
 from survey.models import Survey
 from conference.models import Conference
+
+
+class PageContent(models.Model):
+    naam = models.SlugField(unique=True,
+                            help_text=('Voor de hoofdpagina moet dit "index" zijn'),)
+    published = models.BooleanField(default=True,
+                                    verbose_name=_("Published"),
+                                    help_text=('Aanvinken als pagina getoond moet worden'),)
+    titel = models.CharField(max_length=64)
+    intro = models.CharField(max_length=2000,
+                             blank=True,
+                             help_text=('Maximaal 2000 characters'),)
+    content = models.TextField(verbose_name=_("Content"),
+                               help_text=('De pagina inhoud'),)
+
+    def __str__(self):
+        return self.titel
+
 
 class Evenement(models.Model):
     naam = models.CharField(max_length=200)
@@ -20,12 +39,15 @@ class Evenement(models.Model):
     evaluatie_formulier = models.ForeignKey(Survey, blank=True, null=True,
                                             related_name="evaluatie_evenement")
     programma = models.ForeignKey(Conference, blank=True, null=True,
-                                            related_name="programma_evenement")
+                                  related_name="programma_evenement")
     slug = models.SlugField(unique=True)
+
     def __str__(self):
         return self.naam
+
     def get_absolute_url(self):
         return reverse('evenementen:evenement_overzicht', args=(self.slug,))
+
     def save(self, *args, **kwargs):
         if not self.pk:
             max_length = Evenement._meta.get_field('slug').max_length
@@ -34,4 +56,5 @@ class Evenement(models.Model):
                 if not Evenement.objects.filter(slug=self.slug).exists():
                     break
                 self.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
-        super(Evenement, self).save(*args, **kwargs) # Call the "real" save() method.
+        # Call the "real" save() method.
+        super(Evenement, self).save(*args, **kwargs)

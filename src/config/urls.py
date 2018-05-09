@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^users/', include(profiles.urls, namespace='profiles')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('mainscreen.urls', namespace="mainscreen")),
+    url(r"^welkom/", include("welkom.urls", namespace="welkom")),
     url(r'^', include('evenementen.urls', namespace="evenementen")),
     url(r'^survey/', include('survey.urls', namespace="survey")),
     url(r'^summernote/', include('django_summernote.urls')),
@@ -16,6 +17,10 @@ urlpatterns = [
     url(r"^schedule/", include("schedule.urls", namespace="schedule")),
     url(r"^speaker/", include("speakers.urls", namespace="speakers")),
     url(r"^design-sprints/", include("designsprints.urls", namespace="designsprints")),
+    url(r'^afspraak/', include('afspraken.urls', namespace="afspraken")),
+    url(r"^e-learning/", include("elearning.urls", namespace="elearning")),
+    url(r"^pitch-je-idee/", include("pitchit.urls", namespace="pitchit")),
+    url(r"^tools/", include("tools.urls", namespace="tools")),
 ]
 
 # User-uploaded files like profile pics need to be served in development

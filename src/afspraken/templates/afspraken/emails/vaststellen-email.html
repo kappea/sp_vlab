@@ -1,0 +1,37 @@
+<html>
+    <head>
+
+    </head>
+<body>
+    <p>Geachte {{ deelnemer.naam  }},</p>
+    <p>{{ afspraak.organisator.name }} ({{ afspraak.organisator.email }}) heeft een datum vastgesteld voor: {{ afspraak.naam }}</p>
+    {% if afspraak.intro %}
+    <div class="intro">
+        <p>{{ afspraak.intro|safe }}</p>
+    </div>
+    {% endif %}
+    <dl>
+        <dt>Vastgesteld:</dt>
+        <dd>
+        <time itemprop="startDate">{{ afspraak.gekozen.datum|date:"l d F Y" }},
+        {{ afspraak.gekozen.start|date:"H:i" }}
+        {% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
+        </time>
+        </dd>
+        {% if afspraak.locatie %}
+        <dt>Locatie:</dt>
+        <dd itemprop="location">{{ afspraak.locatie }}</dd>
+        {% endif %}
+    </dl>
+    <p>Ga voor een overzicht van beschikbaarheid van de deelnemers naar:
+        <br />
+        <br />
+        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}">Overzicht beschikbaarheid</a>
+        <br />
+    </p>
+    <p>Met vriendelijke groet,
+        <br />
+        <br />
+        V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+    </p>
+</body>

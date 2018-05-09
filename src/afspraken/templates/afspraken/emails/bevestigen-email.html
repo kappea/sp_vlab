@@ -1,0 +1,40 @@
+<html>
+    <head>
+
+    </head>
+<body>
+    <p>Geachte {{ afspraak.organisator.name }},</p>
+    <p>De uitnodigingen om te helpen om een datum vast te stellen voor: {{ afspraak.naam }} zijn verzonden.</p>
+    {% if afspraak.intro %}
+    <div class="intro">
+        <p>{{ afspraak.intro|safe }}</p>
+    </div>
+    {% endif %}
+    {% if afspraak.locatie %}
+    <dl>
+        <dt>Locatie:</dt>
+        <dd itemprop="location">{{ afspraak.locatie }}</dd>
+    </dl>
+    {% endif %}
+    {% if deelnemer %}
+    <p>U kunt uw beschikbaarheid aanpassen door op deze link te klikken:
+        <br />
+        <br />
+        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}">Aanpassen beschikbaarheid</a>
+        <br />
+    </p>
+    {% else %}
+    <p>Ga voor een overzicht van beschikbaarheid van de deelnemers naar:
+        <br />
+        <br />
+        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}">Overzicht beschikbaarheid</a>
+        <br />
+    </p>
+    {% endif %}
+    <br />
+    <p>Met vriendelijke groet,
+        <br />
+        <br />
+        V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+    </p>
+</body>

@@ -1,0 +1,17 @@
+{% load i18n %}{% autoescape off %}
+Geachte {{ afspraak.organisator.name }},
+
+{{ deelnemer.naam  }} ({{ deelnemer.invite_email }}) heeft beschikbaarheid aangepast voor: {{ afspraak.naam }}
+
+{% if afspraak.intro %}{{ afspraak.intro|striptags }}
+{% endif %}
+{% if afspraak.locatie %}Locatie: {{ afspraak.locatie }}
+{% endif %}
+Ga voor een overzicht van beschikbaarheid van de deelnemers naar:
+
+{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}
+
+Met vriendelijke groet,
+
+V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+{% endautoescape %}
