@@ -348,7 +348,7 @@ def beschikbaarheid(request, token):
                 request,
                 mail_ctx,
                 'notificeren',
-                request.user.email
+                afspraak.organisator.email
             )
             messages.success(request, "Beschikbaarheid vastgelegd.")
             return redirect("afspraken:overzicht", token)
