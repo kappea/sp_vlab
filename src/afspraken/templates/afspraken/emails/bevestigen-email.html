@@ -1,40 +1,54 @@
-<html>
-    <head>
+{% extends "afspraken/emails/base.html" %}
 
-    </head>
-<body>
-    <p>Geachte {{ afspraak.organisator.name }},</p>
-    <p>De uitnodigingen om te helpen om een datum vast te stellen voor: {{ afspraak.naam }} zijn verzonden.</p>
-    {% if afspraak.intro %}
-    <div class="intro">
-        <p>{{ afspraak.intro|safe }}</p>
-    </div>
-    {% endif %}
-    {% if afspraak.locatie %}
-    <dl>
-        <dt>Locatie:</dt>
-        <dd itemprop="location">{{ afspraak.locatie }}</dd>
-    </dl>
-    {% endif %}
-    {% if deelnemer %}
-    <p>U kunt uw beschikbaarheid aanpassen door op deze link te klikken:
-        <br />
-        <br />
-        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}">Aanpassen beschikbaarheid</a>
-        <br />
-    </p>
-    {% else %}
-    <p>Ga voor een overzicht van beschikbaarheid van de deelnemers naar:
-        <br />
-        <br />
-        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}">Overzicht beschikbaarheid</a>
-        <br />
-    </p>
-    {% endif %}
+{% block content %}
+<h4>Geachte {{ afspraak.organisator.name }},</h4>
+<p>De uitnodigingen om te helpen om een datum vast te stellen voor:
+    <b>{{ afspraak.naam }}</b> zijn verzonden.</p>
+{% if afspraak.intro %}
+<div>
+    <p>{{ afspraak.intro|safe }}</p>
+</div>
+{% endif %}
+<br/>
+{% if afspraak.locatie %}
+<table>
+    <tbody>
+        <tr>
+            <td>Locatie:</td>
+            <td>{{ afspraak.locatie }}</td>
+        </tr>
+    </tbody>
+</table>
+<br/>
+{% endif %}
+{% if deelnemer %}
+<p>U kunt uw beschikbaarheid aangeven door op deze link te klikken:</p>
+<table>
+    <tbody>
+        <tr style="box-sizing: border-box; font-size: 14px; margin: 0;">
+            <td style="box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+                <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}" style="box-sizing: border-box; font-size: 14px; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 2px; background-color: #337ab7; color: #fff; border: 2px solid #337ab7; margin: 0; padding: 6px 12px;">Aangeven beschikbaarheid</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% else %}
+<p>Ga voor een overzicht van beschikbaarheid van de deelnemers naar:</p>
+<table>
+    <tbody>
+        <tr style="box-sizing: border-box; font-size: 14px; margin: 0;">
+            <td style="box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+                <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:overzicht' token=token %}" style="box-sizing: border-box; font-size: 14px; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 2px; background-color: #337ab7; color: #fff; border: 2px solid #337ab7; margin: 0; padding: 6px 12px;">Overzicht beschikbaarheid</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+{% endblock content %}
+
+{% block greeting %}
+<p>Met vriendelijke groet,
     <br />
-    <p>Met vriendelijke groet,
-        <br />
-        <br />
-        V-Lab afspraak planner namens {{ afspraak.organisator.name }}
-    </p>
-</body>
+    <br />V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+</p>
+{% endblock greeting %}

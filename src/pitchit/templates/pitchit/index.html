@@ -1,4 +1,7 @@
 {% extends "mainscreen/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load survey_extras %}
 
 {% block title %}{{ page.titel }} | UBR|V-Lab{% endblock %}
 
@@ -10,6 +13,17 @@
 </nav>
 {% endblock %}
 
+{% block subnavigation %}
+{% if survey and perms.pitchit.change_pagecontent %}
+<div class="subNavigation">
+  <div class="wrapper">
+    <ul>
+      <li><a href="{% url 'pitchit:formulieren' %}">Toon ingevulde formulieren</a></li>
+    </ul>
+	</div>
+</div>
+{% endif %}
+{% endblock %}
 
 {% block content %}
 <div id="content" class="article">
@@ -18,7 +32,42 @@
     <p>{{ page.intro|safe }}</p>
   </div>
   {% endif %}
-{{ page.content|safe }}
+  {{ page.content|safe }}
+  {% if survey %}
+  <div class="container" id="wrap">
+    <div class="well" id="container-main">
+      <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+          <form action="{% url 'pitchit:index' %}" method="post" id="survey_form" autocomplete="off">
+            {% if response_form.non_field_errors %}
+            <div class="message error">
+              <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier
+                opnieuw.</p>{{ response_form.non_field_errors }}</div>
+            {% endif %} {% csrf_token %}
+            <div class="formWrapper eform">
+              <div id="page0" class="eforms-page">
+                <div class="eformText">
+                  <h2 class="req">{{ survey.name }}</h2>
+                  <p class="meta req">* verplichte velden</p>
+                </div>
+                {% for category in categories %}
+                <h3>{{category}}</h3>
+                {% if category.description %}
+                <p>{{category.description}}</p>
+                {% endif %} {% include "survey/question.html" %} {% empty %}
+                <h3>{% trans "Vul onderstaande gegevens in" %}</h3>
+                {% include "survey/question.html" %} {% endfor %}
+              </div>
+              <div class="eforms-buttons">
+                <input type="submit" id="confirm-button" name="confirm" class="" value="Ga verder" />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% if perms.pitchit.change_pagecontent %}
 <div id="aside">
@@ -26,7 +75,7 @@
     <h2>Beheer</h2>
     <ul class="common">
       <li>
-	      <a href="{% url 'admin:pitchit_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+        <a href="{% url 'admin:pitchit_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
       </li>
     </ul>
   </div>

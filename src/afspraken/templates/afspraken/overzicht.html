@@ -44,7 +44,9 @@
       <time itemprop="startDate">{{ afspraak.gekozen.datum|date:"l d F Y" }},
       {{ afspraak.gekozen.start|date:"H:i" }}
       {% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
-	  </time>
+    </time>
+    <br />
+    <a href="{% url 'afspraken:ical' token=token %}">ical</a>
     </dd>
     {% endif %}
     {% if afspraak.locatie %}

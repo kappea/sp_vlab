@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import logging
 import uuid
 from builtins import int, object, super
@@ -8,10 +9,12 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.forms import models
 from django.utils.text import slugify
+
 from .models import Answer, Question, Response
 from .signals import survey_completed
 
 LOGGER = logging.getLogger(__name__)
+
 
 class ResponseForm(models.ModelForm):
 
@@ -21,6 +24,25 @@ class ResponseForm(models.ModelForm):
         Question.RADIO: forms.RadioSelect,
         Question.SELECT: forms.Select,
         Question.SELECT_MULTIPLE: forms.CheckboxSelectMultiple,
+        Question.DATE: forms.DateInput(
+            attrs={
+                'class': 'date',
+                'size': 20,
+                'placeholder': 'DD-MM-JJJJ',
+                'data-format': 'DD-MM-JJJJ',
+                'data-nextmonth': 'Maand later',
+                'data-nextyear': 'Jaar later',
+                'data-prevmonth': 'Maand eerder',
+                'data-prevyear': 'Jaar eerder',
+                'data-close': 'Sluiten',
+                'data-button': 'Datum kiezen',
+                'data-tablecaption': 'Kies uit kalender',
+                'data-months': 'Januari, Februari, Maart, April, Mei, Juni, Juli, Augustus, September, Oktober, November, December',
+                'data-monthsshort': 'Jan, Feb, Maa, Apr, Mei, Jun, Jul, Aug, Sep, Okt, Nov, Dec',
+                'data-days': 'Zondag, Maandag, Dinsdag, Woensdag, Donderdag, Vrijdag, Zaterdag',
+                'data-daysshort': 'Zon, Maa, Din, Woe, Don, Vrij, Zat',
+                'data-daysmin': 'ZO, MA, DI, WO, DO, VR, ZA',
+            }),
     }
 
     class Meta(object):
@@ -53,6 +75,8 @@ class ResponseForm(models.ModelForm):
 
         The user must be logged.
         :rtype: Response or None"""
+        if not self.user:
+            return None
         if not self.user.is_authenticated():
             return None
         try:
@@ -101,6 +125,9 @@ class ResponseForm(models.ModelForm):
                 else:
                     # Only one element
                     initial.append(slugify(answer.body))
+            elif question.type == Question.DATE:
+                initial = datetime.datetime.strptime(
+                    answer.body, '%Y-%m-%d').strftime('%d-%m-%Y')
             else:
                 initial = answer.body
         if data:
@@ -137,7 +164,7 @@ class ResponseForm(models.ModelForm):
         :rtype: List of String or None """
         qchoices = None
         if question.type not in [Question.TEXT, Question.SHORT_TEXT,
-                                 Question.INTEGER]:
+                                 Question.INTEGER, Question.DATE]:
             qchoices = question.get_choices()
             # add an empty option at the top so that the user has to explicitly
             # select one of the options
@@ -156,13 +183,14 @@ class ResponseForm(models.ModelForm):
             Question.TEXT: forms.CharField,
             Question.SHORT_TEXT: forms.CharField,
             Question.SELECT_MULTIPLE: forms.MultipleChoiceField,
-            Question.INTEGER: forms.IntegerField
+            Question.INTEGER: forms.IntegerField,
+            Question.DATE: forms.DateField,
         }
         # logging.debug("Args passed to field %s", kwargs)
         try:
             return FIELDS[question.type](**kwargs)
         except KeyError:
-            #return forms.TypedChoiceField(**kwargs)
+            # return forms.TypedChoiceField(**kwargs)
             return forms.ChoiceField(**kwargs)
 
     def add_question(self, question, data):
@@ -187,7 +215,7 @@ class ResponseForm(models.ModelForm):
         field = self.get_question_field(question, **kwargs)
         if question.category:
             field.widget.attrs["category"] = question.category.name
-        #else:
+        # else:
         #    field.widget.attrs["category"] = ""
         # logging.debug("Field for %s : %s", question, field.__dict__)
         self.fields['question_%d' % question.pk] = field
@@ -218,7 +246,7 @@ class ResponseForm(models.ModelForm):
             response = super(ResponseForm, self).save(commit=False)
         response.survey = self.survey
         response.interview_uuid = self.uuid
-        if self.user.is_authenticated():
+        if self.user and self.user.is_authenticated():
             response.user = self.user
         response.save()
         # response "raw" data as dict (for signal)

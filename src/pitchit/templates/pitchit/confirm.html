@@ -1,0 +1,24 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{{ page.titel }} | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'pitchit:index' %}">{{ page.titel }}</a>
+    <span>Bevestiging</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <h1>{% trans "Formulier verzonden"%}</h1>
+    <p>
+        <div class="alert alert-success">
+            {% trans "Bedankt voor uw reactie!" %}
+        </div>
+    </p>
+</div>
+{% endblock %}

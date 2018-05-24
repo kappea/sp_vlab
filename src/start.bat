@@ -18,5 +18,9 @@ python manage.py migrate
 echo "If not available, set admin account"
 python initadmin.py
 
+echo "python -m smtpd -n -c DebuggingServer localhost:1025"
+set "DJANGO_EMAIL_HOST=localhost"
+set "DJANGO_EMAIL_PORT=1025"
+
 echo "Starting server"
 python manage.py runserver 0.0.0.0:8000

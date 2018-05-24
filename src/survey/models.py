@@ -89,6 +89,7 @@ class Question(models.Model):
     SELECT = 'select'
     SELECT_MULTIPLE = 'select-multiple'
     INTEGER = 'integer'
+    DATE = 'date'
 
     QUESTION_TYPES = (
         (TEXT, _(u'text (multiple line)')),
@@ -97,6 +98,7 @@ class Question(models.Model):
         (SELECT, _(u'select')),
         (SELECT_MULTIPLE, _(u'Select Multiple')),
         (INTEGER, _(u'integer')),
+        (DATE, _(u'date')),
     )
 
     text = models.TextField()

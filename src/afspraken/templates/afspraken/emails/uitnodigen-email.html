@@ -1,31 +1,43 @@
-<html>
-    <head>
+{% extends "afspraken/emails/base.html" %}
 
-    </head>
-<body>
-    <p>Geachte {{ deelnemer.naam  }},</p>
-    <p>{{ afspraak.organisator.name }} ({{ afspraak.organisator.email }}) nodigt u uit om
-        te helpen om een datum vast te stellen voor: {{ afspraak.naam }}</p>
-    {% if afspraak.intro %}
-    <div class="intro">
-        <p>{{ afspraak.intro|safe }}</p>
-    </div>
-    {% endif %}
-    {% if afspraak.locatie %}
-    <dl>
-        <dt>Locatie:</dt>
-        <dd itemprop="location">{{ afspraak.locatie }}</dd>
-    </dl>
-    {% endif %}
-    <p>Geef uw beschikbaarheid aan door op deze link te klikken:
-        <br />
-        <br />
-        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}">Aanpassen beschikbaarheid</a>
-        <br />
-    </p>
-    <p>Met vriendelijke groet,
-        <br />
-        <br />
-        V-Lab afspraak planner namens {{ afspraak.organisator.name }}
-    </p>
-</body>
+{% block content %}
+<h4>Geachte {{ deelnemer.naam  }},</h4>
+<p>{{ afspraak.organisator.name }}
+    (<a href="mailto:{{ afspraak.organisator.email }}">{{ afspraak.organisator.email }}</a>)
+    nodigt u uit om te helpen om een datum vast te stellen voor:
+    <b>{{ afspraak.naam }}</b>.</p>
+{% if afspraak.intro %}
+<div>
+    <p>{{ afspraak.intro|safe }}</p>
+</div>
+{% endif %}
+<br/>
+{% if afspraak.locatie %}
+<table>
+    <tbody>
+        <tr>
+            <td>Locatie:</td>
+            <td>{{ afspraak.locatie }}</td>
+        </tr>
+    </tbody>
+</table>
+<br/>
+{% endif %}
+<p>Geef uw beschikbaarheid aan door op deze link te klikken:</p>
+<table>
+    <tbody>
+        <tr style="box-sizing: border-box; font-size: 14px; margin: 0;">
+            <td style="box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+                <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}" style="box-sizing: border-box; font-size: 14px; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 2px; background-color: #337ab7; color: #fff; border: 2px solid #337ab7; margin: 0; padding: 6px 12px;">Aangeven beschikbaarheid</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock content %}
+
+{% block greeting %}
+<p>Met vriendelijke groet,
+    <br />
+    <br />V-Lab afspraak planner namens {{ afspraak.organisator.name }}
+</p>
+{% endblock greeting %}

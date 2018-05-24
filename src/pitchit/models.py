@@ -1,7 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from survey.models import Survey
+
 # Create your models here.
+
 
 class PageContent(models.Model):
     naam = models.SlugField(unique=True,
@@ -15,6 +18,8 @@ class PageContent(models.Model):
                              help_text=('Maximaal 2000 characters'),)
     content = models.TextField(verbose_name=_("Content"),
                                help_text=('De pagina inhoud'),)
+    formulier = models.ForeignKey(Survey, blank=True, null=True,
+                                  related_name="pitchit_formulier")
 
     def __str__(self):
         return self.titel
