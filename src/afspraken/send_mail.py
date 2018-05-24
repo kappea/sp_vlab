@@ -1,8 +1,10 @@
-from email.mime.image import MIMEImage
+import smtplib
+from email.headerregistry import Address
+from email.message import EmailMessage
 from pathlib import Path
 
+from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
@@ -32,6 +34,8 @@ def send_mail(request, mail_ctx, kind, recipient):
         'afspraken/emails/{}-subject.txt'.format(kind),
         ctx
     ).strip()
+    # Email subject *must not* contain newlines
+    subject = ''.join(subject.splitlines())
     message = render_to_string(
         'afspraken/emails/{}-email.txt'.format(kind),
         ctx
@@ -40,42 +44,43 @@ def send_mail(request, mail_ctx, kind, recipient):
         'afspraken/emails/{}-email.html'.format(kind),
         ctx
     )
-    from_email = 'noreply@v-lab.ubrijk.nl'
+    naam = None
     try:
         naam = mail_ctx['afspraak'].organisator.name
-        if naam:
-            from_email = '{} <{}>'.format(naam, from_email)
     except:
         pass
-    recipient_list = [recipient]
-    reply_to_list = None
+    reply_to = None
     try:
-        reply_to_list = [mail_ctx['afspraak'].organisator.email]
+        reply_to = mail_ctx['afspraak'].organisator.email
     except:
         pass
-    email = EmailMultiAlternatives(
-        subject,
-        message,
-        from_email,
-        recipient_list,
-        reply_to=reply_to_list,
-    )
-    email.attach_alternative(html_message, 'text/html')
-    # set primary content to be text/html
-    email.content_subtype = 'html'
-    # it is important part that ensures embedding of image
-    email.mixed_subtype = 'related'
-    with open(header_path, mode='rb') as f:
-        image = MIMEImage(f.read())
-        email.attach(image)
-        image.add_header('Content-ID', f'<{header_name}>')
-    with open(image002_path, mode='rb') as f:
-        image = MIMEImage(f.read())
-        email.attach(image)
-        image.add_header('Content-ID', f'<{image002_name}>')
-    with open(footer_path, mode='rb') as f:
-        image = MIMEImage(f.read())
-        email.attach(image)
-        image.add_header('Content-ID', f'<{footer_name}>')
 
-    return email.send()
+    # https://stackoverflow.com/questions/3902455/mail-multipart-alternative-vs-multipart-mixed
+    # https://docs.python.org/3.6/library/email.examples.html
+    # Create the base text message.
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = Address(
+        display_name=naam, addr_spec='noreply@v-lab.ubrijk.nl')
+    msg['To'] = (Address(addr_spec=recipient),)
+    msg['Reply-to'] = (Address(addr_spec=reply_to),)
+    msg.set_content(message)
+    # Add the html version.  This converts the message into a multipart/alternative
+    # container, with the original text message as the first part and the new html
+    # message as the second part.
+    msg.add_alternative(html_message, subtype='html')
+
+    # Now add the related images to the html part.
+    html_part = msg.get_payload()[1]
+    with open(header_path, 'rb') as img:
+        html_part.add_related(img.read(), 'image', 'png', cid=header_name)
+    with open(image002_path, 'rb') as img:
+        html_part.add_related(img.read(), 'image', 'png', cid=image002_name)
+    with open(footer_path, 'rb') as img:
+        html_part.add_related(img.read(), 'image', 'png', cid=footer_name)
+
+    # Send the message via SMTP server.
+    with smtplib.SMTP(host=settings.EMAIL_HOST, port=settings.EMAIL_PORT) as s:
+        s.send_message(msg)
+
+    return
