@@ -2,17 +2,15 @@ import datetime
 import hashlib
 from operator import attrgetter
 
-import icalendar
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
-from django.utils.html import strip_tags
 
 from .forms import (AfspraakForm, AfspraakOptieFormset, BeschikbaarForm,
                     DeelnemerFormset)
+from .generate_ical import gen_ical
 from .models import (Afspraak, AfspraakDeelnemer, AfspraakOptie, Beschikbaar,
                      Deelnemer, PageContent)
 from .send_mail import send_mail
@@ -325,6 +323,7 @@ def overzicht(request, token):
     }
     return render(request, template_name, context)
 
+
 def ical(request, token):
     afspraak = None
     organisator = None
@@ -339,32 +338,10 @@ def ical(request, token):
         organisator = afspraak.organisator
     if afspraak.gekozen() == None:
         raise Http404()
-    afspraakDeelnemers = AfspraakDeelnemer.objects.filter(afspraak=afspraak)
-    cal = icalendar.Calendar()
-    cal.add('prodid', '-// V-Lab afspraak planner //')
-    cal.add('version', '2.0')
-    event = icalendar.Event()
-    event.add('uid', token)
-    event.add('dtstamp', timezone.localtime())
-    event.add('dtstart', datetime.datetime.combine(afspraak.gekozen().datum, afspraak.gekozen().start, tzinfo=timezone.get_current_timezone()))
-    if afspraak.gekozen().einde:
-        event.add('dtend', datetime.datetime.combine(afspraak.gekozen().datum, afspraak.gekozen().einde, tzinfo=timezone.get_current_timezone()))
-    organizer = icalendar.vCalAddress('MAILTO:{}'.format(organisator.email))
-    organizer.params['cn'] = icalendar.vText(organisator.name)
-    event.add('organizer', organizer)
-    for deelnemer in afspraakDeelnemers:
-        attendee = icalendar.vCalAddress('MAILTO:{}'.format(deelnemer.deelnemer.invite_email))
-        attendee.params['cn'] = icalendar.vText(deelnemer.deelnemer.naam)
-        event.add('attendee', attendee)
-    event.add('summary', afspraak.naam)
-    if afspraak.intro:
-        event.add('description', strip_tags(afspraak.intro))
-    if afspraak.locatie:
-        event.add('location', icalendar.vText(afspraak.locatie))
-    cal.add_component(event)
-    response = HttpResponse(cal.to_ical())
+    response = HttpResponse(gen_ical(afspraak, token))
     response['Content-Type'] = 'text/calendar'
     return response
+
 
 def beschikbaarheid(request, token):
     mijnDeelneming = get_object_or_404(AfspraakDeelnemer, token=token)

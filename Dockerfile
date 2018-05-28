@@ -3,7 +3,7 @@
 #
 FROM python:3.6.4-alpine3.7
 
-MAINTAINER Albert Kappe <albert.kappe@rijksoverheid.nl>
+LABEL maintainer="Albert Kappe <albert.kappe@rijksoverheid.nl>"
 
 RUN apk update && apk add bash build-base logrotate postgresql-dev libffi-dev jpeg-dev openjpeg-dev libpng-dev zlib-dev nginx
 

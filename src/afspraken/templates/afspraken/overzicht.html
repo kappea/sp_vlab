@@ -46,7 +46,16 @@
       {% if afspraak.gekozen.einde %} - {{ afspraak.gekozen.einde|date:"H:i" }}{% endif %} uur.
     </time>
     <br />
-    <a href="{% url 'afspraken:ical' token=token %}">ical</a>
+    <a href="{% url 'afspraken:ical' token=token %}">
+      <table>
+        <tbody>
+          <tr>
+            <td><img src="{% static 'site/images/2001-kalender.svg' %}" alt="iCalendar" /></td>
+            <td>Download iCalendar bestand voor opname in agenda</td>
+          </tr>
+        </tbody>
+      </table>
+      </a>
     </dd>
     {% endif %}
     {% if afspraak.locatie %}
