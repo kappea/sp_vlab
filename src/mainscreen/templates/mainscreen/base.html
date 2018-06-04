@@ -14,40 +14,39 @@
   <meta name="robots" content="noydir, noodp" />
   <title>{% block title %}UBR|V-Lab | UBR | UBRijk{% endblock %}</title>
   <meta name="DCTERMS.language" title="XSD.language" content="nl-NL" />
-  <meta name="DCTERMS.creator" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties"/>
-  <meta name="DCTERMS.available" title="DCTERMS.Period" content="start=2017-03-06;"/>
-  <meta name="DCTERMS.modified" title="XSD.dateTime" content="2017-06-22T10:31"/>
-  <meta name="DCTERMS.issued" title="XSD.dateTime" content="2017-03-06T13:50"/>
-  <meta name="DCTERMS.spatial" title="OVERHEID.Koninkrijksdeel" content="Nederland"/>
-  <meta name="DCTERMS.publisher" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties"/>
-  <meta name="DCTERMS.rights" content="CC0 1.0 Universal"/>
-  <meta name="DCTERMS.rightsHolder" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties"/>
-  <meta name="DCTERMS.type" title="RIJKSOVERHEID.Informatietype" content="webpagina"/>
-  <meta name="referrer" content="origin"/>
-  <link rel="shortcut icon" href="{% static 'mainscreen/favicon.ico' %}" type="image/x-icon"/>
-  <link rel="icon" sizes="192x192" href="{% static 'mainscreen/touch-icon.png' %}"/>
-  <link rel="apple-touch-icon" href="{% static 'mainscreen/apple-touch-icon.png' %}"/>
-
+  <meta name="DCTERMS.creator" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties" />
+  <meta name="DCTERMS.available" title="DCTERMS.Period" content="start=2017-03-06;" />
+  <meta name="DCTERMS.modified" title="XSD.dateTime" content="2017-06-22T10:31" />
+  <meta name="DCTERMS.issued" title="XSD.dateTime" content="2017-03-06T13:50" />
+  <meta name="DCTERMS.spatial" title="OVERHEID.Koninkrijksdeel" content="Nederland" />
+  <meta name="DCTERMS.publisher" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties" />
+  <meta name="DCTERMS.rights" content="CC0 1.0 Universal" />
+  <meta name="DCTERMS.rightsHolder" title="RIJKSOVERHEID.Organisatie" content="Ministerie van Binnenlandse Zaken en Koninkrijksrelaties" />
+  <meta name="DCTERMS.type" title="RIJKSOVERHEID.Informatietype" content="webpagina" />
+  <meta name="referrer" content="origin" />
+  <link rel="shortcut icon" href="{% static 'mainscreen/favicon.ico' %}" type="image/x-icon" />
+  <link rel="icon" sizes="192x192" href="{% static 'mainscreen/touch-icon.png' %}" />
+  <link rel="apple-touch-icon" href="{% static 'mainscreen/apple-touch-icon.png' %}" />
+  
   {% block prehead %}
   {% endblock prehead %}
 
   <!-- Custom styles for this site -->
   {% block styles %}
   <!--[if (gt IE 8)|!(IE)]><!-->
-  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2018.3.2.min.css' %}" type="text/css" media="all"/>
+  <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2018.4.2.min.css' %}" type="text/css" media="all" />
   <!--<![endif]-->
-  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20180502.css' %}" type="text/css" media="all">
+  <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20180525.css' %}" type="text/css" media="all">
   {% endblock styles %}
   <!-- Custom tags for the head tag -->
   {% block extrahead %}
   {% endblock extrahead %}
 </head>
 
-<body id="government" data-scriptpath="{% static 'mainscreen/behaviour' %}" data-scriptversion="2018.3.2" class="portalclass home"
-data-measure-statistics="false" data-statssiteid="0" data-hartbeattrackingtimer="0" data-cookieinfourl="cookies"
-data-showcookiebar="false" data-cookiebody=
-"{sitenaam} gebruikt cookies om het gebruik van de website te analyseren en het gebruiksgemak te verbeteren. Lees meer over"
-data-cookieurltext="cookies">
+<body id="government" data-scriptpath="{% static 'mainscreen/behaviour' %}" data-scriptversion="2018.4.2" class="portalclass home"
+  data-measure-statistics="false" data-statssiteid="0" data-hartbeattrackingtimer="0" data-cookieinfourl="cookies" data-showcookiebar="false"
+  data-cookiebody="{sitenaam} gebruikt cookies om het gebruik van de website te analyseren en het gebruiksgemak te verbeteren. Lees meer over"
+  data-cookieurltext="cookies">
   <div class="site message login">
     <p>
       {% if not user.is_authenticated %}
@@ -64,20 +63,20 @@ data-cookieurltext="cookies">
         <div class="logo">
           <div class="wrapper">
             <img data-fallback="{% static 'mainscreen/binaries/content/gallery/ubrijk/channel-afbeeldingen/logo/fallback-beeldmerk.svg' %}"
-            src="{% static 'mainscreen/binaries/content/gallery/ubrijk/channel-afbeeldingen/logo/logo-ubrijk.svg' %}"
-            alt="Naar de homepage van Ubrijk" id="logotype"/>
+              src="{% static 'mainscreen/binaries/content/gallery/ubrijk/channel-afbeeldingen/logo/logo-ubrijk.svg' %}" alt="Naar de homepage van Ubrijk"
+              id="logotype" />
           </div>
         </div>
-	  </a>
-	  <!--[if lt IE 9]><p><strong>UBRijk omarmt moderne standaarden en technieken.<br>
+      </a>
+      <!--[if lt IE 9]><p><strong>UBRijk omarmt moderne standaarden en technieken.<br>
 	  Uw webbrowser ondersteunt deze standaarden niet. Stap daarom over op een recente browser.</strong></p><![endif]-->
       <div class="skiplinks">
         <p>
-		  <span class="assistive">Ga direct naar</span>
-		  <a href="#content">inhoud</a>
-		  <span class="assistive">of</span>
-		  <a href="#navigation" id="skip-to-menu">menu</a>
-		</p>
+          <span class="assistive">Ga direct naar</span>
+          <a href="#content">inhoud</a>
+          <span class="assistive">of</span>
+          <a href="#navigation" id="skip-to-menu">menu</a>
+        </p>
       </div>
     </div>
     <div id="navBar">
@@ -89,8 +88,9 @@ data-cookieurltext="cookies">
     </div>
     {% block messages %}
     {% if messages %}
-	{% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">  <!-- singular -->
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      <!-- singular -->
       <a class="close" data-dismiss="alert">×</a>
       {{ message|safe }}
     </div>
@@ -103,7 +103,7 @@ data-cookieurltext="cookies">
     {% block footer %}
     <div id="footer">
       <div class="wrapper">
-	    <div class="payoff">
+        <div class="payoff">
           <span>UBR. Voor een ambitieuze overheid.</span>
         </div>
         <div class="column">
@@ -149,7 +149,7 @@ data-cookieurltext="cookies">
   </div>
   {% block scripts %}
   <!--[if (gt IE 10)|!(IE)]><!-->
-  <script src="{% static 'mainscreen/behaviour/core-2018.3.2.min.js' %}"></script>
+  <script src="{% static 'mainscreen/behaviour/core-2018.4.2.min.js' %}"></script>
   <!--<![endif]-->
   {% endblock scripts %}
   {% block extrascripts %}

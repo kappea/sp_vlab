@@ -1,13 +1,17 @@
 from __future__ import unicode_literals
-from django.core.urlresolvers import reverse_lazy
-from django.views import generic
-from django.contrib.auth import get_user_model
-from django.contrib import auth
-from django.contrib import messages
+
 from authtools import views as authviews
 from braces import views as bracesviews
 from django.conf import settings
+from django.contrib import auth, messages
+from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse_lazy
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+from django.views import generic
+
 from . import forms
+from .models import PageContent
 
 User = get_user_model()
 
@@ -47,6 +51,19 @@ class SignUpView(bracesviews.AnonymousRequiredMixin,
         user = auth.authenticate(email=username, password=password)
         auth.login(self.request, user)
         return r
+
+
+class Huisregels(generic.TemplateView):
+    template_name = "accounts/huisregels.html"
+    http_method_names = ['get']
+
+    def get_context_data(self, **kwargs):
+        context = super(Huisregels, self).get_context_data(**kwargs)
+        page = get_object_or_404(PageContent, naam='huisregels')
+        if not page.published:
+            raise Http404()
+        context['page'] = page
+        return context
 
 
 class PasswordChangeView(authviews.PasswordChangeView):

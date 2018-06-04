@@ -1,7 +1,7 @@
 {% extends "afspraken/emails/base.html" %}
 
 {% block content %}
-<h4>Geachte {{ deelnemer.naam  }},</h4>
+<h4>Geachte {{ deelnemer.naam }},</h4>
 <p>{{ afspraak.organisator.name }}
     (<a href="mailto:{{ afspraak.organisator.email }}">{{ afspraak.organisator.email }}</a>)
     nodigt u uit om te helpen om een datum vast te stellen voor:
@@ -24,15 +24,20 @@
 <br/>
 {% endif %}
 <p>Geef uw beschikbaarheid aan door op deze link te klikken:</p>
-<table>
-    <tbody>
-        <tr style="box-sizing: border-box; font-size: 14px; margin: 0;">
-            <td style="box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}" style="box-sizing: border-box; font-size: 14px; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 2px; background-color: #337ab7; color: #fff; border: 2px solid #337ab7; margin: 0; padding: 6px 12px;">Aangeven beschikbaarheid</a>
-            </td>
-        </tr>
-    </tbody>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td align="center" style="text-align:center;">
+            <table border="0" cellspacing="0" cellpadding="0" align="center" style="text-align:center;display:inline-block;">
+                <tr>
+                    <td style="border-radius:3px;" bgcolor="#01689b">
+                        <a href="{{ protocol }}://{{ domain }}{% url 'afspraken:beschikbaarheid' token=token %}" style="font-size:16px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:3px;padding:12px 18px;border:1px solid #01689b;display:inline-block;">Aangeven beschikbaarheid</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
+
 {% endblock content %}
 
 {% block greeting %}

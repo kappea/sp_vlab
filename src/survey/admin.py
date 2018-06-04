@@ -2,15 +2,17 @@ from django import forms
 from django.contrib import admin
 from django_summernote.widgets import SummernoteWidget
 
+from .actions import make_published
+from .models import Answer, Category, Question, Response, Survey
+
 # Register your models here.
 
-from .models import Answer, Category, Question, Response, Survey
-from .actions import make_published
 
 class QuestionInline(admin.TabularInline):
     model = Question
     ordering = ('order', 'category', )
-    fields = ('text', 'order', 'type', 'required', 'category', 'choices', 'help_text')
+    fields = ('text', 'order', 'type', 'required',
+              'category', 'choices', 'help_text')
     extra = 1
 
 
@@ -24,9 +26,14 @@ class SurveyAdminForm(forms.ModelForm):
     class Meta:
         model = Survey
         widgets = {
-          'description': SummernoteWidget(),
+            'description': SummernoteWidget(),
+            'avg_tekst1': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),
+            'avg_tekst2': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),
+            'avg_tekst3': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),
+            'avg_tekst4': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),
         }
         fields = '__all__'
+
 
 class SurveyAdmin(admin.ModelAdmin):
     form = SurveyAdminForm
@@ -40,25 +47,6 @@ class AnswerBaseInline(admin.StackedInline):
     fields = ('question', 'body')
     readonly_fields = ('question',)
     extra = 0
-
-
-class AnswerTextInline(AnswerBaseInline):
-    model = Answer
-
-
-class AnswerRadioInline(AnswerBaseInline):
-    model = Answer
-
-
-class AnswerSelectInline(AnswerBaseInline):
-    model = Answer
-
-
-class AnswerSelectMultipleInline(AnswerBaseInline):
-    model = Answer
-
-
-class AnswerIntegerInline(AnswerBaseInline):
     model = Answer
 
 
@@ -66,10 +54,7 @@ class ResponseAdmin(admin.ModelAdmin):
     list_display = ('interview_uuid', 'survey', 'created', 'user')
     list_filter = ('survey', 'created')
     date_hierarchy = 'created'
-    inlines = [
-        AnswerTextInline, AnswerRadioInline, AnswerSelectInline,
-        AnswerSelectMultipleInline, AnswerIntegerInline
-    ]
+    inlines = [AnswerBaseInline]
     # specifies the order as well as which fields to act on
     readonly_fields = (
         'survey', 'created', 'updated', 'interview_uuid', 'user'
@@ -79,4 +64,4 @@ class ResponseAdmin(admin.ModelAdmin):
 #admin.site.register(Question, QuestionInline)
 #admin.site.register(Category, CategoryInline)
 admin.site.register(Survey, SurveyAdmin)
-#admin.site.register(Response, ResponseAdmin)
+admin.site.register(Response, ResponseAdmin)

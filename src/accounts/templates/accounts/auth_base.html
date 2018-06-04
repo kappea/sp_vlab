@@ -4,23 +4,23 @@
 
 <!-- Custom styles for this site -->
 {% block styles %}
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
-  <!--[if (gt IE 8)|!(IE)]><!-->
-    <link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2018.3.2.min.css' %}" type="text/css" media="all"/>
-    <!--<![endif]-->
-    <link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20180405.css' %}" type="text/css" media="all">
-      <link href="{% static 'site/css/main.css' %}" rel="stylesheet">
+<!-- Bootstrap core CSS -->
+<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+<!--[if (gt IE 8)|!(IE)]><!-->
+<link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2018.4.2.min.css' %}" type="text/css" media="all" />
+<!--<![endif]-->
+<link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20180525.css' %}"
+  type="text/css" media="all">
+<link href="{% static 'site/css/main.css' %}" rel="stylesheet">
 {% endblock styles %}
 
 {% block scripts %}
-    <!-- Bootstrap core JavaScript
+<!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static 'jquery-1.12.4/jquery-1.12.4.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'jquery-1.12.4/jquery-1.12.4.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 {% endblock scripts %}
-
 
 {% block navbar %}
 <nav class="breadCrumbNav">

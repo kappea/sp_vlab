@@ -1,4 +1,5 @@
-	      {% for field in response_form %}
+				{% for field in response_form %}
+				{% if not field.name == 'akkoordverklaring' %}
 		  {% if field.field.widget.attrs.category == category.name or not field.field.widget.attrs.category %}
 		  <div {% if field.errors %}class="eforms-field error"{% else %}class="eforms-field"{% endif %}>
 		    <label{% if field.id_for_label %} for="{{ field.id_for_label }}"{% endif %}>{{ field.label|safe }}:{% if field.field.required %}<strong class="req"> *</strong>{% endif %}</label>
@@ -16,6 +17,7 @@
 			{% endfor %}
 			{% endif %}
 		  </div>
+		  {% endif %}
 		  {% endif %}
 		  {% endfor %}
 

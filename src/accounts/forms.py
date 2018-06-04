@@ -25,7 +25,7 @@ class LoginForm(AuthenticationForm):
             Field('remember_me'),
             Submit('sign_in', 'Aanmelden',
                    css_class="btn btn-lg btn-primary btn-block"),
-            )
+        )
 
 
 class SignupForm(authtoolsforms.UserCreationForm):
@@ -34,14 +34,22 @@ class SignupForm(authtoolsforms.UserCreationForm):
         super(SignupForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields["email"].widget.input_type = "email"  # ugly hack
+        self.fields["password2"].help_text = ''
+        self.fields['akkoordverklaring'] = forms.BooleanField()
 
         self.helper.layout = Layout(
             Field('email', placeholder="Voer Email in", autofocus=""),
             Field('name', placeholder="Voer volledige naam in"),
             Field('password1', placeholder="Voer wachtwoord in"),
             Field('password2', placeholder="Herhaal wachtwoord"),
+            HTML('<p>&nbsp;</p>'),
+            PrependedText('akkoordverklaring',
+                          ' Ik ga akkoord met de huisregels '),
+            # Field('akkoordverklaring', ,                   placeholder="Ik ga akkoord met de huisregels"),
+            HTML('<a href="{% url \'accounts:huisregels\' %}" target="_blank" class="external" aria-label="Toon de huisregels (opent externe website)">Toon de huisregels</a>'),
+            HTML('<p>&nbsp;</p>'),
             Submit('sign_up', 'Maak account aan', css_class="btn-warning"),
-            )
+        )
 
 
 class PasswordChangeForm(authforms.PasswordChangeForm):
@@ -55,8 +63,9 @@ class PasswordChangeForm(authforms.PasswordChangeForm):
                   autofocus=""),
             Field('new_password1', placeholder="Voer nieuwe wachtwoord in"),
             Field('new_password2', placeholder="Herhaal nieuwe wachtwoord"),
-            Submit('pass_change', 'Wijzig wachtwoord', css_class="btn-warning"),
-            )
+            Submit('pass_change', 'Wijzig wachtwoord',
+                   css_class="btn-warning"),
+        )
 
 
 class PasswordResetForm(authtoolsforms.FriendlyPasswordResetForm):
@@ -68,8 +77,9 @@ class PasswordResetForm(authtoolsforms.FriendlyPasswordResetForm):
         self.helper.layout = Layout(
             Field('email', placeholder="Voer Email in",
                   autofocus=""),
-            Submit('pass_reset', 'Herstel wachtwoord', css_class="btn-warning"),
-            )
+            Submit('pass_reset', 'Herstel wachtwoord',
+                   css_class="btn-warning"),
+        )
 
 
 class SetPasswordForm(authforms.SetPasswordForm):
@@ -81,5 +91,6 @@ class SetPasswordForm(authforms.SetPasswordForm):
             Field('new_password1', placeholder="Voer nieuwe wachtwoord in",
                   autofocus=""),
             Field('new_password2', placeholder="Herhaal nieuwe wachtwoord"),
-            Submit('pass_change', 'Wijzig wachtwoord', css_class="btn-warning"),
-            )
+            Submit('pass_change', 'Wijzig wachtwoord',
+                   css_class="btn-warning"),
+        )

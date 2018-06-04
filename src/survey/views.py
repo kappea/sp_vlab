@@ -7,6 +7,7 @@ from django.views.generic import View, TemplateView
 from .forms import ResponseForm
 from .models import Category, Survey, Answer
 
+
 class SurveyDetail(View):
 
     def get(self, request, *args, **kwargs):
@@ -82,6 +83,7 @@ class SurveyDetail(View):
                 template_name = 'survey/one_page_survey.html'
         return render(request, template_name, context)
 
+
 class SurveyCompleted(TemplateView):
 
     template_name = 'survey/completed.html'
@@ -91,6 +93,7 @@ class SurveyCompleted(TemplateView):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
         context['survey'] = survey
         return context
+
 
 class ConfirmView(TemplateView):
 
@@ -102,6 +105,7 @@ class ConfirmView(TemplateView):
         return context
 
 # https://datatables.net/extensions/responsive/
+
 
 class SurveyResultData(View):
 
@@ -121,7 +125,8 @@ class SurveyResultData(View):
             row = []
             for question in questions:
                 try:
-                    answer = Answer.objects.get(question=question, response=response)
+                    answer = Answer.objects.get(
+                        question=question, response=response)
                     if len(answer.values) == 1:
                         row.append(answer.values[0])
                     else:
@@ -139,4 +144,3 @@ class SurveyResultData(View):
             'datarows': datarows,
         }
         return render(request, template_name, context)
-        

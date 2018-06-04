@@ -9,13 +9,48 @@ from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 
+
 class Survey(models.Model):
 
-    name = models.CharField(max_length=400)
-    description = models.TextField()
+    name = models.CharField(
+        max_length=400,
+        help_text=('Herkenbare naam om dit specifieke formulier te duiden'),
+        verbose_name=("Naam"),
+    )
+    soort = models.CharField(
+        max_length=50,
+        help_text=('Formulier doel. Bijvoorbeeld: Aanmelden'),
+    )
+    description = models.TextField(
+        verbose_name=("Toelichting"),
+    )
     is_published = models.BooleanField()
     need_logged_user = models.BooleanField()
     display_by_question = models.BooleanField()
+
+    # https://www.platformrijksoverheiddemo.nl/onderwerpen/algemene-verordening-gegevensbescherming/formulieren
+
+    avg_tekst1 = models.CharField(
+        max_length=1000,
+        help_text=('Beschrijf hier bondig, eenvoudig en toegankelijk het primaire doel waarvoor u de persoonsgegevens vraagt, of de gegevens gedeeld worden en hoe lang ze bewaard worden.\nBijvoorbeeld:\nWij gebruiken uw gegevens om uw vraag te beantwoorden, waarna ze vernietigd worden. Uw informatie wordt niet met derden gedeeld.'),
+        verbose_name=("Informatie over de verwerking van uw persoonsgegevens"),
+    )
+    avg_tekst2 = models.CharField(
+        max_length=1000,
+        help_text=('De doeleinden en rechtsgrond van de verwerking, en als u zich beroept op een gerechtvaardigd belang: op welk belang u zich beroept.\nIndien nodig: Of en waarom de betrokkene verplicht is de persoonsgegevens te verstrekken en wat de gevolgen zijn als de gegevens niet worden verstrekt.\nBijvoorbeeld:\nWij gebruiken uw gegevens, met uw toestemming, omdat wij anders niet in staat zijn om uw vraag te beantwoorden.'),
+        verbose_name=("Waarom worden deze gegevens gevraagd?"),
+    )
+    avg_tekst3 = models.CharField(
+        max_length=1000,
+        help_text=('Wat doet u met de gegevens en met wie worden ze gedeeld. Noem de ontvangers van de persoonsgegevens en, indien van toepassing, of u van plan bent de persoonsgegevens door te geven buiten de EU of een internationale organisatie en op welke juridische grond.\nBijvoorbeeld:\nWij gebruiken uw gegevens om uw vraag te beantwoorden. Uw vraag wordt door onze eigen medewerkers beantwoord. Uw gegevens worden niet met derden gedeeld.'),
+        verbose_name=("Op welke manier worden uw gegevens verwerkt?"),
+    )
+    avg_tekst4 = models.CharField(
+        max_length=1000,
+        help_text=('Laat hier weten wanneer de informatie wordt vernietigd. Houd hierbij rekening met wettelijke bewaartermijnen en de selectielijsten van uw organisatie.\nBijvoorbeeld:\nZodra wij uw vraag hebben beantwoord worden uw gegevens uit onze systemen verwijderd.'),
+        verbose_name=("Hoelang bewaren we uw gegevens?"),
+    )
+
     template = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta(object):
@@ -37,6 +72,7 @@ class Survey(models.Model):
     def get_absolute_url(self):
         return ('survey-detail', [self.pk])
 
+
 class Category(models.Model):
 
     name = models.CharField(max_length=400)
@@ -54,6 +90,7 @@ class Category(models.Model):
 
     def slugify(self):
         return slugify(str(self))
+
 
 CHOICES_HELP_TEXT = _(u"""The choices field is only used if the question type
 if the question type is 'radio', 'select', or
@@ -371,8 +408,8 @@ class Question(models.Model):
                 group_together
             )
             if other_value not in filter + standardized_filter:
-                    self._cardinality_plus_answer(cardinality, value,
-                                                  other_value)
+                self._cardinality_plus_answer(cardinality, value,
+                                              other_value)
 
     def get_choices(self):
         """
@@ -392,6 +429,7 @@ class Question(models.Model):
         msg += u"{}".format(self.get_clean_choices())
         return msg
 
+
 class Response(models.Model):
 
     """
@@ -405,6 +443,7 @@ class Response(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     interview_uuid = models.CharField(_(u"Interview unique identifier"),
                                       max_length=36)
+    akkoordverklaring = models.BooleanField(default=False)
 
     class Meta(object):
         verbose_name = _('response')
@@ -414,6 +453,7 @@ class Response(models.Model):
         msg = u"Response to {} by {}".format(self.survey, self.user)
         msg += u" on {}".format(self.created)
         return msg
+
 
 class Answer(models.Model):
 

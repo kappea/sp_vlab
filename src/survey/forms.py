@@ -69,6 +69,7 @@ class ResponseForm(models.ModelForm):
                 continue
             else:
                 self.add_question(question, data)
+        self.add_akkoordverklaring(data)
 
     def _get_preexisting_response(self):
         """ Recover a pre-existing response in database.
@@ -220,6 +221,10 @@ class ResponseForm(models.ModelForm):
         # logging.debug("Field for %s : %s", question, field.__dict__)
         self.fields['question_%d' % question.pk] = field
 
+    def add_akkoordverklaring(self, data):
+        field = forms.BooleanField()
+        self.fields['akkoordverklaring'] = field
+
     def has_next_step(self):
         if self.survey.display_by_question:
             if self.step < self.steps_count - 1:
@@ -275,5 +280,9 @@ class ResponseForm(models.ModelForm):
                 )
                 answer.response = response
                 answer.save()
+            else:
+                if field_name == 'akkoordverklaring':
+                    response.akkoordverklaring = field_value
+                    response.save()
         survey_completed.send(sender=Response, instance=response, data=data)
         return response
