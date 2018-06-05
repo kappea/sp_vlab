@@ -36,9 +36,10 @@ class ProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('picture'),
             Field('bio', lines=4),
-            HTML('<p>&nbsp;</p>'),
+            HTML(
+                '<p>Uw persoonsgegevens worden alleen gebruikt voor uw profiel op UBR | V-Lab.</p>'),
             PrependedText('akkoordverklaring',
-                          ' Ik ga akkoord met de huisregels '),
+                          'Ik ga akkoord met de huisregels<br />en verwerking van persoonsgegevens<br />voor mijn profiel op UBR | V-Lab'),
             HTML('<a href="{% url \'accounts:huisregels\' %}" target="_blank" class="external" aria-label="Toon de huisregels (opent externe website)">Toon de huisregels</a>'),
             HTML('<p>&nbsp;</p>'),
             Submit('update', 'Opslaan', css_class="btn-success"),

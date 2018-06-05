@@ -45,18 +45,22 @@
                 opnieuw.</p>{{ response_form.non_field_errors }}</div>
             {% endif %} {% csrf_token %}
             <div class="formWrapper eform">
-              <div id="page0" class="eforms-page">
+              <div id="page0" class="eforms-page conditionally-visible">
                 <div class="eformText">
-                  <h2 class="req">{{ survey.name }}</h2>
+                  <h2 class="req">{{survey.soort}}</h2>
                   <p class="meta req">* verplichte velden</p>
                 </div>
                 {% for category in categories %}
                 <h3>{{category}}</h3>
                 {% if category.description %}
                 <p>{{category.description}}</p>
-                {% endif %} {% include "survey/question.html" %} {% empty %}
-                <h3>{% trans "Vul onderstaande gegevens in" %}</h3>
-                {% include "survey/question.html" %} {% endfor %}
+                {% endif %}
+                {% include "survey/question.html" %}
+                {% empty %}
+                <h3> {% trans "Vul onderstaande gegevens in" %} </h3>
+                {% include "survey/question.html" %}
+                {% endfor %}
+                {% include "survey/akkoordverklaring.html" %}
               </div>
               <div class="eforms-buttons">
                 <input type="submit" id="confirm-button" name="confirm" class="" value="Ga verder" />
