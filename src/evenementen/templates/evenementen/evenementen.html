@@ -4,10 +4,20 @@
 
 {% block navbar %}
 <nav class="breadCrumbNav">
-  <span class="assistive">U bevindt zich hier:</span>
-  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
-  <span>Evenementen</span>
+	<span class="assistive">U bevindt zich hier:</span>
+	<a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+	<span>Evenementen (actueel)</span>
 </nav>
+{% endblock %}
+
+{% block subnavigation %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'evenementen:historie' %}">Historie</a></li>
+      </ul>
+	</div>
+  </div>
 {% endblock %}
 
 {% block content %}
@@ -19,24 +29,26 @@
 	{% endif %}
 	{{ page.content|safe }}
 	<div class="common results">
-	{% if evenement_list %}
+		{% if evenement_list %}
 		{% for evenement in evenement_list|dictsort:"start_datum" %}
-              <a href="{{ evenement.get_absolute_url }}" class="activity">
-                <h3>{{ evenement.naam }}</h3>
-				{% if evenement.intro %}{{evenement.intro|safe|truncatewords_html:30}}
-				{% else %}{{ evenement.omschrijving|safe|truncatewords_html:30 }}
-				{% endif %}
-                <p class="meta">
+		<a href="{{ evenement.get_absolute_url }}" class="activity">
+			<h3>{{ evenement.naam }}</h3>
+			{% if evenement.intro %}
+			{{evenement.intro|safe|truncatewords_html:30}}
+			{% else %}
+			{{evenement.omschrijving|safe|truncatewords_html:30}}
+			{% endif %}
+			<p class="meta">
 				{{ evenement.start_datum|date:"d F Y" }}
 				{% if evenement.einde_datum %} - {{ evenement.einde_datum|date:"d F Y" }}{% endif %}
 				{% if evenement.locatie %} | {{ evenement.locatie }}{% endif %}
 				<br>Evenement
-				</p>
-              </a>
+			</p>
+		</a>
 		{% endfor %}
-	{% else %}
-		<p>Er zijn geen evenementen beschikbaar.</p>
-	{% endif %}
+		{% else %}
+		<p>Er zijn geen actuele evenementen beschikbaar.</p>
+		{% endif %}
 	</div>
 </div>
 {% if perms.evenementen.add_evenement %}

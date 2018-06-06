@@ -1,13 +1,15 @@
+import datetime
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
+
+from .forms import EvenementForm
+from .models import Evenement, PageContent
 
 # Create your views here.
-
-from .models import PageContent, Evenement
-from .forms import EvenementForm
 
 
 def evenementen(request):
@@ -15,7 +17,22 @@ def evenementen(request):
     if not page.published:
         raise Http404()
     template_name = 'evenementen/evenementen.html'
-    evenement_list = Evenement.objects.all()
+    evenement_list = Evenement.objects.filter(
+        start_datum__gte=datetime.date.today())
+    context = {
+        'page': page,
+        'evenement_list': evenement_list
+    }
+    return render(request, template_name, context)
+
+
+def historie(request):
+    page = get_object_or_404(PageContent, naam='index')
+    if not page.published:
+        raise Http404()
+    template_name = 'evenementen/historie.html'
+    evenement_list = Evenement.objects.filter(
+        start_datum__lt=datetime.date.today())
     context = {
         'page': page,
         'evenement_list': evenement_list

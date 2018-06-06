@@ -1,0 +1,73 @@
+{% extends "mainscreen/base.html" %}
+
+{% block title %}Evenementen | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <span>Evenementen (historie)</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+        <li><a href="{% url 'evenementen:evenementen' %}">Actueel</a></li>
+      </ul>
+	</div>
+  </div>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    {% if page.intro %}
+    <div class="intro">
+        <p>{{ page.intro|safe }}</p>
+    </div>
+    {% endif %}
+    {{ page.content|safe }}
+    <div class="common results">
+        {% if evenement_list %}
+        {% for evenement in evenement_list|dictsortreversed:"start_datum" %}
+        <a href="{{ evenement.get_absolute_url }}" class="activity">
+            <h3>{{ evenement.naam }}</h3>
+            {% if evenement.intro %}
+            {{evenement.intro|safe|truncatewords_html:30}}
+            {% else %}
+            {{evenement.omschrijving|safe|truncatewords_html:30}}
+            {% endif %}
+            <p class="meta">
+                {{ evenement.start_datum|date:"d F Y" }}
+                {% if evenement.einde_datum %} - {{ evenement.einde_datum|date:"d F Y" }}{% endif %}
+                {% if evenement.locatie %} | {{ evenement.locatie }}{% endif %}
+                <br>Evenement
+            </p>
+        </a>
+        {% endfor %}
+        {% else %}
+        <p>Er zijn geen historische evenementen beschikbaar.</p>
+        {% endif %}
+    </div>
+</div>
+{% if perms.evenementen.add_evenement %}
+<div id="aside">
+    <div class="block">
+        <h2>Beheer</h2>
+        <ul class="common">
+            {% if perms.evenementen.add_evenement %}
+            <li>
+                <a href="{% url 'admin:evenementen_evenement_add' %}" class="common">Toevoegen evenement</a>
+            </li>
+            {% endif %}
+            {% if perms.evenementen.change_pagecontent %}
+            <li>
+                <a href="{% url 'admin:evenementen_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
