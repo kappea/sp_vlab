@@ -21,12 +21,10 @@ Log in met uw account
 {% endblock %}
 
 {% block form %}
-  {% crispy form %}
-
-  <div class="form-message">
-    <p>
-      Heeft U geen account?<br/><a href="{% url 'accounts:signup' %}">Account aanmaken</a>.
-    </p>
-  </div>
+{% crispy form %}
+<div class="form-message">
+  <p>Heeft U geen account?<br/>
+    <a href="{% url 'accounts:signup' %}">Registreren V-Lab</a>.
+  </p>
+</div>
 {% endblock form %}
-

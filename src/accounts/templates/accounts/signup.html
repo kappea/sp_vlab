@@ -1,25 +1,23 @@
 {% extends "accounts/auth_base.html" %}
-
 {% load crispy_forms_tags %}
 
 {% block navbar %}
 <nav class="breadCrumbNav">
   <span class="assistive">U bevindt zich hier:</span>
   <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
-  <span>Account aanmaken</span>
+  <span>Registreren</span>
 </nav>
 {% endblock %}
 
-{% block title %}Aanmaken account | UBR|V-Lab{% endblock %}
+{% block title %}Registreren | UBR|V-Lab{% endblock %}
 
-{% block form_heading %}Maak een account aan op de V-Lab website{% endblock %}
+{% block form_heading %}Registreer je als deelnemer van V-Lab{% endblock %}
 
 {% block form %}
-  {% crispy form %}
-
-  <div class="form-message">
-    <p>Heeft U al een account? <a href="{% url 'accounts:login' %}">Log in</a>.
-    </p>
-  </div>
+{% crispy form %}
+<div class="form-message">
+  <p>Heeft U al een account?
+    <a href="{% url 'accounts:login' %}">Log in</a>.
+  </p>
+</div>
 {% endblock form %}
-
