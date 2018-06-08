@@ -37,7 +37,7 @@
 			<p>{{ afspraak.intro|safe }}</p>
 		</div>
 		{% endif %}
-		<h2>{{ mijnDeelneming.deelnemer }}, geef uw beschikbaarheid aan:</h2><br>
+		<h2>{{ mijnDeelneming.naam }}, geef uw beschikbaarheid aan:</h2><br>
   <div class="form fancy">
     <div id="usage_simple" style="position:relative;">
       <form action="{% url 'afspraken:beschikbaarheid' token=mijnDeelneming.token %}" method="post" id="beschikbaar_form" autocomplete="off">

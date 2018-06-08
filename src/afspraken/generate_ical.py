@@ -28,8 +28,8 @@ def gen_ical(afspraak, token):
     afspraakDeelnemers = AfspraakDeelnemer.objects.filter(afspraak=afspraak)
     for deelnemer in afspraakDeelnemers:
         attendee = icalendar.vCalAddress(
-            'MAILTO:{}'.format(deelnemer.deelnemer.invite_email))
-        attendee.params['cn'] = icalendar.vText(deelnemer.deelnemer.naam)
+            'MAILTO:{}'.format(deelnemer.invite_email))
+        attendee.params['cn'] = icalendar.vText(deelnemer.naam)
         event.add('attendee', attendee)
     event.add('summary', afspraak.naam)
     if afspraak.intro:

@@ -103,27 +103,20 @@ class AfspraakOptie(models.Model):
         return Beschikbaar.objects.filter(afspraakoptie=self).filter(status=Beschikbaar.JA).count()
 
 
-class Deelnemer(models.Model):
-    invite_email = models.CharField(max_length=200, unique=True, db_index=True)
-    naam = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.naam
-
-
 class AfspraakDeelnemer(models.Model):
     afspraak = models.ForeignKey(Afspraak)
-    deelnemer = models.ForeignKey(Deelnemer)
+    invite_email = models.CharField(max_length=200)
+    naam = models.CharField(max_length=200)
     token = models.CharField(max_length=40, db_index=True)
 
     def __str__(self):
         return "{0}, {1}".format(
             self.afspraak,
-            self.deelnemer)
+            self.naam)
 
     class Meta:
-        unique_together = [("afspraak", "deelnemer")]
-        ordering = ["afspraak", "deelnemer__naam"]
+        unique_together = [("afspraak", "invite_email")]
+        ordering = ["afspraak", "naam"]
 
 
 class Beschikbaar(models.Model):

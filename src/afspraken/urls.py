@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import (autocomplete_email, beschikbaarheid, dashboard, overzicht,
+from .views import (beschikbaarheid, dashboard, overzicht,
                     plannen, vaststellen, verwijderen, ical)
 
 urlpatterns = [
@@ -14,5 +14,4 @@ urlpatterns = [
         vaststellen, name="vaststellen"),
     url(r"^verwijderen/(?P<token>\w+)/$",
         verwijderen, name="verwijderen"),
-    url(r'^autocomplete-email/$', autocomplete_email, name='autocomplete_email'),
 ]

@@ -48,7 +48,7 @@
 <!--[if (gt IE 10)|!(IE)]><!-->
 <script type="text/javascript">
 	var formsetscript = "{% static 'site/js/jquery.formset.js' %}";
-  require([formsetscript, 'autocomplete'], function() {
+  require([formsetscript, 'forms'], function() {
 		//This function is called after jquery.formset.js has loaded.
 		//https://elo80ka.wordpress.com/2009/10/10/jquery-plugin-django-dynamic-formset
 		$(function() {
@@ -58,14 +58,6 @@
 				addCssClass: 'add-deelnemer-row',          // CSS class applied to the add link
 				deleteCssClass: 'delete-deelnemer-row',    // CSS class applied to the delete link
 				formCssClass: 'dynamic-deelnemer-form',    // CSS class applied to each form in a formset
-				added: function(row) {
-					var txt = row.find('.autocomplete-me');
-					// Event handlers are cloned with each new form, so we first unbind
-					// all autocomplete handlers on the textbox:
-					txt.unbind();
-					// Calling "makeAutocomplete" adds a brand-new set of handlers:
-					makeAutocomplete(txt);
-				}
 			});
 			$('div.afspraakoptie_form').formset({
 				prefix: '{{ afspraakoptie_formset.prefix }}',
@@ -83,22 +75,7 @@
 					});
 				}
 			});
-			makeAutocomplete($('.autocomplete-me'));
 		});
-		function makeAutocomplete(sel) {
-			sel.autocomplete({
-				source: "{% url 'afspraken:autocomplete_email' %}",
-				select: function (event, ui) { //item selected
-					AutoCompleteSelectHandler(event, ui)
-				},
-				minLength: 2,
-			});
-		}
-		function AutoCompleteSelectHandler(event, ui)
-		{
-			console.log(ui);
-			//var selectedObj = ui['invite_email'];
-		}
   });
 </script>
 <!--<![endif]-->

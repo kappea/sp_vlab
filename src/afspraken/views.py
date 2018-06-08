@@ -12,7 +12,7 @@ from .forms import (AfspraakForm, AfspraakOptieFormset, BeschikbaarForm,
                     DeelnemerFormset)
 from .generate_ical import gen_ical
 from .models import (Afspraak, AfspraakDeelnemer, AfspraakOptie, Beschikbaar,
-                     Deelnemer, PageContent)
+                     PageContent)
 from .send_mail import send_mail
 
 
@@ -39,8 +39,7 @@ def dashboard(request):
             afspraken = Afspraak.objects.filter(organisator=request.user)
             for afspraak in afspraken:
                 afspraak_dict[afspraak] = afspraak.token
-            me = Deelnemer.objects.get(invite_email=request.user.email)
-            mijnDeelnemingen = AfspraakDeelnemer.objects.filter(deelnemer=me)
+            mijnDeelnemingen = AfspraakDeelnemer.objects.filter(invite_email=request.user.email)
             for deelneming in mijnDeelnemingen:
                 afspraak_dict[deelneming.afspraak] = deelneming.token
             afspraak_lijst = sorted(
@@ -77,36 +76,28 @@ def plannen(request):
             for deelnemer_form in deelnemer_formset:
                 email = deelnemer_form.cleaned_data.get('email')
                 if email != None:
-                    try:
-                        deelnemer_obj = Deelnemer.objects.get(
-                            invite_email=deelnemer_form.cleaned_data['email'])
-                    except Deelnemer.DoesNotExist:
-                        deelnemer_obj = Deelnemer(
-                            naam=deelnemer_form.cleaned_data['naam'],
-                            invite_email=deelnemer_form.cleaned_data['email']
-                        )
-                        deelnemer_obj.save()
                     afspraakDeelnemer = AfspraakDeelnemer(
                         afspraak=afspraak,
-                        deelnemer=deelnemer_obj,
+                        invite_email=email,
+                        naam=deelnemer_form.cleaned_data['naam'],
                         token=hashlib.sha1(
                             str(afspraak.aangemaakt.isoformat() +
-                                afspraak.naam+deelnemer_obj.invite_email).encode('utf-8')).hexdigest()
+                                afspraak.naam+email).encode('utf-8')).hexdigest()
                     )
                     try:
                         afspraakDeelnemer.save()
-                        if not afspraakDeelnemer.deelnemer.invite_email == request.user.email:
+                        if not afspraakDeelnemer.invite_email == request.user.email:
                             # Nodig deelnemer uit
                             mail_ctx = {
                                 'afspraak': afspraak,
-                                'deelnemer': afspraakDeelnemer.deelnemer,
+                                'deelnemer': afspraakDeelnemer,
                                 'token': afspraakDeelnemer.token,
                             }
                             send_mail(
                                 request,
                                 mail_ctx,
                                 'uitnodigen',
-                                afspraakDeelnemer.deelnemer.invite_email
+                                afspraakDeelnemer.invite_email
                             )
                     except IntegrityError:
                         pass
@@ -127,13 +118,12 @@ def plannen(request):
                     )
                     afspraakOptie.save()
             try:
-                me = Deelnemer.objects.get(invite_email=request.user.email)
                 mijnDeelneming = AfspraakDeelnemer.objects.get(afspraak=afspraak,
-                                                               deelnemer=me)
+                                                               invite_email=request.user.email)
                 # Stuur bevestigingsmail (organisator neemt zelf deel)
                 mail_ctx = {
                     'afspraak': afspraak,
-                    'deelnemer': me,
+                    'deelnemer': mijnDeelneming,
                     'token': mijnDeelneming.token,
                 }
                 send_mail(
@@ -161,12 +151,8 @@ def plannen(request):
         afspraak_form = AfspraakForm(
             prefix='afspraak_form',
         )
-        try:
-            me = Deelnemer.objects.get(invite_email=request.user.email)
-            initial = [{'naam': me.naam, 'email': me.invite_email}]
-        except Deelnemer.DoesNotExist:
-            initial = [{'naam': request.user.name,
-                        'email': request.user.email}]
+        initial = [{'naam': request.user.name,
+                    'email': request.user.email}]
         deelnemer_formset = DeelnemerFormset(
             prefix='deelnemer_form',
             initial=initial,
@@ -179,21 +165,6 @@ def plannen(request):
         'afspraakoptie_formset': afspraakoptie_formset,
     }
     return render(request, template_name, context)
-
-
-@login_required
-def autocomplete_email(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        #deelnemers = Deelnemer.objects.filter(invite_email__icontains=q).values('naam', 'invite_email')
-        deelnemers = Deelnemer.objects.filter(invite_email__icontains=q)
-        lijst = {}
-        for deelnemer in deelnemers:
-            lijst[deelnemer.naam] = deelnemer.invite_email
-        # return JsonResponse(list(deelnemers), safe=False)
-        return(JsonResponse(lijst))
-    else:
-        raise Http404()
 
 
 @login_required
@@ -227,14 +198,14 @@ def vaststellen(request, token, optie_id):
                 # Stuur vaststellingsmail
                 mail_ctx = {
                     'afspraak': afspraak,
-                    'deelnemer': afspraakDeelnemer.deelnemer,
+                    'deelnemer': afspraakDeelnemer,
                     'token': afspraakDeelnemer.token,
                 }
                 send_mail(
                     request,
                     mail_ctx,
                     'vaststellen',
-                    afspraakDeelnemer.deelnemer.invite_email
+                    afspraakDeelnemer.invite_email
                 )
             messages.success(request, "Afspraakoptie vastgesteld.")
         return redirect("afspraken:overzicht", token)
@@ -278,7 +249,7 @@ def overzicht(request, token):
     try:
         mijnDeelneming = AfspraakDeelnemer.objects.get(token=token)
         afspraak = mijnDeelneming.afspraak
-        if mijnDeelneming.deelnemer.invite_email == afspraak.organisator.email:
+        if mijnDeelneming.invite_email == afspraak.organisator.email:
             organisator = afspraak.organisator
     except AfspraakDeelnemer.DoesNotExist:
         mijnDeelneming = None
@@ -300,15 +271,15 @@ def overzicht(request, token):
                                                       afspraakoptie=optie)
                 if beschikbaar.status == Beschikbaar.JA:
                     b = Beschik(
-                        'afspraken/yes.png', '{0} kan op {1} uur'.format(deelnemer.deelnemer, optie.get_optie()))
+                        'afspraken/yes.png', '{0} kan op {1} uur'.format(deelnemer.naam, optie.get_optie()))
                     row.append(b)
                 elif beschikbaar.status == Beschikbaar.MISSCHIEN:
                     b = Beschik('afspraken/maybe.png', '{0} kan misschien op {1} uur'.format(
-                        deelnemer.deelnemer, optie.get_optie()))
+                        deelnemer.naam, optie.get_optie()))
                     row.append(b)
                 else:
                     b = Beschik(
-                        'afspraken/no.png', '{0} kan niet op {1} uur'.format(deelnemer.deelnemer, optie.get_optie()))
+                        'afspraken/no.png', '{0} kan niet op {1} uur'.format(deelnemer.naam, optie.get_optie()))
                     row.append(b)
             except:
                 row.append(None)
@@ -330,7 +301,7 @@ def ical(request, token):
     try:
         mijnDeelneming = AfspraakDeelnemer.objects.get(token=token)
         afspraak = mijnDeelneming.afspraak
-        if mijnDeelneming.deelnemer.invite_email == afspraak.organisator.email:
+        if mijnDeelneming.invite_email == afspraak.organisator.email:
             organisator = afspraak.organisator
     except AfspraakDeelnemer.DoesNotExist:
         mijnDeelneming = None
@@ -361,7 +332,7 @@ def beschikbaarheid(request, token):
             # Stuur notificatiemail
             mail_ctx = {
                 'afspraak': afspraak,
-                'deelnemer': mijnDeelneming.deelnemer,
+                'deelnemer': mijnDeelneming,
                 'token': afspraak.token,
             }
             send_mail(

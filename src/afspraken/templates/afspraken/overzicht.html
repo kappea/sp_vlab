@@ -104,7 +104,7 @@
         <tr>
           {% for col in row %}
 		  {% if forloop.counter == 1 %}
-          <th>{{ col.deelnemer }}</th>
+          <th>{{ col.naam }}</th>
           {% else %}
 		  {% if col %}
           <td style="text-align: center;"><img src="{% static col.src %}" alt="{{ col.alt }}"></td>
