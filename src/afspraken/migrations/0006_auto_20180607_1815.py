@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='afspraakdeelnemer',
-            unique_together=set([('afspraak', 'invite_email')]),
+            unique_together=set([]),
         ),
         migrations.RemoveField(
             model_name='afspraakdeelnemer',
