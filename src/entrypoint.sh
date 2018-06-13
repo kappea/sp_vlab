@@ -40,6 +40,9 @@ python3 manage.py migrate
 echo "If not available, set admin account"
 python3 initadmin.py
 cp -ru media/* /var/www/vlab/mediafiles/
+
+export DJANGO_AUTOTASK_IS_ACTIVE=True
+
 # Start server
 echo "Starting server"
 #python3 manage.py runserver 0.0.0.0:8000

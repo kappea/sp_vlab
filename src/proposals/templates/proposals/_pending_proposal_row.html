@@ -1,24 +1,24 @@
 {% load i18n %}
-
+    
 <tr>
     <td>
-        <a href="{% url "proposal_detail" proposal.pk %}">{{ proposal.title }}</a>
+        <a href="{% url 'proposals:proposal_detail' proposal.pk %}">{{ proposal.title }}</a>
     </td>
 
     <td>{{ proposal.kind.name }}</td>
 
     <td>
         {% if proposal.cancelled %}
-            <span class="label label-danger">{% trans 'Cancelled' %}</span>
+            <span class="label label-danger">Ingetrokken</span>
         {% else %}
             {% if request.user == proposal.speaker.user %}
                 {% if proposal.result.status == "accepted" %}
-                    <span class="label label-success">{% trans 'Accepted' %}</span>
+                    <span class="label label-success">Geaccepteerd</span>
                 {% else %}
-                    <span class="label label-default">{% trans 'Submitted' %}</span>
+                    <span class="label label-default">Ingediend</span>
                 {% endif %}
             {% else %}
-                <span class="label label-default">{% trans 'Invited' %}</span>
+                <span class="label label-default">Uitgenodigd</span>
             {% endif %}
         {% endif %}
     </td>
@@ -31,9 +31,9 @@
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url "proposal_pending_join" proposal.id %}">
+                    <li><a href="{% url 'proposals:proposal_pending_join' proposal.id %}">
 			{% trans 'Accept invitation' %}</a></li>
-                    <li><a href="{% url "proposal_pending_decline" proposal.id
+                    <li><a href="{% url 'proposals:proposal_pending_decline' proposal.id
 		    %}">{% trans 'Decline invitation' %}</a></li>
                 </ul>
             </div>

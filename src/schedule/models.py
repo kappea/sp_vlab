@@ -18,7 +18,8 @@ class Schedule(models.Model):
 
     section = models.OneToOneField(Section, verbose_name=_("Section"))
     published = models.BooleanField(default=True, verbose_name=_("Published"))
-    hidden = models.BooleanField(_("Hide schedule from overall conference view"), default=False)
+    hidden = models.BooleanField(
+        _("Hide schedule from overall conference view"), default=False)
 
     def __str__(self):
         return "%s Schedule" % self.section
@@ -86,7 +87,8 @@ class Slot(models.Model):
     kind = models.ForeignKey(SlotKind, verbose_name=_("Kind"))
     start = models.TimeField(verbose_name=_("Start"))
     end = models.TimeField(verbose_name=_("End"))
-    content_override = models.TextField(blank=True, verbose_name=_("Content override"))
+    content_override = models.TextField(
+        blank=True, verbose_name=_("Content override"))
 
     def assign(self, content):
         """
@@ -146,7 +148,8 @@ class Slot(models.Model):
 
     def save(self, *args, **kwargs):
         roomlist = ' '.join(map(lambda r: r.__str__(), self.rooms))
-        self.name = "%s %s (%s - %s) %s" % (self.day, self.kind, self.start, self.end, roomlist)
+        self.name = "%s %s (%s - %s) %s" % (self.day,
+                                            self.kind, self.start, self.end, roomlist)
         super(Slot, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -180,16 +183,20 @@ class SlotRoom(models.Model):
 @python_2_unicode_compatible
 class Presentation(models.Model):
 
-    slot = models.OneToOneField(Slot, null=True, blank=True, related_name="content_ptr", verbose_name=_("Slot"))
+    slot = models.OneToOneField(
+        Slot, null=True, blank=True, related_name="content_ptr", verbose_name=_("Slot"))
     title = models.CharField(max_length=100, verbose_name=_("Title"))
     description = models.TextField(verbose_name=_("Description"))
     abstract = models.TextField(verbose_name=_("Abstract"))
-    speaker = models.ForeignKey(Speaker, related_name="presentations", verbose_name=_("Speaker"))
+    speaker = models.ForeignKey(
+        Speaker, related_name="presentations", verbose_name=_("Speaker"))
     additional_speakers = models.ManyToManyField(Speaker, related_name="copresentations",
                                                  blank=True, verbose_name=_("Additional speakers"))
     cancelled = models.BooleanField(default=False, verbose_name=_("Cancelled"))
-    proposal_base = models.OneToOneField(ProposalBase, related_name="presentation", verbose_name=_("Proposal base"))
-    section = models.ForeignKey(Section, related_name="presentations", verbose_name=_("Section"))
+    proposal_base = models.OneToOneField(
+        ProposalBase, related_name="presentation", verbose_name=_("Proposal base"))
+    section = models.ForeignKey(
+        Section, related_name="presentations", verbose_name=_("Section"))
 
     @property
     def number(self):
@@ -219,8 +226,10 @@ class Presentation(models.Model):
 @python_2_unicode_compatible
 class Session(models.Model):
 
-    day = models.ForeignKey(Day, related_name="sessions", verbose_name=_("Day"))
-    slots = models.ManyToManyField(Slot, related_name="sessions", verbose_name=_("Slots"))
+    day = models.ForeignKey(
+        Day, related_name="sessions", verbose_name=_("Day"))
+    slots = models.ManyToManyField(
+        Slot, related_name="sessions", verbose_name=_("Slots"))
 
     def sorted_slots(self):
         return self.slots.order_by("start")
@@ -268,7 +277,8 @@ class SessionRole(models.Model):
 
     session = models.ForeignKey(Session, verbose_name=_("Session"))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("User"))
-    role = models.IntegerField(choices=SESSION_ROLE_TYPES, verbose_name=_("Role"))
+    role = models.IntegerField(
+        choices=SESSION_ROLE_TYPES, verbose_name=_("Role"))
     status = models.NullBooleanField(verbose_name=_("Status"))
 
     submitted = models.DateTimeField(default=datetime.datetime.now)
@@ -281,3 +291,29 @@ class SessionRole(models.Model):
     def __str__(self):
         return "%s %s: %s" % (self.user, self.session,
                               self.SESSION_ROLE_TYPES[self.role - 1][1])
+
+
+def promote_proposal(proposal):
+    if hasattr(proposal, "presentation") and proposal.presentation:
+        # already promoted
+        presentation = proposal.presentation
+    else:
+        presentation = Presentation(
+            title=proposal.title,
+            description=proposal.description,
+            abstract=proposal.abstract,
+            speaker=proposal.speaker,
+            section=proposal.section,
+            proposal_base=proposal,
+        )
+        presentation.save()
+        for speaker in proposal.additional_speakers.all():
+            presentation.additional_speakers.add(speaker)
+            presentation.save()
+
+    return presentation
+
+
+def unpromote_proposal(proposal):
+    if hasattr(proposal, "presentation") and proposal.presentation:
+        proposal.presentation.delete()

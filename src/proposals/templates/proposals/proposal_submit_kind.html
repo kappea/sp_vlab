@@ -1,27 +1,40 @@
-{% extends "proposals/base.html" %}
-
-{% load bootstrap %}
-{% load boxes_tags %}
-{% load markitup_tags %}
+{% extends "mainscreen/base.html" %}
 {% load i18n %}
 
-{% block page_title %}Submit a Proposal for a {{ kind.name }}{% endblock %}
+{% block title %}Indienen voorstel | UBR|V-Lab{% endblock %}
 
-{% block body %}
-    {% box "example_proposal" %}
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <span>Voorstel</span>
+</nav>
+{% endblock %}
 
-    <form method="POST" action="" enctype="multipart/form-data" class="form-horizontal">
-        {% csrf_token %}
-        <fieldset>
-            {{ form|bootstrap_horizontal }}
-        </fieldset>
-        <div class="form-actions">
-            <p>
-                You will be able to edit your proposal after it has been submitted. The program committee may ask questions, provide feedback, and even suggest changes to your proposal as part of the review processes.
-            </p>
-            <input class="btn btn-primary" type="submit" name="finish" value="Save" />
-            <!-- <span style="float: right; padding: 4px 6px">or</span> -->
-            <input class="btn btn-default" type="submit" name="add-speakers" value="Save and Add Additional Speakers" />
+{% block content %}
+<div id="content" class="article">
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form action="" method="post" enctype="multipart/form-data" id="document_create_form" autocomplete="off">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{
+                    response_form.non_field_errors }}</div>{% endif %} {% csrf_token %}
+                <div class="formWrapper">
+                    <div id="page0" class="eforms-page">
+                        <div class="eformText">
+                            <h2>Voorstel indienen</h2>
+                            <p class="meta req">* verplichte velden</p>
+                        </div>
+                        {% include "proposals/_form.html" %}
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" id="confirm-button" name="confirm" class="" value="Indienen" />
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
+</div>
 {% endblock %}

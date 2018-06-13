@@ -1,22 +1,60 @@
-{% extends "proposals/base.html" %}
+{% extends "mainscreen/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load proposal_tags %}
 
-{% load bootstrap %}
+<!-- Custom styles for this site -->
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'site/css/slight.css' %}" type="text/css" media="all">
+{% endblock extrahead %}
 
-{% block head_title %}Editing {{ proposal.title }}{% endblock %}
+{% block title %}Programma | UBR|V-Lab{% endblock %}
 
-{% block body %}
-    <h1>Edit: {{ proposal.title }}</h1>
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <a href="{% url 'proposals:proposal_detail' proposal.pk %}">{{ proposal.title }}</a>
+    <span>Aanpassen</span>
+</nav>
+{% endblock %}
 
-    <p><a href="{% url "proposal_speaker_manage" proposal.pk %}">Manage speakers</a></p>
+{% block subnavigation %}
+<div class="subNavigation">
+    <div class="wrapper">
+        <ul>
+            <li>
+                <a href="{% url 'proposals:proposal_speaker_manage' proposal.pk %}">Sprekers</a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
 
-    <form method="POST" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset>
-            {{ form|bootstrap }}
-        </fieldset>
-        <div class="form-actions">
-            <input class="btn btn-primary" type="submit" value="Save" />
-            <a class="btn btn-default" href="{% url "proposal_detail" proposal.pk %}">Cancel</a>
+{% block content %}
+<div id="content" class="article">
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form action="" method="post" enctype="multipart/form-data" id="speaker_form" autocomplete="off">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{
+                    response_form.non_field_errors }}</div>{% endif %} {% csrf_token %}
+                <div class="formWrapper">
+                    <div id="page0" class="eforms-page">
+                        <div class="eformText">
+                            <h2>Aanpassen: {{ proposal.title }}</h2>
+                            <p class="meta req">* verplichte velden</p>
+                        </div>
+                        {% include "proposals/_form.html" %}
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" id="confirm-button" name="confirm" class="" value="Opslaan" />
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
+</div>
 {% endblock %}

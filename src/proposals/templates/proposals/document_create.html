@@ -1,17 +1,41 @@
-{% extends "proposals/base.html" %}
+{% extends "mainscreen/base.html" %}
+{% load i18n %}
 
-{% load bootstrap %}
+{% block title %}Document bijvoegen | UBR|V-Lab{% endblock %}
 
-{% block page_title %}Upload Document to '{{ proposal.title }}'{% endblock %}
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <a href="{% url 'proposals:proposal_detail' proposal.pk %}">{{ proposal.title }}</a>
+    <span>Document bijvoegen</span>
+</nav>
+{% endblock %}
 
-{% block body %}
-    <form method="POST" action="" enctype="multipart/form-data" class="form form-horizontal">
-        {% csrf_token %}
-        <fieldset>
-            {{ form|bootstrap_horizontal }}
-        </fieldset>
-        <div class="form-actions">
-            <input class="btn btn-primary" type="submit" value="Upload" />
+{% block content %}
+<div id="content" class="article">
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form action="" method="post" enctype="multipart/form-data" id="document_create_form" autocomplete="off">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{
+                    response_form.non_field_errors }}</div>{% endif %} {% csrf_token %}
+                <div class="formWrapper">
+                    <div id="page0" class="eforms-page">
+                        <div class="eformText">
+                            <h2>Document toevoegen aan: {{ proposal.title }}</h2>
+                            <p class="meta req">* verplichte velden</p>
+                        </div>
+                        {% include "proposals/_form.html" %}
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" id="confirm-button" name="confirm" class="" value="Toevoegen" />
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
+</div>
 {% endblock %}

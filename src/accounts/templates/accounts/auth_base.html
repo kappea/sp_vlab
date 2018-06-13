@@ -3,16 +3,14 @@
 {% load crispy_forms_tags %}
 
 <!-- Custom styles for this site -->
-{% block styles %}
+{% block prehead %}
 <!-- Bootstrap core CSS -->
-<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
-<!--[if (gt IE 8)|!(IE)]><!-->
-<link rel="stylesheet" href="{% static 'mainscreen/presentation/responsive-2018.4.2.min.css' %}" type="text/css" media="all" />
-<!--<![endif]-->
-<link rel="stylesheet" href="{% static 'mainscreen/binaries/content/assets/ubrijk/presentation/css/site-ubrijk-20180525.css' %}"
-  type="text/css" media="all">
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+{% endblock prehead %}
+
+{% block extrahead %}
 <link href="{% static 'site/css/main.css' %}" rel="stylesheet">
-{% endblock styles %}
+{% endblock extrahead %}
 
 {% block scripts %}
 <!-- Bootstrap core JavaScript

@@ -1,119 +1,95 @@
-{% extends "proposals/base.html" %}
-
+{% extends "mainscreen/base.html" %}
+{% load static %}
 {% load i18n %}
-{% load account_tags %}
-{% load bootstrap %}
+{% load proposal_tags %}
 
-{% block head_title %}{{ proposal.title }}{% endblock %}
+<!-- Custom styles for this site -->
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'site/css/slight.css' %}" type="text/css" media="all">
+{% endblock extrahead %}
 
-{% block body %}
-    <div class="pull-right">
-        {% if not proposal.cancelled %}
+{% block title %}Programma | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <span>{{ proposal.title }}</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if not proposal.cancelled %}
+<div class="subNavigation">
+    <div class="wrapper">
+        <ul>
             {% if request.user == proposal.speaker.user %}
-                <a href="{% url "proposal_edit" proposal.pk %}" class="btn btn-default">
-                    {% trans "Edit this proposal" %}
-                </a>
-                <a href="{% url "proposal_cancel" proposal.pk %}" class="btn btn-default">
-                    {% trans "Cancel this proposal" %}
-                </a>
+            <li>
+                <a href="{% url 'proposals:proposal_edit' proposal.pk %}">Aanpassen voorstel</a>
+            </li>
+            <li>
+                <a href="{% url 'proposals:proposal_cancel' proposal.pk %}">Intrekken voorstel</a>
+            </li>
             {% else %}
-                <a href="{% url "proposal_leave" proposal.pk %}" class="btn btn-default">
-                    {% trans "Remove me from this proposal" %}
-                </a>
-            {% endif %}
-        {% else %}
-            {% trans 'Cancelled' }
-        {% endif %}
-    </div>
-
-    <h3>#{{ proposal.number }}: {{ proposal.title }} ({{ proposal.speaker }}, Track: {{ proposal.track }})</h3>
-
-    <div class="tabbable">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#proposal-detail" data-toggle="tab">{% trans "Proposal Details" %}</a></li>
-            {% if request.user == proposal.speaker.user %}
-                <li><a href="#proposal-documents" data-toggle="tab">{% trans "Supporting Documents" %}</a></li>
-            {% endif %}
-            {% if message_form %}
-                <li><a href="#proposal-feedback" data-toggle="tab">{% trans "Reviewer Feedback" %} <span class="badge">{{ proposal.messages.all|length }}</span></a></li>
+            <li>
+                <a href="{% url 'proposals:proposal_leave' proposal.pk %}">Verwijder mij als medespreker</a>
+            </li>
             {% endif %}
         </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="proposal-detail">
-                {% include "proposals/_proposal_fields.html" %}
-            </div>
-            {% if request.user == proposal.speaker.user %}
-                <div class="tab-pane" id="proposal-documents">
-                    <h3>{% trans 'Supporting Documents' %}</h3>
-
-                    {% if proposal.supporting_documents.exists %}
-                        <table class="table table-striped">
-                            {% for document in proposal.supporting_documents.all %}
-                                <tr>
-                                    <td><a href="{{ document.download_url }}">{{ document.description }}</a></td>
-                                    <td>
-                                    <form style="margin: 0;" method="post" action="{% url "proposal_document_delete" document.pk %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-xs">{% trans 'delete' %}</button>
-                                    </form>
-                                </td>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    {% else %}
-                        <p>{% trans 'No supporting documents attached to this proposal.' %}</p>
-                    {% endif %}
-                    <a class="btn btn-sm{% if proposal.cancelled %} btn-disabled{% endif %}" href="{% url "proposal_document_create" proposal.pk %}"><i class="fa fa-upload"></i> {% trans 'Add Document' %}</a>
-                </div>
-            {% endif %}
-
-    {% if message_form %}
-        <div class="tab-pane" id="proposal-feedback">
-
-            <h3>{% trans 'Conversation with Reviewers' %}</h3>
-
-            {% for message in proposal.messages.all %}
-                <div class="review-box">
-                    <div class="comment">{{ message.message|safe }}</div>
-                    <div class="dateline"><b>{% user_display message.user %}</b> {{ message.submitted_at|timesince }} ago</div>
-                </div>
-                <div class="clear"></div>
-            {% endfor %}
-
-            <h3>{% trans 'Leave a Message' %}</h3>
-
-            <p>{% trans 'You can leave a message for the reviewers here.' %}</p>
-
-            <form action="" method="POST" accept-charset="utf-8">
-                {% csrf_token %}
-                <fieldset>
-                    {{ message_form|bootstrap }}
-                </fieldset>
-                <div class="actions">
-                    <button type="submit" name="message_submit" class="btn btn-primary">{% trans 'Submit' %}</button>
-                </div>
-            </form>
-        </div>
-    {% endif %}
     </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <h3>#{{ proposal.number }}: {{ proposal.title }} ({{ proposal.speaker }}, Track: {{ proposal.track }})</h3>
+    {% include "proposals/_proposal_fields.html" %}
+    {% if request.user == proposal.speaker.user %}
+    <h3>Bijgevoegde documenten</h3>
+    {% if proposal.supporting_documents.exists %}
+    <table class="table table-striped">
+        {% for document in proposal.supporting_documents.all %}
+        <tr>
+            <td>
+                <a href="{{ document.download_url }}">{{ document.description }}</a>
+            </td>
+            <td>
+                <form style="margin: 0;" method="post" action="{% url 'proposals:proposal_document_delete' document.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs">{% trans 'delete' %}</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Geen documenten bijgevoegd.</p>
+    {% endif %}
+    {% if not proposal.cancelled %}
+    <a style="color: #FFF;" class="btn btn-sm{% if proposal.cancelled %} btn-disabled{% endif %}" href="{% url 'proposals:proposal_document_create' proposal.pk %}">
+        <i class="fa fa-upload"></i> Bijvoegen document</a>
+    {% endif %}
+    {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_script %}
-    <script src="{{ STATIC_URL }}symposion/js/jquery.history.js"></script>
-    <script type="text/javascript">
-        $(function() {
-            var History = window.History;
+<script src="{{ STATIC_URL }}symposion/js/jquery.history.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var History = window.History;
 
-            $(window).bind("anchorchange", function() {
-                $(".nav-tabs a[href='" + location.hash + "']").click();
-            });
-
-            $('#.nav-tabs a[data-toggle="tab"]').on('shown', function (e) {
-                if (History.enabled) {
-                    History.pushState(null, null, $(e.target).attr("href"));
-                }
-            });
+        $(window).bind("anchorchange", function () {
+            $(".nav-tabs a[href='" + location.hash + "']").click();
         });
-    </script>
+
+        $('#.nav-tabs a[data-toggle="tab"]').on('shown', function (e) {
+            if (History.enabled) {
+                History.pushState(null, null, $(e.target).attr("href"));
+            }
+        });
+    });
+</script>
 {% endblock extra_script %}

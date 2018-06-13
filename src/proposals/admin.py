@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # from symposion.proposals.actions import export_as_csv_action
-from .models import ProposalSection, ProposalKind, TalkProposal, TutorialProposal
-
+from .models import (AdditionalSpeaker, ProposalKind, ProposalSection,
+                     SupportingDocument, TalkProposal, TutorialProposal)
 
 # admin.site.register(Proposal,
 #     list_display = [
@@ -32,3 +32,5 @@ admin.site.register(TalkProposal)
 admin.site.register(TutorialProposal)
 admin.site.register(ProposalSection)
 admin.site.register(ProposalKind)
+admin.site.register(AdditionalSpeaker)
+admin.site.register(SupportingDocument)

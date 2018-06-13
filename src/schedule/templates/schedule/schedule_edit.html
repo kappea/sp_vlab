@@ -1,58 +1,171 @@
-{% extends "site_base.html" %}
-
+{% extends "mainscreen/base.html" %}
+{% load staticfiles %}
 {% load i18n %}
 
-{% block head_title %}Conference Schedule Edit{% endblock %}
+{% block title %}Programma aanpassen | UBR|V-Lab{%endblock %}
 
-{% block body_class %}full{% endblock %}
-
-{% block right %}
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <span>{{ schedule.section }}</span>
+</nav>
 {% endblock %}
 
-{% block extra_head %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}chosen/chosen.css" />
+{% block subnavigation %}
+<div class="subNavigation">
+    <div class="wrapper">
+        <ul>
+            <li>
+                <a href="{% url 'schedule:promote' schedule.section.slug %}">Promoveer voorstellen</a>
+            </li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
 
-{% block body_outer %}
-    <h1>Schedule Edit</h1>
+{% block content %}
+<div id="content" class="article">
+    <h1>Pas het programma aan</h1>
 
     {% for timetable in days %}
-        <h2>{{ timetable.day.date }}</h2>
-        {% include "schedule/_edit_grid.html" %}
-    {% endfor %}
-    <form id="schedule-builder" action="." method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" name="submit" value="Submit" />
-        <input type="submit" id="delete" name="delete" value="Delete Schedule" />
-    </form>
-    <div class="modal fade hide in" id="slotEditModal"></div>
+    <h2>{{ timetable.day.date }}</h2>
+    {% include "schedule/_edit_grid.html" %} {% endfor %}
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form id="schedule-builder" action="." method="post" enctype="multipart/form-data">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier
+                        opnieuw.
+                    </p>
+                    {{ response_form.non_field_errors }}
+                </div>
+                {% endif %} {% csrf_token %}
+                <div class="formWrapper eform">
+                    <div id="page0" class="eforms-page conditionally-visible">
+                        <div class="eformText">
+                            <h2 class="req">CSV bestand importeren</h2>
+                            <p class="meta req">* verplichte velden</p>
+                        </div>
+                        {% include "schedule/_form.html" %}
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" name="submit" value="Importeer CSV bestand" />
+                        <input type="submit" id="delete" name="delete" value="Verwijder programma" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>&nbsp;</p>
+            <div id="slotEditModal"></div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-{% block extra_script %}
-    <script src="{{ STATIC_URL }}chosen/chosen.jquery.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(function() {
-            $("a.edit-slot").click(function(e) {
-                $("#slotEditModal").load($(this).data("action"), function() {
-                    $("#id_presentation").chosen();
-                    $("#slotEditModal").modal("show");
+<!-- Custom styles for this site -->
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'site/css/slight.css' %}" type="text/css" media="all">
+<style>
+    /* The Modal (background) */
+
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+{% endblock extrahead %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+    require(['forms'], function () {
+        $(function () {
+            // Get the modal
+            var modal = document.getElementById('myModal');
+            $("a.edit-slot").click(function (e) {
+                $("#slotEditModal").load($(this).data("action"), function () {
+                    modal.style.display = "block";
+                    //$("#id_presentation").chosen();
+                    //$("#slotEditModal").modal("show");
                 });
                 e.preventDefault();
             });
+            // Get the <span> element that closes the modal
+            var span = modal.getElementsByClassName("close")[0];
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
         });
-        $(function() {
-           //submit event handler
-            $("form#schedule-builder :submit").click(function(e) {
+        $(function () {
+            //submit event handler
+            $("form#schedule-builder :submit").click(function (e) {
                 var name = this.name;
-                if(name == 'delete') {
-                    if (!confirm("Are you sure you want to delete the schedule?"))
-                        {
-                            e.preventDefault();
-                            return;
-                        }
+                if (name == 'delete') {
+                    if (!confirm("Weet u zeker dat u dit programma wilt verwijderen?")) {
+                        e.preventDefault();
+                        return;
+                    }
                 }
             });
         });
-
-    </script>
+    });
+</script>
 {% endblock %}

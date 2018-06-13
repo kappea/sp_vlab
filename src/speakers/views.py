@@ -37,7 +37,7 @@ def speaker_create(request):
                 speaker.invite_email = None
             speaker.save()
             messages.success(request, _("Speaker profile created."))
-            return redirect("mainscreen:dashboard")
+            return redirect("symposion:dashboard")
     else:
         form = SpeakerForm(initial={"name": request.user.get_full_name()})
     return render(request, "speakers/speaker_create.html", {
@@ -92,7 +92,7 @@ def speaker_create_token(request, token):
             )
             messages.info(request, _("You have been associated with all pending "
                                      "talk proposals"))
-            return redirect("dashboard")
+            return redirect("symposion:dashboard")
     else:
         if not request.user.is_authenticated():
             return redirect("account_login")
@@ -117,7 +117,7 @@ def speaker_edit(request, pk=None):
         if form.is_valid():
             form.save()
             messages.success(request, "Spreker profiel gewijzigd.")
-            return redirect("mainscreen:dashboard")
+            return redirect("symposion:dashboard")
     else:
         form = SpeakerForm(instance=speaker)
 

@@ -13,3 +13,4 @@ django-timezone-field==2.0
 django-model-utils==3.0.0
 django-reversion==2.0.12
 icalendar==4.0.1
+autotask==0.5.4

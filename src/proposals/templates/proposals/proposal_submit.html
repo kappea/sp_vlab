@@ -1,46 +1,31 @@
-{% extends "proposals/base.html" %}
-
+{% extends "mainscreen/base.html" %}
 {% load i18n %}
 
-{% block page_title %}{% trans "Submit A Proposal" %}{% endblock %}
-
-{% block title %}{{ evenement.naam }} | Programma | UBR|V-Lab{% endblock %}
+{% block title %}Indienen voorstel | UBR|V-Lab{% endblock %}
 
 {% block navbar %}
 <nav class="breadCrumbNav">
-  <span class="assistive">U bevindt zich hier:</span>
-  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
-  <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
-  <a href="{{ evenement.get_absolute_url }}">{{ evenement.naam }}</a>
-  <span>Programma</span>
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <span>Voorstel</span>
 </nav>
 {% endblock %}
 
 {% block content %}
 <div id="content" class="article">
-  <h1 class="news">{{ evenement.naam }} programma</h1>
-  <p class="article-meta">Evenement</p>
-  <dl>
-    <dt>Datum:</dt>
-    <dd>
-      <time itemprop="startDate">{{ evenement.start_datum|date:"d F Y" }}</time>
-      {% if evenement.einde_datum %} - <time itemprop="endDate">{{ evenement.einde_datum|date:"d F Y" }}</time>{% endif %}
-    </dd>
-	{% if evenement.locatie %}
-    <dt>Locatie:</dt>
-    <dd itemprop="location">{{ evenement.locatie }}</dd>
-	{% endif %}
-  </dl>
     {% if kinds %}
-        <p>Select what kind of proposal you'd like to submit:</p>
+    <p>Selecteer het type voorstel wat u wilt indienen:</p>
 
-        <ul>
-            {% for kind in kinds %}
-                <li><a href="{% url "proposal_submit_kind" kind.slug %}">{{ kind }}</a></li>
-            {% endfor %}
-        </ul>
+    <ul>
+        {% for kind in kinds %}
+        <li>
+            <a href="{% url 'proposals:proposal_submit_kind' kind.slug %}">{{ kind }}</a>
+        </li>
+        {% endfor %}
+    </ul>
     {% else %}
-        <p>Proposals are not currently open for submission.</p>
+    <p>Proposals are not currently open for submission.</p>
     {% endif %}
 </div>
 {% endblock %}

@@ -14,8 +14,10 @@ Also: https://github.com/djstein/modern-django
 """
 
 import os
-import environ
+
 import django
+import environ
+from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(ROOT_DIR, ...)
@@ -41,6 +43,8 @@ SECRET_KEY = env('DJANGO_SECRET_KEY',
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DJANGO_DEBUG', False)
 
+AUTOTASK_IS_ACTIVE = env.bool('DJANGO_AUTOTASK_IS_ACTIVE', False)
+
 # Application definition
 
 DJANGO_APPS = (
@@ -58,6 +62,7 @@ THIRD_PARTY_APPS = (
     'crispy_forms',
     'easy_thumbnails',
     'django_summernote',
+    'autotask',
 )
 
 LOCAL_APPS = (
@@ -71,6 +76,7 @@ LOCAL_APPS = (
     'schedule',
     'proposals',
     'speakers',
+    'symposion',
     'designsprints',
     'afspraken',
     'elearning',
@@ -189,7 +195,6 @@ MEDIA_ROOT = str(ROOT_DIR('mediafiles'))
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # For Bootstrap 3, change error alert to 'danger'
-from django.contrib import messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
@@ -212,3 +217,4 @@ PROPOSAL_FORMS = {
     "talk": "proposals.forms.TalkProposalForm",
     "poster": "proposals.forms.PosterProposalForm",
 }
+BASE_DIR = str(APPS_DIR)

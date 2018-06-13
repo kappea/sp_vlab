@@ -1,18 +1,16 @@
 from __future__ import unicode_literals
+
 import os
 import uuid
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
-
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import ValidationError
-
+from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import InheritanceManager
 from reversion import revisions as reversion
 
@@ -33,7 +31,8 @@ class ProposalSection(models.Model):
 
     section = models.OneToOneField(Section, verbose_name=_("Section"))
 
-    start = models.DateTimeField(null=True, blank=True, verbose_name=_("Start"))
+    start = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Start"))
     end = models.DateTimeField(null=True, blank=True, verbose_name=_("End"))
     closed = models.NullBooleanField(verbose_name=_("Closed"))
     published = models.NullBooleanField(verbose_name=_("Published"))
@@ -68,7 +67,8 @@ class ProposalKind(models.Model):
     to distinguish the section as well as the kind.
     """
 
-    section = models.ForeignKey(Section, related_name="proposal_kinds", verbose_name=_("Section"))
+    section = models.ForeignKey(
+        Section, related_name="proposal_kinds", verbose_name=_("Section"))
 
     name = models.CharField(_("Name"), max_length=100)
     slug = models.SlugField(verbose_name=_("Slug"))
@@ -82,44 +82,49 @@ class ProposalBase(models.Model):
 
     objects = InheritanceManager()
 
-    kind = models.ForeignKey(ProposalKind, verbose_name=_("Kind"))
-
-    title = models.CharField(max_length=100, verbose_name=_("Title"))
+    kind = models.ForeignKey(
+        ProposalKind,
+        verbose_name='Type',
+    )
+    title = models.CharField(
+        max_length=100,
+        verbose_name='Titel',
+    )
     description = models.TextField(
-        _("Brief Description"),
+        'Samenvatting',
         max_length=400,  # @@@ need to enforce 400 in UI
-        help_text=_("If your proposal is accepted this will be made public and printed in the "
-                    "program. Should be one paragraph, maximum 400 characters.")
+        help_text='Text wordt gepubliceerd. Maximaal 400 karakters.',
     )
     abstract = models.TextField(
-        _("Detailed Abstract"),
-        help_text=_("Detailed outline. Will be made public if your proposal is accepted. Edit "
-                    "using <a href='http://daringfireball.net/projects/markdown/basics' "
-                    "target='_blank'>Markdown</a>.")
+        'Gedetailleerde beschrijving',
+        help_text='Text wordt gepubliceerd.',
     )
     additional_notes = models.TextField(
-        _("Addtional Notes"),
+        'Notities',
         blank=True,
-        help_text=_("Anything else you'd like the program committee to know when making their "
-                    "selection: your past experience, etc. This is not made public. Edit using "
-                    "<a href='http://daringfireball.net/projects/markdown/basics' "
-                    "target='_blank'>Markdown</a>.")
+        help_text='Interne notities. Text wordt niet gepubliceerd.',
     )
     submitted = models.DateTimeField(
         default=now,
         editable=False,
-        verbose_name=_("Submitted")
+        verbose_name='Ingediend',
     )
-    speaker = models.ForeignKey(Speaker, related_name="proposals", verbose_name=_("Speaker"))
+    speaker = models.ForeignKey(
+        Speaker,
+        related_name="proposals",
+        verbose_name='Spreker',
+    )
 
     # @@@ this validation used to exist as a validators keyword on additional_speakers
     #     M2M field but that is no longer supported by Django. Should be moved to
     #     the form level
     def additional_speaker_validator(self, a_speaker):
         if a_speaker.speaker.email == self.speaker.email:
-            raise ValidationError(_("%s is same as primary speaker.") % a_speaker.speaker.email)
+            raise ValidationError(
+                _("%s is same as primary speaker.") % a_speaker.speaker.email)
         if a_speaker in [self.additional_speakers]:
-            raise ValidationError(_("%s has already been in speakers.") % a_speaker.speaker.email)
+            raise ValidationError(
+                _("%s has already been in speakers.") % a_speaker.speaker.email)
 
     additional_speakers = models.ManyToManyField(Speaker, through="AdditionalSpeaker",
                                                  blank=True, verbose_name=_("Addtional speakers"))
@@ -165,6 +170,7 @@ class ProposalBase(models.Model):
     def __str__(self):
         return self.title
 
+
 reversion.register(ProposalBase)
 
 
@@ -182,8 +188,10 @@ class AdditionalSpeaker(models.Model):
     ]
 
     speaker = models.ForeignKey(Speaker, verbose_name=_("Speaker"))
-    proposalbase = models.ForeignKey(ProposalBase, verbose_name=_("Proposalbase"))
-    status = models.IntegerField(choices=SPEAKING_STATUS, default=SPEAKING_STATUS_PENDING, verbose_name=_("Status"))
+    proposalbase = models.ForeignKey(
+        ProposalBase, verbose_name=_("Proposalbase"))
+    status = models.IntegerField(
+        choices=SPEAKING_STATUS, default=SPEAKING_STATUS_PENDING, verbose_name=_("Status"))
 
     class Meta:
         unique_together = ("speaker", "proposalbase")
@@ -207,18 +215,23 @@ def uuid_filename(instance, filename):
 
 class SupportingDocument(models.Model):
 
-    proposal = models.ForeignKey(ProposalBase, related_name="supporting_documents", verbose_name=_("Proposal"))
+    proposal = models.ForeignKey(
+        ProposalBase, related_name="supporting_documents", verbose_name=_("Proposal"))
 
-    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Uploaded by"))
+    uploaded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name=_("Uploaded by"))
 
-    created_at = models.DateTimeField(default=now, verbose_name=_("Created at"))
+    created_at = models.DateTimeField(
+        default=now, verbose_name=_("Created at"))
 
     file = models.FileField(upload_to=uuid_filename, verbose_name=_("File"))
-    description = models.CharField(max_length=140, verbose_name=_("Description"))
+    description = models.CharField(
+        max_length=140, verbose_name=_("Description"))
 
     def download_url(self):
-        return reverse("proposal_document_download",
+        return reverse("proposals:proposal_document_download",
                        args=[self.pk, os.path.basename(self.file.name).lower()])
+
 
 class Proposal(ProposalBase):
 
@@ -251,4 +264,3 @@ class TalkProposal(Proposal):
 class TutorialProposal(Proposal):
     class Meta:
         verbose_name = "tutorial proposal"
-

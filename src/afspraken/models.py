@@ -1,3 +1,6 @@
+import datetime
+
+from autotask.tasks import cron_task
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import date as _date
@@ -144,3 +147,17 @@ class Beschikbaar(models.Model):
     class Meta:
         verbose_name_plural = 'Beschikbaar'
         ordering = ["deelnemer", "afspraakoptie"]
+
+# https://bitbucket.org/kbr/autotask/overview
+
+
+@cron_task(minutes=[30], hours=[6], dow=[0, 1, 2, 3, 4])
+def clean_up_afspraken():
+    # delete when afspraak.gekozen
+    qs = Afspraak.objects.all()
+    for afspraak in qs:
+        if afspraak.gekozen() != None:
+            date = afspraak.gekozen().datum
+            if date < datetime.date.today() - datetime.timedelta(7):
+                afspraak.delete()
+    return

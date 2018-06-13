@@ -1,0 +1,22 @@
+{% for field in form %}
+<div {% if field.errors %}class="eforms-field error" {% else %}class="eforms-field" {% endif %}>
+    <label{% if field.id_for_label %} for="{{ field.id_for_label }}" {% endif %}>
+        {{ field.label|safe }}:{% if field.field.required %}<strong class="req"> *</strong>{% endif %}
+    </label>
+    <div class="field">
+        {{ field }}
+    </div>
+    {% if field.help_text %}
+    <div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
+        <p>{{ field.help_text|safe }}</p>
+    </div>
+    {% endif %}
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <div class="message error">
+        <p>{{ error|escape }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endfor %}

@@ -6,6 +6,7 @@ import sys
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -36,7 +37,8 @@ def proposal_submit(request):
         messages.info(request, _("To submit a proposal, please "
                                  "<a href='{0}'>log in</a> and create a speaker profile "
                                  "via the dashboard.".format(settings.LOGIN_URL)))
-        return redirect("mainscreen:dashboard")  # @@@ unauth'd speaker info page?
+        # @@@ unauth'd speaker info page?
+        return redirect("symposion:dashboard")
     else:
         try:
             request.user.speaker_profile
@@ -45,7 +47,7 @@ def proposal_submit(request):
             messages.info(request, _("To submit a proposal, first "
                                      "<a href='{0}'>create a speaker "
                                      "profile</a>.".format(url)))
-            return redirect("mainscreen:dashboard")
+            return redirect("symposion:dashboard")
 
     kinds = []
     for proposal_section in ProposalSection.available():
@@ -62,15 +64,16 @@ def proposal_submit_kind(request, kind_slug):
     kind = get_object_or_404(ProposalKind, slug=kind_slug)
 
     if not request.user.is_authenticated():
-        return redirect("home")  # @@@ unauth'd speaker info page?
+        # @@@ unauth'd speaker info page?
+        return redirect("symposion:dashboard")
     else:
         try:
             speaker_profile = request.user.speaker_profile
         except ObjectDoesNotExist:
-            return redirect("dashboard")
+            return redirect("symposion:dashboard")
 
     if not kind.section.proposalsection.is_available():
-        return redirect("proposal_submit")
+        return redirect("proposals:proposal_submit")
 
     form_class = get_form(settings.PROPOSAL_FORMS[kind_slug])
 
@@ -82,16 +85,16 @@ def proposal_submit_kind(request, kind_slug):
             proposal.speaker = speaker_profile
             proposal.save()
             form.save_m2m()
-            messages.success(request, _("Proposal submitted."))
+            messages.success(request, _("Voorstel ingediend."))
             if "add-speakers" in request.POST:
-                return redirect("proposal_speaker_manage", proposal.pk)
-            return redirect("mainscreen:dashboard")
+                return redirect("proposals:proposal_speaker_manage", proposal.pk)
+            return redirect("symposion:dashboard")
     else:
         form = form_class()
 
     return render(request, "proposals/proposal_submit_kind.html", {
         "kind": kind,
-        "proposal_form": form,
+        "form": form,
     })
 
 
@@ -119,8 +122,10 @@ def proposal_speaker_manage(request, pk):
                         Q(user=None, invite_email=email_address)
                     )
                 except Speaker.DoesNotExist:
-                    salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-                    token = hashlib.sha1(salt + email_address).hexdigest()
+                    salt = hashlib.sha1(
+                        str(random.random()).encode('utf-8')).hexdigest()[:5]
+                    token = hashlib.sha1(
+                        str(salt + email_address).encode('utf-8')).hexdigest()
                     pending = Speaker.objects.create(
                         invite_email=email_address,
                         invite_token=token,
@@ -129,49 +134,44 @@ def proposal_speaker_manage(request, pk):
                     token = pending.invite_token
                 return pending, token
             email_address = add_speaker_form.cleaned_data["email"]
-            # check if email is on the site now
-            users = Profile.objects.get_users_for(email_address)
-            if users:
-                # should only be one since we enforce unique email
-                user = users[0]
-                message_ctx["user"] = user
-                # look for speaker profile
+            if email_address != request.user.email:
+                # check if email is on the site now
                 try:
-                    speaker = user.speaker_profile
+                    User = get_user_model()
+                    user = User.objects.get(email=email_address)
                 except ObjectDoesNotExist:
+                    user = None
+                if user:
+                    message_ctx["user"] = user
+                    # look for speaker profile
+                    try:
+                        speaker = user.speaker_profile
+                    except ObjectDoesNotExist:
+                        speaker, token = create_speaker_token(email_address)
+                        message_ctx["token"] = token
+                        # fire off email to user to create profile
+                        #send_email(request,[email_address], "speaker_no_profile",context=message_ctx)
+                    else:
+                        # fire off email to user letting them they are loved.
+                        #send_email(request,[email_address], "speaker_addition",context=message_ctx)
+                        pass
+                else:
                     speaker, token = create_speaker_token(email_address)
                     message_ctx["token"] = token
-                    # fire off email to user to create profile
-                    send_email(request, 
-                        [email_address], "speaker_no_profile",
-                        context=message_ctx
-                    )
-                else:
-                    # fire off email to user letting them they are loved.
-                    send_email(request, 
-                        [email_address], "speaker_addition",
-                        context=message_ctx
-                    )
-            else:
-                speaker, token = create_speaker_token(email_address)
-                message_ctx["token"] = token
-                # fire off email letting user know about site and to create
-                # account and speaker profile
-                send_mail(subject, message, from_email, recipient_list, html_message=None)
-                send_email(request, 
-                    [email_address], "speaker_invite",
-                    context=message_ctx
-                )
-            invitation, created = AdditionalSpeaker.objects.get_or_create(
-                proposalbase=proposal.proposalbase_ptr, speaker=speaker)
-            messages.success(request, "Speaker invited to proposal.")
-            return redirect("proposal_speaker_manage", proposal.pk)
+                    # fire off email letting user know about site and to create
+                    # account and speaker profile
+                    #send_mail(subject, message, from_email, recipient_list, html_message=None)
+                    #send_email(request, [email_address], "speaker_invite", context=message_ctx)
+                invitation, created = AdditionalSpeaker.objects.get_or_create(
+                    proposalbase=proposal.proposalbase_ptr, speaker=speaker)
+                messages.success(request, "Spreker uitgenodigd.")
+            return redirect("proposals:proposal_speaker_manage", proposal.pk)
     else:
         add_speaker_form = AddSpeakerForm(proposal=proposal)
     ctx = {
         "proposal": proposal,
         "speakers": proposal.speakers(),
-        "add_speaker_form": add_speaker_form,
+        "form": add_speaker_form,
     }
     return render(request, "proposals/proposal_speaker_manage.html", ctx)
 
@@ -209,12 +209,12 @@ def proposal_edit(request, pk):
                         "user": request.user,
                         "proposal": proposal,
                     }
-                    send_email(request, 
-                        [user.email], "proposal_updated",
-                        context=ctx
-                    )
+                    send_email(request,
+                               [user.email], "proposal_updated",
+                               context=ctx
+                               )
             messages.success(request, "Proposal updated.")
-            return redirect("proposal_detail", proposal.pk)
+            return redirect("proposals:proposal_detail", proposal.pk)
     else:
         form = form_class(instance=proposal)
 
@@ -261,9 +261,9 @@ def proposal_detail(request, pk):
                         "reviewer": True,
                     }
                     send_email(request,
-                        [reviewer.email], "proposal_new_message",
-                        context=ctx
-                    )
+                               [reviewer.email], "proposal_new_message",
+                               context=ctx
+                               )
 
                 return redirect(request.path)
         else:
@@ -291,7 +291,7 @@ def proposal_cancel(request, pk):
         proposal.save()
         # @@@ fire off email to submitter and other speakers
         messages.success(request, "%s has been cancelled" % proposal.title)
-        return redirect("mainscreen:dashboard")
+        return redirect("symposion:dashboard")
 
     return render(request, "proposals/proposal_cancel.html", {
         "proposal": proposal,
@@ -311,8 +311,9 @@ def proposal_leave(request, pk):
     if request.method == "POST":
         proposal.additional_speakers.remove(speaker)
         # @@@ fire off email to submitter and other speakers
-        messages.success(request, "You are no longer speaking on %s" % proposal.title)
-        return redirect("mainscreen:dashboard")
+        messages.success(
+            request, "You are no longer speaking on %s" % proposal.title)
+        return redirect("symposion:dashboard")
     ctx = {
         "proposal": proposal,
     }
@@ -327,10 +328,11 @@ def proposal_pending_join(request, pk):
     if speaking.status == AdditionalSpeaker.SPEAKING_STATUS_PENDING:
         speaking.status = AdditionalSpeaker.SPEAKING_STATUS_ACCEPTED
         speaking.save()
-        messages.success(request, "You have accepted the invitation to join %s" % proposal.title)
-        return redirect("mainscreen:dashboard")
+        messages.success(
+            request, "You have accepted the invitation to join %s" % proposal.title)
+        return redirect("symposion:dashboard")
     else:
-        return redirect("mainscreen:dashboard")
+        return redirect("symposion:dashboard")
 
 
 @login_required
@@ -341,10 +343,11 @@ def proposal_pending_decline(request, pk):
     if speaking.status == AdditionalSpeaker.SPEAKING_STATUS_PENDING:
         speaking.status = AdditionalSpeaker.SPEAKING_STATUS_DECLINED
         speaking.save()
-        messages.success(request, "You have declined to speak on %s" % proposal.title)
-        return redirect("mainscreen:dashboard")
+        messages.success(
+            request, "You have declined to speak on %s" % proposal.title)
+        return redirect("symposion:dashboard")
     else:
-        return redirect("mainscreen:dashboard")
+        return redirect("symposion:dashboard")
 
 
 @login_required
@@ -363,7 +366,7 @@ def document_create(request, proposal_pk):
             document.proposal = proposal
             document.uploaded_by = request.user
             document.save()
-            return redirect("proposal_detail", proposal.pk)
+            return redirect("proposals:proposal_detail", proposal.pk)
     else:
         form = SupportingDocumentCreateForm()
 
@@ -383,16 +386,18 @@ def document_download(request, pk, *args):
         # we definitely don't want Django's crappy default :-)
         del response["content-type"]
     else:
-        response = static.serve(request, document.file.name, document_root=settings.MEDIA_ROOT)
+        response = static.serve(
+            request, document.file.name, document_root=settings.MEDIA_ROOT)
     return response
 
 
 @login_required
 def document_delete(request, pk):
-    document = get_object_or_404(SupportingDocument, pk=pk, uploaded_by=request.user)
+    document = get_object_or_404(
+        SupportingDocument, pk=pk, uploaded_by=request.user)
     proposal_pk = document.proposal.pk
 
     if request.method == "POST":
         document.delete()
 
-    return redirect("proposal_detail", proposal_pk)
+    return redirect("proposals:proposal_detail", proposal_pk)

@@ -1,0 +1,48 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ evenement.naam }} | Programma | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
+  <a href="{{ evenement.get_absolute_url }}">{{ evenement.naam }}</a>
+  <span>Aanpassen programma</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">{{ evenement.naam }}</h1>
+  <p class="article-meta">Programma</p>
+  <dl>
+    <dt>Datum:</dt>
+    <dd>
+      <time itemprop="startDate">{{ evenement.start_datum|date:"d F Y" }}</time>
+      {% if evenement.einde_datum %} - <time itemprop="endDate">{{ evenement.einde_datum|date:"d F Y" }}</time>{% endif %}
+    </dd>
+	{% if evenement.locatie %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ evenement.locatie }}</dd>
+	{% endif %}
+  </dl>
+  <div class="common results">
+    {% for section in sections %}
+    <a href="{% url 'schedule:schedule_edit' section.slug %}" class="activity">
+			<h3>{{ section.name }}</h3>
+			{% if section.schedule %}
+			<p class="meta">
+				{{ section.schedule.published }}
+				{% if evenement.einde_datum %} - {{ evenement.einde_datum|date:"d F Y" }}{% endif %}
+				{% if evenement.locatie %} | {{ evenement.locatie }}{% endif %}
+				<br>Programma
+            </p>
+            {% endif %}
+		</a>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

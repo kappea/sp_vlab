@@ -20,6 +20,7 @@
 }
 
 /* Forms, when there are no errors */
+/*
 fieldset {
   border: none;
   border-radius: 10px;
@@ -89,7 +90,7 @@ input[type=file] {
   width: 100%;
 }
 input[type=file]::-webkit-file-upload-button {
-  background: #3592B3;
+  background: #01689b;
   border: none;
   color: #FFF;
   cursor: pointer;
@@ -154,6 +155,7 @@ input[type=radio] {
   margin-left: auto;
   max-width: 400px
 }
+*/
 /* Specific Form: Edit Speaker Profile */
 fieldset #div_id_photo .controls a {
   display: block;
@@ -274,8 +276,8 @@ span.help-inline {
 .dashboard-panel a.action,
 .dataTables_paginate .paginate_button,
 .dt-button {
-  background: #3592B3;
-  border: 2px solid #3592B3;
+  background: #01689b;
+  border: 2px solid #01689b;
   color: #FFF;
   cursor: pointer;
   display: inline-block;
@@ -307,7 +309,7 @@ span.help-inline {
 }
 .btn.secondary {
   background: none;
-  color: #3592B3;
+  color: #01689b;
 }
 .btn.secondary:hover {
   background: none;

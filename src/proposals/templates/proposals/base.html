@@ -1,5 +1,18 @@
 {% extends "mainscreen/base.html" %}
+{% load i18n %}
+{% load proposal_tags %}
+{% block title %}Programma | UBR|V-Lab{% endblock %}
 
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+  <span>Programma</span>
+</nav>
+{% endblock %}
+
+{% block content %}
 {% block body_outer %}
     {% block body %}{% endblock %}
 {% endblock %}

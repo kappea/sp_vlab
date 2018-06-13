@@ -1,3 +1,45 @@
+{% extends "mainscreen/base.html" %}
+{% load i18n %}
+
+{% block title %}Spreker | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <a href="{% url 'proposals:proposal_detail' proposal.pk %}">{{ proposal.title }}</a>
+    <span>Spreker</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form action="" method="post" enctype="multipart/form-data" id="document_create_form" autocomplete="off">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{
+                    response_form.non_field_errors }}</div>{% endif %} {% csrf_token %}
+                <div class="formWrapper">
+                    <div id="page0" class="eforms-page">
+                        <p>Weet u zeker dat u niet deelneemt als spreker aan het voorstel <b>'{{ proposal.title }}'</b> ?</p>
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" id="confirm-button" name="confirm" class="" value="Ja, ik weet het zeker" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
 {% extends "proposals/base.html" %}
 
 {% block body %}

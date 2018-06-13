@@ -1,35 +1,59 @@
-{% extends "proposals/base.html" %}
-
+{% extends "mainscreen/base.html" %}
+{% load static %}
 {% load i18n %}
-{% load bootstrap %}
+{% load proposal_tags %}
 
-{% block body %}
-    <h1>{% trans 'Proposal:' %} {{ proposal.title }}</h1>
+<!-- Custom styles for this site -->
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'site/css/slight.css' %}" type="text/css" media="all">
+{% endblock extrahead %}
 
-    <p>
-      <a href="{% url "proposal_edit" proposal.pk %}">{% trans 'Edit proposal' %}
-      </a>
-    </p>
+{% block title %}Programma | UBR|V-Lab{% endblock %}
 
-    <h2>{% trans 'Current Speakers' %}</h2>
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+    <a href="{% url 'proposals:proposal_detail' proposal.pk %}">{{ proposal.title }}</a>
+    <span>Sprekers</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <h2>Huidige sprekers</h2>
 
     {% for speaker in speakers %}
         {% if speaker.user %}
             <p><b>{{ speaker.name }}</b> &mdash; {{ speaker.email }}</p>
         {% else %}
-            <p>{{ speaker.email }} &mdash; {% trans 'pending invitation' %}</p>
+            <p>{{ speaker.email }} &mdash; (Uitgenodigd))</p>
         {% endif %}
     {% endfor %}
-
-    <h2>{% trans 'Add another speaker' %}</h2>
-
-    <form method="POST" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ add_speaker_form|bootstrap }}
-        <div class="form-action">
-            <input type="submit" value="Add speaker" class="btn btn-primary" />
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form action="" method="post" enctype="multipart/form-data" id="speaker_form" autocomplete="off">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{
+                    response_form.non_field_errors }}</div>{% endif %} {% csrf_token %}
+                <div class="formWrapper">
+                    <div id="page0" class="eforms-page">
+                        <div class="eformText">
+                            <h2>Extra spreker toevoegen</h2>
+                            <p class="meta req">* verplichte velden</p>
+                        </div>
+                        {% include "proposals/_form.html" %}
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" id="confirm-button" name="confirm" class="" value="Toevoegen spreker" />
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_body %}

@@ -1,0 +1,121 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load proposal_tags %}
+
+<!-- Custom styles for this site -->
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static 'site/css/slight.css' %}" type="text/css" media="all">
+{% endblock extrahead %}
+
+{% block title %}Programma | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+  <span>Dashboard</span>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if user.speaker_profile %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+	      {% if user.speaker_profile %}
+        <li><a href="{% url 'speakers:speaker_edit' %}">Aanpassen spreker profiel</a></li>
+        <li><a href="{% url 'proposals:proposal_submit' %}">Indienen voorstel</a></li>
+        {% else %}
+        <li><a href="{% url 'speakers:speaker_create' %}">Aanmaken spreker profiel</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="article">
+    {% if page.intro %}
+    <div class="intro">
+        <p>{{ page.intro|safe }}</p>
+    </div>
+    {% endif %}
+    {{ page.content|safe }}
+      
+{% if user.speaker_profile %}
+
+<section class="subsection">
+    <h4>Uw voorstellen</h4>
+    {% if user.speaker_profile.proposals.exists %}
+        <table class="table">
+            <tr>
+                <th>Titel</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Acties</th>
+            </tr>
+            {% for proposal in user.speaker_profile.proposals.all %}
+                {% include "proposals/_proposal_row.html" %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Nog geen voorstellen ingediend.</p>
+    {% endif %}
+</section>
+
+{% associated_proposals as associated_proposals %}
+{% if associated_proposals %}
+    <section class="subsection">
+        <h4>Voorstellen waarbij u medespreker bent</h4>
+        <table class="table">
+            <tr>
+                <th>Titel</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Acties</th>
+            </tr>
+            {% for proposal in associated_proposals %}
+                {% include "proposals/_proposal_row.html" %}
+            {% endfor %}
+        </table>
+    </section>
+{% endif %}
+
+{% pending_proposals as pending_proposals %}
+{% if pending_proposals %}
+    <section class="subsection">
+        <h4>Voorstellen waarvoor u bent uitgenodigd om te spreken</h4>
+        <table class="table">
+            <tr>
+                <th>Titel</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Acties</th>
+            </tr>
+            {% for proposal in pending_proposals %}
+                {% include "proposals/_pending_proposal_row.html" %}
+            {% endfor %}
+        </table>
+    </section>
+{% endif %}
+
+{% else %}
+<p>Maak eerst een spreker profiel aan om daarna een voorstel in te dienen.</p>
+{% endif %}
+</div>
+{% if perms.symposion.change_pagecontent %}
+<div id="aside">
+  <div class="brick linkBlock">
+    <h2>Beheer</h2>
+    <ul class="common">
+      <li>
+	      <a href="{% url 'admin:symposion_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

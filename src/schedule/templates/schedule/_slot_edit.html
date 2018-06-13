@@ -1,14 +1,28 @@
-{% load i18n bootstrap %}
-<form id="slotEditForm" class="modal-form" method="POST" action="{% url "schedule_slot_edit" slug slot.pk %}">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
-        <h3>{% trans "Edit Slot" %}</h3>
+{% load i18n %}
+<div class="form fancy">
+    <div id="usage_simple" style="position:relative;">
+        <form action="{% url 'schedule:schedule_slot_edit' slug slot.pk %}" method="post" id="slotEditForm" autocomplete="off">
+            {% if response_form.non_field_errors %}
+            <div class="message error">
+                <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier
+                    opnieuw.
+                </p>
+                {{ response_form.non_field_errors }}
+            </div>
+            {% endif %} {% csrf_token %}
+            <div class="formWrapper eform">
+                <div id="page0" class="eforms-page conditionally-visible">
+                    <div class="eformText">
+                        <h2 class="req">Wijzig tijdslot</h2>
+                        <p class="meta req">* verplichte velden</p>
+                    </div>
+                    <h3> {% trans "Vul onderstaande gegevens in" %} </h3>
+                    {% include "schedule/_form.html" %}
+                </div>
+                <div class="eforms-buttons">
+                    <input type="submit" id="confirm-button" name="confirm" class="" value="Ga verder" />
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="modal-body" style="height:350px">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-    </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div>
-</form>
+</div>

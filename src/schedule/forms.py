@@ -1,16 +1,18 @@
 from __future__ import unicode_literals
+
 import csv
 import time
-
 from datetime import datetime
+from io import TextIOWrapper
 
 from django import forms
 from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 
-from .models import (Day, Presentation, Room, SlotKind, Slot,
-                                       SlotRoom)
+from proposals.models import ProposalBase
+
+from .models import Day, Presentation, Room, Slot, SlotKind, SlotRoom
 
 
 class SlotEditForm(forms.Form):
@@ -30,7 +32,8 @@ class SlotEditForm(forms.Form):
         queryset = queryset.exclude(cancelled=True)
         queryset = queryset.order_by("proposal_base__pk")
         if self.slot.content:
-            queryset = queryset.filter(Q(slot=None) | Q(pk=self.slot.content.pk))
+            queryset = queryset.filter(
+                Q(slot=None) | Q(pk=self.slot.content.pk))
             kwargs["required"] = False
             kwargs["initial"] = self.slot.content
         else:
@@ -49,14 +52,17 @@ class SlotEditForm(forms.Form):
 
 
 class ScheduleSectionForm(forms.Form):
-    ROOM_KEY = 'room'
-    DATE_KEY = 'date'
-    START_KEY = 'time_start'
-    END_KEY = 'time_end'
-    KIND = 'kind'
+    ROOM_KEY = 'Ruimte'
+    DATE_KEY = 'Datum'
+    DATE_FORMAT = "%d-%m-%Y"
+    START_KEY = 'Starttijd'
+    END_KEY = 'Eindtijd'
+    TIME_FORMAT = '%H:%M:%S'
+    KIND = 'Soort'
 
     filename = forms.FileField(
-        label='Select a CSV file to import:',
+        label='CSV file',
+        help_text='Datum;Starttijd;Eindtijd;Soort;Ruimte',
         required=False
     )
 
@@ -68,7 +74,7 @@ class ScheduleSectionForm(forms.Form):
         if 'submit' in self.data:
             fname = self.cleaned_data.get('filename')
             if not fname or not fname.name.endswith('.csv'):
-                raise forms.ValidationError(u'Please upload a .csv file')
+                raise forms.ValidationError(u'Kies een .csv file')
             return fname
 
     def _get_start_end_times(self, data):
@@ -76,10 +82,11 @@ class ScheduleSectionForm(forms.Form):
         times = []
         for x in [data[self.START_KEY], data[self.END_KEY]]:
             try:
-                time_obj = time.strptime(x, '%I:%M %p')
+                time_obj = time.strptime(x, self.TIME_FORMAT)
             except:
-                return messages.ERROR, u'Malformed time found: %s.' % x
-            time_obj = datetime(100, 1, 1, time_obj.tm_hour, time_obj.tm_min, 00)
+                return messages.ERROR, u'Tijd formaat fout (HH:MM:SS): %s.' % x
+            time_obj = datetime(100, 1, 1, time_obj.tm_hour,
+                                time_obj.tm_min, 00)
             times.append(time_obj.time())
         return times
 
@@ -101,10 +108,10 @@ class ScheduleSectionForm(forms.Form):
         days = set([x[self.DATE_KEY] for x in data])
         for day in days:
             try:
-                date = datetime.strptime(day, "%m/%d/%Y")
+                date = datetime.strptime(day, self.DATE_FORMAT)
             except ValueError:
                 [x.delete() for x in created_days]
-                return messages.ERROR, u'Malformed data found: %s.' % day
+                return messages.ERROR, u'Datum formaat fout (DD-MM-JJJJ): %s.' % day
             day, created = Day.objects.get_or_create(
                 schedule=self.schedule, date=date
             )
@@ -114,8 +121,13 @@ class ScheduleSectionForm(forms.Form):
 
     def build_schedule(self):
         created_items = []
-        reader = csv.DictReader(self.cleaned_data.get('filename'))
-        data = [dict((k.strip(), v.strip()) for k, v in x.items()) for x in reader]
+        csvfile = self.cleaned_data.get('filename')
+        f = TextIOWrapper(csvfile, encoding="utf-8-sig")
+        dialect = csv.Sniffer().sniff(f.read(1024))
+        f.seek(0)
+        reader = csv.DictReader(f, dialect=dialect,)
+        data = [dict((k.strip(), v.strip()) for k, v in x.items())
+                for x in reader]
         # build rooms
         created_items.extend(self._build_rooms(data))
         # build_days
@@ -125,7 +137,7 @@ class ScheduleSectionForm(forms.Form):
             room = Room.objects.get(
                 schedule=self.schedule, name=row[self.ROOM_KEY]
             )
-            date = datetime.strptime(row[self.DATE_KEY], "%m/%d/%Y")
+            date = datetime.strptime(row[self.DATE_KEY], self.DATE_FORMAT)
             day = Day.objects.get(schedule=self.schedule, date=date)
             start, end = self._get_start_end_times(row)
             slot_kind, created = SlotKind.objects.get_or_create(
@@ -151,9 +163,24 @@ class ScheduleSectionForm(forms.Form):
                 # delete all created objects and report error
                 for x in created_items:
                     x.delete()
-                return messages.ERROR, u'An overlap occurred; the import was cancelled.'
-        return messages.SUCCESS, u'Your schedule has been imported.'
+                return messages.ERROR, u'Er is een overlap geconstateerd; het importeren is afgebroken.'
+        return messages.SUCCESS, u'Het programma is geimporteerd.'
 
     def delete_schedule(self):
         self.schedule.day_set.all().delete()
-        return messages.SUCCESS, u'Your schedule has been deleted.'
+        return messages.SUCCESS, u'Het programma is verwijderd.'
+
+
+class PromoteProposalForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(PromoteProposalForm, self).__init__(*args, **kwargs)
+        self.fields["voorstel"] = self.build_proposal_field()
+
+    def build_proposal_field(self):
+        kwargs = {}
+        queryset = ProposalBase.objects.filter(presentation=None)
+        queryset = queryset.exclude(cancelled=True, )
+        kwargs["required"] = True
+        kwargs["queryset"] = queryset
+        return forms.ModelChoiceField(**kwargs)

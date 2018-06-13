@@ -87,7 +87,7 @@
 	  {% endif %}
 	  {% if evenement.programma %}
       <li>
-	    <a href="/admin/schedule" class="common">Wijzigen programma</a>
+	    <a href="{% url 'conference:section_list' slug=evenement.slug %}" class="common">Wijzigen programma</a>
       </li>
 	  {% else %}
       <li>
