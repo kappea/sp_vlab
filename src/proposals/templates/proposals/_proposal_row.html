@@ -24,7 +24,7 @@
     <td>
         {% if not proposal.cancelled %}
             {% if request.user == proposal.speaker.user and proposal.can_edit %}
-                <a href="{% url "proposals:proposal_edit" proposal.pk %}" class="btn btn-xs"><i class="fa fa-pencil"></i> Aanpassen</a>
+                <a style="color: #FFF;" href="{% url "proposals:proposal_edit" proposal.pk %}" class="btn btn-xs"><i class="fa fa-pencil"></i> Aanpassen</a>
             {% endif %}
         {% endif %}
     </td>
