@@ -183,4 +183,5 @@ class PromoteProposalForm(forms.Form):
         queryset = queryset.exclude(cancelled=True, )
         kwargs["required"] = True
         kwargs["queryset"] = queryset
+        kwargs["help_text"] = 'Door promotie worden de teksten uit het ingediende voorstel gekopieerd en kunnen deze gekoppeld worden aan een tijdslot van het programma.'
         return forms.ModelChoiceField(**kwargs)

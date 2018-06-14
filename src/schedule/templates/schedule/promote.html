@@ -31,7 +31,7 @@
                 <div class="formWrapper eform">
                     <div id="page0" class="eforms-page conditionally-visible">
                         <div class="eformText">
-                            <h2 class="req">CSV bestand importeren</h2>
+                            <h2 class="req">Kies het te promoveren voorstel</h2>
                             <p class="meta req">* verplichte velden</p>
                         </div>
                         {% include "schedule/_form.html" %}
@@ -44,4 +44,17 @@
         </div>
     </div>
 </div>
+{% if perms.schedule.change_presentation %}
+<div id="aside">
+  <div class="brick linkBlock">
+    <h2>Beheer</h2>
+    <ul class="common">
+      <li>
+	    <a href="/admin/schedule/presentation/" class="common">Wijzigen gepromoveerd voorstel</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}
