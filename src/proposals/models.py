@@ -93,10 +93,12 @@ class ProposalBase(models.Model):
     description = models.TextField(
         'Samenvatting',
         max_length=400,  # @@@ need to enforce 400 in UI
+        blank=True,
         help_text='Text wordt gepubliceerd. Maximaal 400 karakters.',
     )
     abstract = models.TextField(
         'Gedetailleerde beschrijving',
+        blank=True,
         help_text='Text wordt gepubliceerd.',
     )
     additional_notes = models.TextField(
@@ -114,6 +116,7 @@ class ProposalBase(models.Model):
         related_name="proposals",
         verbose_name='Spreker',
     )
+    akkoordverklaring = models.BooleanField(default=False)
 
     # @@@ this validation used to exist as a validators keyword on additional_speakers
     #     M2M field but that is no longer supported by Django. Should be moved to

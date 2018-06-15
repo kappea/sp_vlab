@@ -27,11 +27,16 @@ class TalkProposalForm(ProposalForm):
             "description",
             "abstract",
             "additional_notes",
+            "akkoordverklaring",
         ]
         widgets = {
             'abstract': SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
             "additional_notes": SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(TalkProposalForm, self).__init__(*args, **kwargs)
+        self.fields["akkoordverklaring"].required = True
 
 
 class TutorialProposalForm(ProposalForm):
@@ -44,12 +49,16 @@ class TutorialProposalForm(ProposalForm):
             "description",
             "abstract",
             "additional_notes",
-            "recording_release",
+            "akkoordverklaring",
         ]
         widgets = {
             "abstract": SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
             "additional_notes": SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(TutorialProposalForm, self).__init__(*args, **kwargs)
+        self.fields["akkoordverklaring"].required = True
 
 
 # @@@ generic proposal form

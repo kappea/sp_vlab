@@ -17,25 +17,32 @@ class Speaker(models.Model):
         (2, "Two")
     ]
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, related_name="speaker_profile", verbose_name=_("User"))
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True,
+                                related_name="speaker_profile", verbose_name=_("User"))
     name = models.CharField(verbose_name=_("Name"), max_length=100,
-                            help_text=('De naam zoals deze op het programma moet worden weergegeven.'),
+                            help_text=(
+                                'De naam zoals deze op het programma moet worden weergegeven.'),
                             )
-    biography = models.TextField(blank=True, help_text=_("Uw korte introductie"), verbose_name=_("Biography"))
-    photo = models.ImageField(upload_to="speaker_photos", blank=True, verbose_name=_("Photo"))
+    biography = models.TextField(blank=True, help_text=_(
+        "Uw korte introductie"), verbose_name='Biografie')
+    photo = models.ImageField(
+        upload_to="speaker_photos", blank=True, verbose_name='Foto')
     twitter_username = models.CharField(
         max_length=15,
         blank=True,
         help_text=_(u"Uw Twitter account")
     )
     annotation = models.TextField(verbose_name=_("Annotation"))  # staff only
-    invite_email = models.CharField(max_length=200, unique=True, null=True, db_index=True, verbose_name=_("Invite_email"))
-    invite_token = models.CharField(max_length=40, db_index=True, verbose_name=_("Invite token"))
+    invite_email = models.CharField(
+        max_length=200, unique=True, null=True, db_index=True, verbose_name=_("Invite_email"))
+    invite_token = models.CharField(
+        max_length=40, db_index=True, verbose_name=_("Invite token"))
     created = models.DateTimeField(
         default=datetime.datetime.now,
         editable=False,
         verbose_name=_("Created")
     )
+    akkoordverklaring = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['name']

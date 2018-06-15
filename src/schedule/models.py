@@ -82,7 +82,7 @@ class SlotKind(models.Model):
 @python_2_unicode_compatible
 class Slot(models.Model):
 
-    name = models.CharField(max_length=100, editable=False)
+    name = models.CharField(max_length=250, editable=False)
     day = models.ForeignKey(Day, verbose_name=_("Day"))
     kind = models.ForeignKey(SlotKind, verbose_name=_("Kind"))
     start = models.TimeField(verbose_name=_("Start"))
@@ -185,9 +185,17 @@ class Presentation(models.Model):
 
     slot = models.OneToOneField(
         Slot, null=True, blank=True, related_name="content_ptr", verbose_name=_("Slot"))
-    title = models.CharField(max_length=100, verbose_name=_("Title"))
-    description = models.TextField(verbose_name=_("Description"))
-    abstract = models.TextField(verbose_name=_("Abstract"))
+    title = models.CharField(max_length=100, verbose_name='Titel')
+    description = models.TextField(
+        'Samenvatting',
+        blank=True,
+        help_text='Text wordt gepubliceerd. Maximaal 400 karakters.',
+    )
+    abstract = models.TextField(
+        'Gedetailleerde beschrijving',
+        blank=True,
+        help_text='Text wordt gepubliceerd.',
+    )
     speaker = models.ForeignKey(
         Speaker, related_name="presentations", verbose_name=_("Speaker"))
     additional_speakers = models.ManyToManyField(Speaker, related_name="copresentations",

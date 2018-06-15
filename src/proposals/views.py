@@ -23,6 +23,7 @@ from proposals.forms import AddSpeakerForm, SupportingDocumentCreateForm
 from proposals.models import (AdditionalSpeaker, ProposalBase, ProposalKind,
                               ProposalSection, SupportingDocument)
 from speakers.models import Speaker
+from symposion.models import PageContent
 
 
 def get_form(name):
@@ -62,6 +63,10 @@ def proposal_submit(request):
 def proposal_submit_kind(request, kind_slug):
 
     kind = get_object_or_404(ProposalKind, slug=kind_slug)
+    try:
+        page = PageContent.objects.get(naam='voorstel-indienen')
+    except ObjectDoesNotExist:
+        page = None
 
     if not request.user.is_authenticated():
         # @@@ unauth'd speaker info page?
@@ -93,6 +98,7 @@ def proposal_submit_kind(request, kind_slug):
         form = form_class()
 
     return render(request, "proposals/proposal_submit_kind.html", {
+        'page': page,
         "kind": kind,
         "form": form,
     })
@@ -184,6 +190,10 @@ def proposal_edit(request, pk):
 
     if request.user != proposal.speaker.user:
         raise Http404()
+    try:
+        page = PageContent.objects.get(naam='voorstel-indienen')
+    except ObjectDoesNotExist:
+        page = None
 
     if not proposal.can_edit():
         ctx = {
@@ -219,6 +229,7 @@ def proposal_edit(request, pk):
         form = form_class(instance=proposal)
 
     return render(request, "proposals/proposal_edit.html", {
+        'page': page,
         "proposal": proposal,
         "form": form,
     })

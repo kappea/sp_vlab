@@ -50,12 +50,23 @@
 	{% endif %}
 	{% if presentation.speakers %}
     <dt>Spreker(s):</dt>
-    <dd itemprop="speakers">{% for speaker in presentation.speakers %}
-	  <a href="{% url "speakers:speaker_profile" evenement.slug speaker.pk %}">{{ speaker }}</a>
+    <dd itemprop="speakers">
+    {% for speaker in presentation.speakers %}
+    {% if  speaker.akkoordverklaring %}
+    <a href="{% url "speakers:speaker_profile" evenement.slug speaker.pk %}">{{ speaker }}</a>
+    {% else %}
+    {{ speaker }}
+    {% endif %}
 	  {% if not forloop.last %}, {% endif %}{% endfor %}</dd>
 	{% endif %}
   </dl>
-  <h3>Beschrijving</h3>
+  {% if presentation.description %}
+  <h3>Samenvatting</h3>
   {{ presentation.description|safe }}
+  {% endif %}
+  {% if presentation.abstract %}
+  <h3>Gedetailleerde beschrijving</h3>
+  {{ presentation.abstract|safe }}
+  {% endif %}
 </div>
 {% endblock %}

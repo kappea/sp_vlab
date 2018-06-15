@@ -11,9 +11,10 @@ class SpeakerForm(forms.ModelForm):
         model = Speaker
         widgets = {
             'biography': SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
-            }
+        }
         fields = [
             "name",
             "biography",
             "photo",
+            "akkoordverklaring",
         ]

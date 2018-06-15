@@ -26,7 +26,7 @@
                 {% if slot.content_override %} {{ slot.content_override|safe }}
                 {% else %} {{ slot.kind.label }}
                 {% endif %} &mdash;
-                <a class="edit-slot" data-action="{% url "schedule:schedule_slot_edit" schedule.section.slug slot.pk %}" href="#">edit</a>
+                <a style="color: #FFF;" class="edit-slot" data-action="{% url "schedule:schedule_slot_edit" schedule.section.slug slot.pk %}" href="#">edit</a>
                 {% endif %}
             </td>
             {% endfor %} {% if forloop.last %}

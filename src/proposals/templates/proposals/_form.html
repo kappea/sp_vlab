@@ -1,22 +1,77 @@
 {% for field in form %}
-<div {% if field.errors %}class="eforms-field error" {% else %}class="eforms-field" {% endif %}>
-    <label{% if field.id_for_label %} for="{{ field.id_for_label }}" {% endif %}>
-        {{ field.label|safe }}:{% if field.field.required %}<strong class="req"> *</strong>{% endif %}
-    </label>
-    <div class="field">
-        {{ field }}
-    </div>
-    {% if field.help_text %}
-    <div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
-        <p>{{ field.help_text|safe }}</p>
-    </div>
-    {% endif %}
-    {% if field.errors %}
-    {% for error in field.errors %}
-    <div class="message error">
-        <p>{{ error|escape }}</p>
-    </div>
-    {% endfor %}
-    {% endif %}
+{% if field.name == 'akkoordverklaring' %}
+<fieldset name="fieldGroup" class="eforms-fieldgroup" data-expand-txt="Toon extra informatie over de verwerking van uw persoonsgegevens"
+   data-collapse-txt="Verberg extra informatie">
+   <legend class="eforms-fieldgroupname">avg-nl</legend>
+   <div class="eformText">
+       <h2>Informatie over de verwerking van uw persoonsgegevens</h2>
+       <p>{{page.avg_tekst1}}</p>
+   </div>
+   <div class="eformText">
+       <h3>Waarom worden deze gegevens gevraagd?</h3>
+       <p>{{page.avg_tekst2}}</p>
+   </div>
+   <div class="eformText">
+       <h3>Op welke manier worden uw gegevens verwerkt?</h3>
+       <p>{{page.avg_tekst3}}</p>
+   </div>
+   <div class="eformText">
+       <h3>Hoelang bewaren wij uw gegevens?</h3>
+       <p>{{page.avg_tekst4}}</p>
+   </div>
+   <div class="eformText">
+       <h3>Wat zijn uw rechten?</h3>
+       <p>Meer informatie over uw rechten vindt u op de pagina
+           <a href='https://www.ubrijk.nl/privacy' target='_blank'>'Privacy' (link opent in nieuw tabblad)</a>.</p>
+   </div>
+   <div class="eforms-field">
+       <fieldset class="input-group">
+           <legend>
+               Akkoordverklaring
+               <strong class="req"> *</strong>
+           </legend>
+           <div class="field">
+               <label class="radio" for="fieldGroup__akkoordverklaring1">
+                   <input type="checkbox" name="akkoordverklaring" id="fieldGroup__akkoordverklaring1" value="Toestemming" /> Ik heb gelezen en begrepen wat er met mijn persoonsgegevens wordt gedaan.
+               </label>
+           </div>
+           {% if field.errors %} {% for error in field.errors %}
+           <div class="message error">
+               <p>{{ error|escape }}</p>
+           </div>
+           {% endfor %} {% endif %}
+       </fieldset>
+   </div>
+</fieldset>
+<div class="eforms-field controle">
+   <label for="controlquestionid" tabindex="-1" aria-hidden="true">
+       Controlevraag
+       <span class="eforms-req"> *</span>
+   </label>
+   <div class="field">
+       <input name="controlquestion" type="text" tabindex="-1" aria-hidden="true" id="controlquestionid" class="controle" />
+   </div>
 </div>
+{% else %}
+<div {% if field.errors %}class="eforms-field error" {% else %}class="eforms-field" {% endif %}>
+   <label{% if field.id_for_label %} for="{{ field.id_for_label }}" {% endif %}>{{ field.label|safe }}:
+       {% if field.field.required %}<strong class="req"> *</strong>{% endif %}
+   </label>
+   <div class="field">
+       {{ field }}
+   </div>
+   {% if field.help_text %}
+   <div class="hint " data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
+       <p>{{ field.help_text|safe }}</p>
+   </div>
+   {% endif %}
+   {% if field.errors %}
+   {% for error in field.errors %}
+   <div class="message error">
+       <p>{{ error|escape }}</p>
+   </div>
+   {% endfor %}
+   {% endif %}
+</div>
+{% endif %}
 {% endfor %}

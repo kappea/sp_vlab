@@ -1,17 +1,18 @@
 from __future__ import unicode_literals
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
 
+from evenementen.models import Evenement
 from proposals.models import ProposalBase
 from speakers.forms import SpeakerForm
 from speakers.models import Speaker
-from evenementen.models import Evenement
+from symposion.models import PageContent
 
 
 @login_required
@@ -101,6 +102,10 @@ def speaker_create_token(request, token):
 
 @login_required
 def speaker_edit(request, pk=None):
+    try:
+        page = PageContent.objects.get(naam='spreker-profiel')
+    except ObjectDoesNotExist:
+        page = None
     if pk is None:
         try:
             speaker = request.user.speaker_profile
@@ -122,6 +127,7 @@ def speaker_edit(request, pk=None):
         form = SpeakerForm(instance=speaker)
 
     return render(request, "speakers/speaker_edit.html", {
+        'page': page,
         "speaker_form": form,
     })
 
@@ -129,6 +135,8 @@ def speaker_edit(request, pk=None):
 def speaker_profile(request, slug, pk):
     evenement = get_object_or_404(Evenement, slug=slug)
     speaker = get_object_or_404(Speaker, pk=pk)
+    if not speaker.akkoordverklaring and not request.user.is_staff:
+        raise Http404()
     presentations = speaker.all_presentations
     if not presentations and not request.user.is_staff:
         raise Http404()
