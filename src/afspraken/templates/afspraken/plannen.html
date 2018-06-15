@@ -5,7 +5,7 @@
 
 {% block navbar %}
 <nav class="breadCrumbNav">
-  <span class="assistive">U bevindt zich hier:</span>
+	<span class="assistive">U bevindt zich hier:</span>
 	<a href="{% url 'afspraken:dashboard' %}">Datum prikken</a>
 	<span>Afspraak plannen</span>
 </nav>
@@ -16,31 +16,34 @@
 
 <style type="text/css">
 	.add-deelnemer-row {
-		padding-left:18px;
+		padding-left: 18px;
 		background:url({% static 'site/images/add.png' %}) no-repeat left center;
 	}
-  .add-afspraakoptie-row {
-		padding-left:18px;
+
+	.add-afspraakoptie-row {
+		padding-left: 18px;
 		background:url({% static 'site/images/add.png' %}) no-repeat left center;
 	}
+
 	.delete-deelnemer-row {
-    float:right;
-    display:block;
-    margin:5px 0 0 5px;
-    text-indent:-6000px;
-    background:url({% static 'site/images/delete.png' %}) no-repeat left center;
-    width:16px;
-    height:16px;
-  }
+		float: right;
+		display: block;
+		margin: 5px 0 0 5px;
+		text-indent: -6000px;
+		background:url({% static 'site/images/delete.png' %}) no-repeat left center;
+		width: 16px;
+		height: 16px;
+	}
+
 	.delete-afspraakoptie-row {
-    float:right;
-    display:block;
-    margin:5px 0 0 5px;
-    text-indent:-6000px;
-    background:url({% static 'site/images/delete.png' %}) no-repeat left center;
-    width:16px;
-    height:16px;
-  }
+		float: right;
+		display: block;
+		margin: 5px 0 0 5px;
+		text-indent: -6000px;
+		background:url({% static 'site/images/delete.png' %}) no-repeat left center;
+		width: 16px;
+		height: 16px;
+	}
 </style>
 {% endblock %}
 
@@ -48,10 +51,10 @@
 <!--[if (gt IE 10)|!(IE)]><!-->
 <script type="text/javascript">
 	var formsetscript = "{% static 'site/js/jquery.formset.js' %}";
-  require([formsetscript, 'forms'], function() {
+	require([formsetscript, 'forms'], function () {
 		//This function is called after jquery.formset.js has loaded.
 		//https://elo80ka.wordpress.com/2009/10/10/jquery-plugin-django-dynamic-formset
-		$(function() {
+		$(function () {
 			$('div.deelnemer_form').formset({
 				prefix: '{{ deelnemer_formset.prefix }}',
 				addText: 'Deelnemer toevoegen',            // Text for the add link
@@ -65,9 +68,9 @@
 				addCssClass: 'add-afspraakoptie-row',          // CSS class applied to the add link
 				deleteCssClass: 'delete-afspraakoptie-row',    // CSS class applied to the delete link
 				formCssClass: 'dynamic-afspraakoptie-form',    // CSS class applied to each form in a formset
-				added: function(row) {
+				added: function (row) {
 					// Find the fields with the calendar widget
-					$(row).find('.date').each(function(i) {
+					$(row).find('.date').each(function (i) {
 						//https://stackoverflow.com/questions/10882522/how-to-clone-jquery-datepicker
 						$(this).removeClass("datepicker-open");
 						$(this).parent().find('.ui-datepicker-trigger').remove();
@@ -76,101 +79,178 @@
 				}
 			});
 		});
-  });
+	});
 </script>
 <!--<![endif]-->
 {% endblock %}
 
 {% block content %}
 <div id="content" class="article">
-  <div class="form fancy">
-	<div id="usage_simple" style="position:relative;">
-	  <form action="{% url 'afspraken:plannen' %}" method="post" id="plannen_form" autocomplete="off">
-		{% if response_form.non_field_errors %}<div class="message error"><p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{ response_form.non_field_errors }}</div>{% endif %}
-		{% csrf_token %}
-		<div class="formWrapper eform">
-		  <div id="page0" class="eforms-page">
-			<div class="eformText">
-			  <h2 class="req">Nieuwe afspraak plannen</h2>
-			  <p class="meta req">* verplichte velden</p>
-			</div>
-      <h2>Afspraak:</h2>
-	    {% for field in afspraak_form %}
-		  <div {% if field.errors %}class="eforms-field error"{% else %}class="eforms-field"{% endif %}>
-		    <label{% if field.id_for_label %} for="{{ field.id_for_label }}"{% endif %}>{{ field.label|safe }}:{% if field.field.required %}<strong class="req"> *</strong>{% endif %}</label>
-			  <div class="field">
-			    {{ field }}
-			  </div>
-			  {% if field.help_text %}
-			  <div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
-			    <p>{{ field.help_text|safe }}</p>
-			  </div>
-			  {% endif %}
-			  {% if field.errors %}
-			  {% for error in field.errors %}
-			  <div class="message error"><p>{{ error|escape }}</p></div>
-			  {% endfor %}
-			  {% endif %}
-		  </div>
-		  {% endfor %}
-		  </div>
-		  <hr/>
-      <h2>Deelnemers: <small>(minimaal 2)</small></h2>
-		  {% for form in deelnemer_formset.forms %}
-          <div id="{{ form.prefix }}-row" class="deelnemer_form eforms-page" style="padding-bottom:6px; border-bottom:1px dotted #ccc; margin-bottom:6px;">
-	        {% for field in form %}
-		    <div {% if field.errors %}class="eforms-field error"{% else %}class="eforms-field"{% endif %}>
-		      <label{% if field.id_for_label %} for="{{ field.id_for_label }}"{% endif %}>{{ field.label|safe }}:{% if field.field.required %}<strong class="req"> *</strong>{% endif %}</label>
-			  <div class="field">
-			    {{ field }}
-			  </div>
-			  {% if field.help_text %}
-			  <div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
-			    <p>{{ field.help_text|safe }}</p>
-			  </div>
-			  {% endif %}
-			  {% if field.errors %}
-			  {% for error in field.errors %}
-			  <div class="message error"><p>{{ error|escape }}</p></div>
-			  {% endfor %}
-			  {% endif %}
-		    </div>
-		    {% endfor %}
-          </div>
-		  {% endfor %}
-		  <hr/>
-          <h2>Afspraak opties: <small>(minimaal 2)</small></h2>
-		  {% for form in afspraakoptie_formset.forms %}
-          <div id="{{ form.prefix }}-row" class="afspraakoptie_form eforms-page" style="padding-bottom:6px; border-bottom:1px dotted #ccc; margin-bottom:6px;">
-	        {% for field in form %}
-		    <div {% if field.errors %}class="eforms-field error"{% else %}class="eforms-field"{% endif %}>
-		      <label{% if field.id_for_label %} for="{{ field.id_for_label }}"{% endif %}>{{ field.label|safe }}:{% if field.field.required %}<strong class="req"> *</strong>{% endif %}</label>
-			  <div class="field">
-			    {{ field }}
-			  </div>
-			  {% if field.help_text %}
-			  <div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
-			    <p>{{ field.help_text|safe }}</p>
-			  </div>
-			  {% endif %}
-			  {% if field.errors %}
-			  {% for error in field.errors %}
-			  <div class="message error"><p>{{ error|escape }}</p></div>
-			  {% endfor %}
-			  {% endif %}
-		    </div>
-		    {% endfor %}
-          </div>
-		  {% endfor %}
-		  <hr/>
-          <div class="eforms-buttons">
-            {{ deelnemer_formset.management_form }}
-            {{ afspraakoptie_formset.management_form }}
-            <input type="submit" id="confirm-button" name="confirm" class="" value="Uitnodigingen versturen"/>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
+	<div class="form fancy">
+		<div id="usage_simple" style="position:relative;">
+			<form action="{% url 'afspraken:plannen' %}" method="post" id="plannen_form" autocomplete="off">
+				{% if response_form.non_field_errors %}
+				<div class="message error">
+					<p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>
+					{{ response_form.non_field_errors }}
+				</div>
+				{% endif %}
+				{% csrf_token %}
+				<div class="formWrapper eform">
+					<div id="page0" class="eforms-page">
+						<div class="eformText">
+							<h2 class="req">Nieuwe afspraak plannen</h2>
+							<p class="meta req">* verplichte velden</p>
+						</div>
+						<h2>Afspraak:</h2>
+						{% for field in afspraak_form %}
+						{% if not field.name == 'akkoordverklaring' %}
+						<div {% if field.errors %}class="eforms-field error" {% else %}class="eforms-field" {% endif %}>
+							<label{% if field.id_for_label %} for="{{ field.id_for_label }}" {% endif %}>{{ field.label|safe }}:
+								{% if field.field.required %}<strong class="req"> *</strong>{% endif %}
+							</label>
+							<div class="field">
+								{{ field }}
+							</div>
+							{% if field.help_text %}
+							<div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
+								<p>{{ field.help_text|safe }}</p>
+							</div>
+							{% endif %}
+							{% if field.errors %}
+							{% for error in field.errors %}
+							<div class="message error">
+								<p>{{ error|escape }}</p>
+							</div>
+							{% endfor %}
+							{% endif %}
+						</div>
+						{% endif %}
+						{% endfor %}
+						<hr/>
+						<h2>Deelnemers: <small>(minimaal 2)</small></h2>
+						{% for form in deelnemer_formset.forms %}
+						<div id="{{ form.prefix }}-row" class="deelnemer_form eforms-page" style="padding-bottom:6px; border-bottom:1px dotted #ccc; margin-bottom:6px;">
+							{% for field in form %}
+							<div {% if field.errors %}class="eforms-field error" {% else %}class="eforms-field" {% endif %}>
+								<label{% if field.id_for_label %} for="{{ field.id_for_label }}" {% endif %}>{{ field.label|safe }}:
+									{% if field.field.required %}<strong class="req"> *</strong>{% endif %}
+								</label>
+								<div class="field">
+									{{ field }}
+								</div>
+								{% if field.help_text %}
+								<div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
+									<p>{{ field.help_text|safe }}</p>
+								</div>
+								{% endif %}
+								{% if field.errors %}
+								{% for error in field.errors %}
+								<div class="message error">
+									<p>{{ error|escape }}</p>
+								</div>
+								{% endfor %}
+								{% endif %}
+							</div>
+							{% endfor %}
+						</div>
+						{% endfor %}
+						<hr/>
+						<h2>Afspraak opties: <small>(minimaal 2)</small></h2>
+						{% for form in afspraakoptie_formset.forms %}
+						<div id="{{ form.prefix }}-row" class="afspraakoptie_form eforms-page" style="padding-bottom:6px; border-bottom:1px dotted #ccc; margin-bottom:6px;">
+							{% for field in form %}
+							<div {% if field.errors %}class="eforms-field error" {% else %}class="eforms-field" {% endif %}>
+								<label{% if field.id_for_label %} for="{{ field.id_for_label }}" {% endif %}>{{ field.label|safe }}:
+									{% if field.field.required %}<strong class="req"> *</strong>{% endif %}
+								</label>
+								<div class="field">
+									{{ field }}
+								</div>
+								{% if field.help_text %}
+								<div class="hint" data-opentxt="Toelichting bij het veld" data-closetxt="Sluit deze toelichting">
+									<p>{{ field.help_text|safe }}</p>
+								</div>
+								{% endif %}
+								{% if field.errors %}
+								{% for error in field.errors %}
+								<div class="message error">
+									<p>{{ error|escape }}</p>
+								</div>
+								{% endfor %}
+								{% endif %}
+							</div>
+							{% endfor %}
+						</div>
+						{% endfor %}
+						<hr/>
+						{% for field in afspraak_form %}
+						{% if field.name == 'akkoordverklaring' %}
+						<fieldset name="fieldGroup" class="eforms-fieldgroup" data-expand-txt="Toon extra informatie over de verwerking van deze persoonsgegevens"
+						 data-collapse-txt="Verberg extra informatie">
+							<legend class="eforms-fieldgroupname">avg-nl</legend>
+							<div class="eformText">
+								<h2>Informatie over de verwerking van deze persoonsgegevens</h2>
+								<p>{{page.avg_tekst1}}</p>
+							</div>
+							<div class="eformText">
+								<h3>Waarom worden deze gegevens gevraagd?</h3>
+								<p>{{page.avg_tekst2}}</p>
+							</div>
+							<div class="eformText">
+								<h3>Op welke manier worden deze gegevens verwerkt?</h3>
+								<p>{{page.avg_tekst3}}</p>
+							</div>
+							<div class="eformText">
+								<h3>Hoelang bewaren wij deze gegevens?</h3>
+								<p>{{page.avg_tekst4}}</p>
+							</div>
+							<div class="eformText">
+								<h3>Wat zijn uw rechten?</h3>
+								<p>Meer informatie over uw rechten vindt u op de pagina
+									<a href='https://www.ubrijk.nl/privacy' target='_blank'>'Privacy' (link opent in nieuw tabblad)</a>.</p>
+							</div>
+							<div class="eforms-field">
+								<fieldset class="input-group">
+									<legend>
+										Akkoordverklaring
+										<strong class="req"> *</strong>
+									</legend>
+									<div class="field">
+										<label class="radio" for="fieldGroup__akkoordverklaring1">
+											<input type="checkbox" name="akkoordverklaring" id="fieldGroup__akkoordverklaring1" value="Toestemming" /> Ik heb gelezen en begrepen wat er met deze persoonsgegevens wordt gedaan.
+										</label>
+									</div>
+									{% if field.errors %}
+									{% for error in field.errors %}
+									<div class="message error">
+										<p>{{ error|escape }}</p>
+									</div>
+									{% endfor %}
+									{% endif %}
+								</fieldset>
+							</div>
+						</fieldset>
+						<div class="eforms-field controle">
+							<label for="controlquestionid" tabindex="-1" aria-hidden="true">
+								Controlevraag
+								<span class="eforms-req"> *</span>
+							</label>
+							<div class="field">
+								<input name="controlquestion" type="text" tabindex="-1" aria-hidden="true" id="controlquestionid" class="controle" />
+							</div>
+						</div>
+						{% endif %}
+						{% endfor %}
+					</div>
+					<div class="eforms-buttons">
+						{{ deelnemer_formset.management_form }}
+						{{ afspraakoptie_formset.management_form }}
+						<input type="submit" id="confirm-button" name="confirm" class="" value="Uitnodigingen versturen" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 {% endblock %}

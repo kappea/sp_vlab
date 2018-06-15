@@ -23,11 +23,16 @@ class AfspraakForm(models.ModelForm):
             'intro',
             'locatie',
             # 'duur',
+            'akkoordverklaring',
         ]
         widgets = {
             'intro': SummernoteWidget(attrs={'width': '100%', 'height': '300px'}),
             # 'duur': forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM', }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AfspraakForm, self).__init__(*args, **kwargs)
+        self.fields["akkoordverklaring"].required = True
 
 
 class AfspraakOptieForm(forms.Form):

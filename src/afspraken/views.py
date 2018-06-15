@@ -39,7 +39,8 @@ def dashboard(request):
             afspraken = Afspraak.objects.filter(organisator=request.user)
             for afspraak in afspraken:
                 afspraak_dict[afspraak] = afspraak.token
-            mijnDeelnemingen = AfspraakDeelnemer.objects.filter(invite_email=request.user.email)
+            mijnDeelnemingen = AfspraakDeelnemer.objects.filter(
+                invite_email=request.user.email)
             for deelneming in mijnDeelnemingen:
                 afspraak_dict[deelneming.afspraak] = deelneming.token
             afspraak_lijst = sorted(
@@ -58,6 +59,9 @@ def dashboard(request):
 
 @login_required
 def plannen(request):
+    page = get_object_or_404(PageContent, naam='dashboard')
+    if not page.published:
+        raise Http404()
     template_name = 'afspraken/plannen.html'
     if request.method == 'POST':
         afspraak_form = AfspraakForm(
@@ -160,6 +164,7 @@ def plannen(request):
         afspraakoptie_formset = AfspraakOptieFormset(
             prefix='afspraakoptie_form')
     context = {
+        'page': page,
         'afspraak_form': afspraak_form,
         'deelnemer_formset': deelnemer_formset,
         'afspraakoptie_formset': afspraakoptie_formset,
