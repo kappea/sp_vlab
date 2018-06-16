@@ -35,19 +35,20 @@ def get_form(name):
 
 def proposal_submit(request):
     if not request.user.is_authenticated():
-        messages.info(request, _("To submit a proposal, please "
-                                 "<a href='{0}'>log in</a> and create a speaker profile "
-                                 "via the dashboard.".format(settings.LOGIN_URL)))
-        # @@@ unauth'd speaker info page?
+        messages.info(
+            request,
+            "Om een voorstel in te kunnen dienen, eerst <a href='{0}'>in loggen</a> en een spreker profiel aanmaken via het dashboard.".format(
+                settings.LOGIN_URL)
+        )
         return redirect("symposion:dashboard")
     else:
         try:
             request.user.speaker_profile
         except ObjectDoesNotExist:
-            url = reverse("speaker_create")
-            messages.info(request, _("To submit a proposal, first "
-                                     "<a href='{0}'>create a speaker "
-                                     "profile</a>.".format(url)))
+            url = reverse("speakers:speaker_create")
+            messages.info(
+                request,
+                "Om een voorstel in te kunnen dienen, eerst een <a href='{0}'>spreker profiel aanmaken</a>.".format(url))
             return redirect("symposion:dashboard")
 
     kinds = []
@@ -223,7 +224,7 @@ def proposal_edit(request, pk):
                                [user.email], "proposal_updated",
                                context=ctx
                                )
-            messages.success(request, "Proposal updated.")
+            messages.success(request, "Voorstel aangepast.")
             return redirect("proposals:proposal_detail", proposal.pk)
     else:
         form = form_class(instance=proposal)
@@ -301,7 +302,7 @@ def proposal_cancel(request, pk):
         proposal.cancelled = True
         proposal.save()
         # @@@ fire off email to submitter and other speakers
-        messages.success(request, "%s has been cancelled" % proposal.title)
+        messages.success(request, "%s is ingetrokken" % proposal.title)
         return redirect("symposion:dashboard")
 
     return render(request, "proposals/proposal_cancel.html", {
@@ -320,27 +321,27 @@ def proposal_leave(request, pk):
     except ObjectDoesNotExist:
         return HttpResponseForbidden()
     if request.method == "POST":
-        proposal.additional_speakers.remove(speaker)
+        speaker.delete()
         # @@@ fire off email to submitter and other speakers
         messages.success(
-            request, "You are no longer speaking on %s" % proposal.title)
+            request, "U bent geen medespreker meer voor: %s" % proposal.title)
         return redirect("symposion:dashboard")
     ctx = {
         "proposal": proposal,
     }
-    return render(request, "symposion/proposals/proposal_leave.html", ctx)
+    return render(request, "proposals/proposal_leave.html", ctx)
 
 
 @login_required
 def proposal_pending_join(request, pk):
     proposal = get_object_or_404(ProposalBase, pk=pk)
     speaking = get_object_or_404(AdditionalSpeaker, speaker=request.user.speaker_profile,
-                                 proposalbase=proposal)
+    proposalbase=proposal)
     if speaking.status == AdditionalSpeaker.SPEAKING_STATUS_PENDING:
         speaking.status = AdditionalSpeaker.SPEAKING_STATUS_ACCEPTED
         speaking.save()
         messages.success(
-            request, "You have accepted the invitation to join %s" % proposal.title)
+            request, "U heeft de uitnodiging geaccepteerd om mee te spreken op: %s" % proposal.title)
         return redirect("symposion:dashboard")
     else:
         return redirect("symposion:dashboard")
@@ -355,7 +356,7 @@ def proposal_pending_decline(request, pk):
         speaking.status = AdditionalSpeaker.SPEAKING_STATUS_DECLINED
         speaking.save()
         messages.success(
-            request, "You have declined to speak on %s" % proposal.title)
+            request, "U heeft de uitnodiging om mee te spreken afgewezen voor: %s" % proposal.title)
         return redirect("symposion:dashboard")
     else:
         return redirect("symposion:dashboard")

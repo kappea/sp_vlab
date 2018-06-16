@@ -56,7 +56,7 @@ class Speaker(models.Model):
             return "?"
 
     def get_absolute_url(self):
-        return reverse("speaker_edit")
+        return reverse("speakers:speaker_edit")
 
     @property
     def email(self):

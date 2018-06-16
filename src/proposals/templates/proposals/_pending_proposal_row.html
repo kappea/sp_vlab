@@ -25,18 +25,8 @@
 
     <td>
         {% if not proposal.cancelled %}
-            <div class="btn-group">
-                <a style="color: #FFF;" class="btn btn-xs dropdown-toggle" data-toggle="dropdown" href="#">
-                {% trans 'Choose Response' %}
-                <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'proposals:proposal_pending_join' proposal.id %}">
-			{% trans 'Accept invitation' %}</a></li>
-                    <li><a href="{% url 'proposals:proposal_pending_decline' proposal.id
-		    %}">{% trans 'Decline invitation' %}</a></li>
-                </ul>
-            </div>
+        <a style="color: #FFF;" href="{% url 'proposals:proposal_pending_join' proposal.id %}" class="btn btn-xs">Uitnodiging accepteren</a>
+        <a style="color: #FFF;" href="{% url 'proposals:proposal_pending_decline' proposal.id %}" class="btn btn-xs">Uitnodiging afwijzen</a>
         {% endif %}
     </td>
 </tr>

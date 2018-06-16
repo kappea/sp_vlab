@@ -81,9 +81,7 @@ class AddSpeakerForm(forms.Form):
             Q(user__email=value)
         ).exists()
         if exists:
-            raise forms.ValidationError(
-                _("This email address has already been invited to your talk proposal")
-            )
+            raise forms.ValidationError("Deze email is al uitgenodigd.")
         return value
 
 

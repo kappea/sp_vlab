@@ -19,20 +19,18 @@
 {% endblock %}
 
 {% block subnavigation %}
-{% if user.speaker_profile %}
-  <div class="subNavigation">
-    <div class="wrapper">
-      <ul>
-	      {% if user.speaker_profile %}
-        <li><a href="{% url 'speakers:speaker_edit' %}">Aanpassen spreker profiel</a></li>
-        <li><a href="{% url 'proposals:proposal_submit' %}">Indienen voorstel</a></li>
-        {% else %}
-        <li><a href="{% url 'speakers:speaker_create' %}">Aanmaken spreker profiel</a></li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
-{% endif %}
+<div class="subNavigation">
+<div class="wrapper">
+    <ul>
+    {% if user.speaker_profile %}
+    <li><a href="{% url 'speakers:speaker_edit' %}">Aanpassen spreker profiel</a></li>
+    <li><a href="{% url 'proposals:proposal_submit' %}">Indienen voorstel</a></li>
+    {% else %}
+    <li><a href="{% url 'speakers:speaker_create' %}">Aanmaken spreker profiel</a></li>
+    {% endif %}
+    </ul>
+</div>
+</div>
 {% endblock %}
 
 

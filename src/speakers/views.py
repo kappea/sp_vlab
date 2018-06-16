@@ -37,7 +37,7 @@ def speaker_create(request):
             if not found:
                 speaker.invite_email = None
             speaker.save()
-            messages.success(request, _("Speaker profile created."))
+            messages.success(request, _("Spreker profiel aangemaakt."))
             return redirect("symposion:dashboard")
     else:
         form = SpeakerForm(initial={"name": request.user.get_full_name()})
@@ -64,7 +64,7 @@ def speaker_create_staff(request, pk):
             speaker = form.save(commit=False)
             speaker.user = user
             speaker.save()
-            messages.success(request, _("Speaker profile created."))
+            messages.success(request, _("Spreker profiel aangemaakt."))
             return redirect("user_list")
     else:
         form = SpeakerForm(initial={"name": user.get_full_name()})

@@ -1,14 +1,14 @@
 {% extends "speakers/base.html" %}
-
 {% load i18n %}
 
-{% block page_title %}{% trans "Create Speaker Profile" %}{% endblock %}
+{% block title %}Aanmaken spreker profiel | UBR|V-Lab{% endblock %}
 
 {% block navbar %}
 <nav class="breadCrumbNav">
-  <span class="assistive">U bevindt zich hier:</span>
-  <a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
-  <span>Spreker registreren</span>
+	<span class="assistive">U bevindt zich hier:</span>
+	<a href="https://www.ubrijk.nl/organisatie/ubr/over-ubr/ubr-v-lab">UBR|V-Lab</a>
+	<a href="{% url 'symposion:dashboard' %}">Dashboard</a>
+	<span>Spreker profiel</span>
 </nav>
 {% endblock %}
 
@@ -17,19 +17,20 @@
 	<div class="form fancy">
 		<div id="usage_simple" style="position:relative;">
 			<form action="" method="post" enctype="multipart/form-data" id="speaker_form" autocomplete="off">
-				{% if response_form.non_field_errors %}<div class="message error"><p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{ response_form.non_field_errors }}</div>{% endif %}
-				{% csrf_token %}
+				{% if response_form.non_field_errors %}
+				<div class="message error">
+					<p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het formulier opnieuw.</p>{{
+					response_form.non_field_errors }}</div>{% endif %} {% csrf_token %}
 				<div class="formWrapper">
 					<div id="page0" class="eforms-page">
 						<div class="eformText">
-							<h2>Registreren spreker profiel</h2>
+							<h2>Aanmaken spreker profiel</h2>
 							<p class="meta req">* verplichte velden</p>
 						</div>
 						{% include "speakers/fieldset.html" %}
 					</div>
 					<div class="eforms-buttons">
-						<input type="submit" id="confirm-button" name="confirm" class="" value="Opslaan"/>
-						<a class="btn btn-default" href="{% url "symposion:dashboard" %}">Cancel</a>
+						<input type="submit" id="confirm-button" name="confirm" class="" value="Opslaan" />
 					</div>
 				</div>
 			</form>

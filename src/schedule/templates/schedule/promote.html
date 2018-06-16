@@ -13,6 +13,18 @@
 </nav>
 {% endblock %}
 
+{% block subnavigation %}
+<div class="subNavigation">
+    <div class="wrapper">
+        <ul>
+            <li>
+                <a href="{% url 'schedule:schedule_edit' schedule.section.slug %}">Pas het programma aan</a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
 <div id="content" class="article">
     <h1>Promotie van ontvangen voorstellen</h1>

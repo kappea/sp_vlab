@@ -44,8 +44,8 @@ class EditProfile(LoginRequiredMixin, generic.TemplateView):
                                          request.FILES,
                                          instance=user.profile)
         if not (user_form.is_valid() and profile_form.is_valid()):
-            messages.error(request, "There was a problem with the form. "
-                           "Please check the details.")
+            messages.error(request, "Er is een probleem met het ingevulde formulier. "
+                           "Controleer de velden.")
             user_form = forms.UserForm(instance=user)
             profile_form = forms.ProfileForm(instance=user.profile)
             return super(EditProfile, self).get(request,
@@ -56,5 +56,5 @@ class EditProfile(LoginRequiredMixin, generic.TemplateView):
         profile = profile_form.save(commit=False)
         profile.user = user
         profile.save()
-        messages.success(request, "Profile details saved!")
+        messages.success(request, "Profiel opgeslagen!")
         return redirect("profiles:show_self")
