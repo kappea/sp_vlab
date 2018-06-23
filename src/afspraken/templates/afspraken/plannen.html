@@ -218,10 +218,10 @@
 									</legend>
 									<div class="field">
 										<label class="radio" for="fieldGroup__akkoordverklaring1">
-											<input type="checkbox" name="akkoordverklaring" id="fieldGroup__akkoordverklaring1" value="Toestemming" /> Ik heb gelezen en begrepen wat er met deze persoonsgegevens wordt gedaan.
+											<input type="checkbox" name="afspraak_form-akkoordverklaring" id="fieldGroup__akkoordverklaring1" value="Toestemming" /> Ik heb gelezen en begrepen wat er met deze persoonsgegevens wordt gedaan.
 										</label>
 									</div>
-									{% if field.errors %}
+								{% if field.errors %}
 									{% for error in field.errors %}
 									<div class="message error">
 										<p>{{ error|escape }}</p>

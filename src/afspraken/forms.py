@@ -30,9 +30,13 @@ class AfspraakForm(models.ModelForm):
             # 'duur': forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM', }),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(AfspraakForm, self).__init__(*args, **kwargs)
-        self.fields["akkoordverklaring"].required = True
+    def clean_akkoordverklaring(self):
+        akkoordverklaring = self.cleaned_data.get('akkoordverklaring')
+        if akkoordverklaring != None and akkoordverklaring == True:
+            return True
+        raise forms.ValidationError(
+            u"We hebben uw toestemming nodig"
+        )
 
 
 class AfspraakOptieForm(forms.Form):
