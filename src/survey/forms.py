@@ -16,6 +16,9 @@ from .signals import survey_completed
 LOGGER = logging.getLogger(__name__)
 
 
+class LikertSelect(forms.RadioSelect):
+    template_name = 'survey/widgets/likert.html'
+
 class ResponseForm(models.ModelForm):
 
     WIDGETS = {
@@ -43,6 +46,7 @@ class ResponseForm(models.ModelForm):
                 'data-daysshort': 'Zon, Maa, Din, Woe, Don, Vrij, Zat',
                 'data-daysmin': 'ZO, MA, DI, WO, DO, VR, ZA',
             }),
+        Question.LIKERT: LikertSelect,
     }
 
     class Meta(object):

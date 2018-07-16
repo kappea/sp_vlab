@@ -3,9 +3,11 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import View, TemplateView
+from django.utils import timezone
+from django.views.generic import TemplateView, View
+
 from .forms import ResponseForm
-from .models import Category, Survey, Answer
+from .models import Answer, Category, Survey
 
 
 class SurveyDetail(View):
@@ -136,7 +138,8 @@ class SurveyResultData(View):
                             row.append(lijst)
                 except Answer.DoesNotExist:
                     row.append('')
-            row.append(response.updated.strftime('%Y-%m-%d %H:%M'))
+            row.append(timezone.localtime(
+                response.updated).strftime('%Y-%m-%d %H:%M'))
             row.append(response.user)
             datarows.append(row)
         context = {

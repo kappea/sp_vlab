@@ -1,0 +1,40 @@
+<style>
+    @media(min-width:768px) {
+        div .scrollcontainer {
+            padding-left: 0;
+        }
+    }
+
+    form table {
+        margin-left: 0
+    }
+
+    td input[type="radio"] {
+        top: -3px;
+        left: 0;
+        margin-right: 5px;
+        position: relative
+    }
+</style>
+{% with widget.optgroups|length as count %}
+<table>
+    <thead>
+        <tr>
+            {% for group, options, index in widget.optgroups %} {% for widget in options %}
+            <td{% if count == 2 %} style="width:50%; text-align:center" {% elif count == 3 %} style="width:33%; text-align:center"
+            {% elif count == 4 %} style="width:25%; text-align:center" {% elif count == 5 %} style="width:20%; text-align:center"
+            {% else %} style="text-align:center" {% endif %}>
+                <label{% if widget.attrs.id %} for="{{ widget.attrs.id }}" {% endif %} class="radio">{{ widget.label }}</label>
+            </td>
+            {% endfor %} {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {% for group, options, index in widget.optgroups %} {% for widget in options %}
+            <td style="text-align: center">{% include "django/forms/widgets/input.html" %}</td>
+            {% endfor %} {% endfor %}
+        </tr>
+    </tbody>
+</table>
+{% endwith %}

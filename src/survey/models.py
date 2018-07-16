@@ -127,15 +127,17 @@ class Question(models.Model):
     SELECT_MULTIPLE = 'select-multiple'
     INTEGER = 'integer'
     DATE = 'date'
+    LIKERT = 'likert'
 
     QUESTION_TYPES = (
-        (TEXT, _(u'text (multiple line)')),
-        (SHORT_TEXT, _(u'short text (one line)')),
-        (RADIO, _(u'radio')),
-        (SELECT, _(u'select')),
-        (SELECT_MULTIPLE, _(u'Select Multiple')),
-        (INTEGER, _(u'integer')),
-        (DATE, _(u'date')),
+        (TEXT, _(u'Tekstvak: veld voor langere tekst')),
+        (SHORT_TEXT, _(u'Tekstveld: veld voor 1 regel tekst')),
+        (RADIO, _(u'Keuzerondje: invuller kan 1 optie kiezen (‘ja/nee’)')),
+        (SELECT, _(u'Keuzelijst: invuller maakt 1 keuze uit een uitklapmenu')),
+        (SELECT_MULTIPLE, _(u'Aankruisvakje: invuller kan meer dan 1 optie aanvinken')),
+        (INTEGER, _(u'Getal')),
+        (DATE, _(u'Datumveld (dd/mm/jjjj)')),
+        (LIKERT, _(u'Likert-schaal: bijvoorbeeld keuze op schaal van 1 t/m 5')),
     )
 
     text = models.TextField()
