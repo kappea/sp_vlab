@@ -1,0 +1,23 @@
+{% extends "rcd/auth_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'rcd:index' %}">{{ evenement.naam }}</a>
+  <span>Registreren</span>
+</nav>
+{% endblock %}
+
+{% block title %}Registreren{% endblock %}
+
+{% block form_heading %}Registreer een nieuw account{% endblock %}
+
+{% block form %}
+{% crispy form %}
+<div class="form-message">
+  <p>Heeft U al een account?
+    <a href="{% url 'rcd:login' %}">Log in</a>.
+  </p>
+</div>
+{% endblock form %}

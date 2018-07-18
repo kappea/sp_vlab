@@ -1,0 +1,31 @@
+{% extends "rcd/base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+<!-- Custom styles for this site -->
+{% block prehead %}
+<!-- Bootstrap core CSS -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+{% endblock prehead %}
+
+{% block extrahead %}
+<link href="{% static 'site/css/main.css' %}" rel="stylesheet">
+{% endblock extrahead %}
+
+{% block scripts %}
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'jquery-1.12.4/jquery-1.12.4.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+{% endblock scripts %}
+
+{% block container %}
+<div class="container form-box">
+  <div class="text-center">
+    <h2 class="req">{% block form_heading %}{% endblock %}</h2>
+  </div>
+  {% block form %}
+  {% endblock %}
+</div>
+{% endblock container %}

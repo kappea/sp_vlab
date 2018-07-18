@@ -1,0 +1,24 @@
+{% extends "rcd/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ evenement.naam }} | Bevestiging{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="{% url 'rcd:index' %}">{{ evenement.naam }}</a>
+    <span>Bevestiging</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <h1>{% trans "Formulier verzonden"%}</h1>
+    <p>
+        <div class="alert alert-success">
+            {% trans "Bedankt voor uw reactie!" %}
+        </div>
+    </p>
+</div>
+{% endblock %}

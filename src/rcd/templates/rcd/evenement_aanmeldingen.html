@@ -1,0 +1,39 @@
+{% extends "rcd/base.html" %}
+
+{% block title %}{{ evenement.naam }} | Aanmeldingen{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'rcd:index' %}">{{ evenement.naam }}</a>
+  <span>Aanmeldingen</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">Aanmeldingen voor {{ evenement.naam }}</h1>
+  <p class="article-meta">Evenement</p>
+  <dl>
+    <dt>Datum:</dt>
+    <dd>
+      <time itemprop="startDate">{{ evenement.start_datum|date:"d F Y" }}</time>
+      {% if evenement.einde_datum %} - <time itemprop="endDate">{{ evenement.einde_datum|date:"d F Y" }}</time>{% endif %}
+    </dd>
+	{% if evenement.locatie %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ evenement.locatie }}</dd>
+	{% endif %}
+  </dl>
+  <style>
+    .intrinsic-container{position:relative;height:0;overflow:hidden;margin-bottom:1.5rem;}
+	.intrinsic-container-16x9{padding-bottom:56.25%}
+	.intrinsic-container-4x3{padding-bottom:75%}
+	.intrinsic-container-1x2{padding-bottom:200%}
+	.intrinsic-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;margin:0!important;border:2px solid #ccc;}
+  </style>
+  <div class="intrinsic-container intrinsic-container-1x2">
+    <iframe src="{% url 'survey:survey-result-data' id=evenement.aanmelding_formulier.pk %}" frameborder="0"></iframe>
+  </div>
+</div>
+{% endblock %}

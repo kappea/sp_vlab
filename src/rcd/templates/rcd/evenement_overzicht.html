@@ -1,0 +1,108 @@
+{% extends "rcd/base.html" %}
+
+{% block title %}{{ evenement.naam }}{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'rcd:index' %}">{{ evenement.naam }}</a>
+</nav>
+{% endblock %}
+
+{% block subnavigation %}
+{% if evenement.aanmelding_formulier  or evenement.evaluatie_formulier %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+	    {% if evenement.aanmelding_formulier.is_published %}
+        <li><a href="{% url 'rcd:aanmelden' %}">Aanmelden</a></li>
+	    {% elif evenement.evaluatie_formulier.is_published %}
+        <li><a href="{% url 'rcd:evaluatie' %}">Evaluatie</a></li>
+		{% endif %}
+		{% if evenement.aanmelding_formulier.id and perms.evenementen.change_evenement %}
+        <li><a href="{% url 'rcd:evenement_aanmeldingen' %}">Toon aanmeldingen</a></li>
+		{% endif %}
+		{% if evenement.evaluatie_formulier.id and perms.evenementen.change_evenement %}
+        <li><a href="{% url 'rcd:evenement_evaluaties' %}">Toon evaluaties</a></li>
+		{% endif %}
+      </ul>
+	  {% if evenement.programma %}
+      <ul>
+        <li><a href="{% url 'rcd:schedule_conference' %}">Programma</a></li>
+      </ul>
+	  {% endif %}
+	</div>
+  </div>
+{% elif evenement.programma %}
+  <div class="subNavigation">
+    <div class="wrapper">
+      <ul>
+          <li><a href="{% url 'rcd:schedule_conference' %}">Programma</a></li>
+      </ul>
+	</div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+  <h1 class="news">{{ evenement.naam }}</h1>
+  <p class="article-meta">Evenement</p>
+  <dl>
+    <dt>Datum:</dt>
+    <dd>
+      <time itemprop="startDate">{{ evenement.start_datum|date:"d F Y" }}</time>
+      {% if evenement.einde_datum %} - <time itemprop="endDate">{{ evenement.einde_datum|date:"d F Y" }}</time>{% endif %}
+    </dd>
+	{% if evenement.locatie %}
+    <dt>Locatie:</dt>
+    <dd itemprop="location">{{ evenement.locatie }}</dd>
+	{% endif %}
+  </dl>
+  {% if evenement.intro %}
+  <div class="intro">
+    <p>{{ evenement.intro|safe }}</p>
+  </div>
+  {% endif %}
+{{ evenement.omschrijving|safe }}
+</div>
+{% if perms.rcd.change_evenement %}
+<div id="aside">
+  <div class="brick linkBlock">
+    <h2>Beheer</h2>
+    <ul class="common">
+      <li>
+	    <a href="{% url 'admin:rcd_evenement_change' evenement.pk %}" class="common">Wijzigen evenement</a>
+      </li>
+	  {% if evenement.aanmelding_formulier.pk %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_change' evenement.aanmelding_formulier.pk %}" class="common">Wijzigen aanmelding formulier</a>
+      </li>
+	  {% else %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_add' %}" class="common">Toevoegen aanmelding formulier</a>
+      </li>
+	  {% endif %}
+	  {% if evenement.programma %}
+      <li>
+	    <a href="{% url 'rcd:section_list' %}" class="common">Wijzigen programma</a>
+      </li>
+	  {% else %}
+      <li>
+	    <a href="{% url 'admin:conference_conference_add' %}" class="common">Toevoegen programma</a>
+      </li>
+	  {% endif %}
+	  {% if evenement.evaluatie_formulier.pk %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_change' evenement.evaluatie_formulier.pk %}" class="common">Wijzigen evaluatie formulier</a>
+      </li>
+	  {% else %}
+      <li>
+	    <a href="{% url 'admin:survey_survey_add' %}" class="common">Toevoegen evaluatie formulier</a>
+      </li>
+	  {% endif %}
+    </ul>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

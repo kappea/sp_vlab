@@ -1,0 +1,30 @@
+{% extends "rcd/auth_base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Log In{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+  <span class="assistive">U bevindt zich hier:</span>
+  <a href="{% url 'rcd:index' %}">{{ evenement.naam }}</a>
+  <span>Inloggen</span>
+</nav>
+{% endblock %}
+
+{% block form_heading %}
+{% if next and user.is_authenticated %}
+Uw account is niet geautoriseerd voor deze pagina. Om verder te gaan wordt u verzocht in te loggen met een geautoriseerd account.
+{% else %}
+Log in met uw account
+{% endif %}
+{% endblock %}
+
+{% block form %}
+{% crispy form %}
+<div class="form-message">
+  <p>Heeft U geen account?<br/>
+    <a href="{% url 'rcd:signup' %}">Registreren nieuw account</a>.
+  </p>
+</div>
+{% endblock form %}

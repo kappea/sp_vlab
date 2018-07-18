@@ -24,6 +24,7 @@ urlpatterns = [
     url(r"^e-learning/", include("elearning.urls", namespace="elearning")),
     url(r"^pitch-je-idee/", include("pitchit.urls", namespace="pitchit")),
     url(r"^tools/", include("tools.urls", namespace="tools")),
+    url(r"^rijksconsultatiedag-2018/", include("rcd.urls", namespace="rcd")),
 ]
 
 # User-uploaded files like profile pics need to be served in development
