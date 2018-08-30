@@ -63,8 +63,6 @@ THIRD_PARTY_APPS = (
     'easy_thumbnails',
     'django_summernote',
     'autotask',
-    'rest_framework',
-    #    'rest_framework.authtoken',
 )
 
 LOCAL_APPS = (
@@ -84,7 +82,7 @@ LOCAL_APPS = (
     'elearning',
     'pitchit',
     'tools',
-    'rcd',
+    'progkeuze',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -210,18 +208,6 @@ LOGIN_URL = reverse_lazy("accounts:login")
 THUMBNAIL_EXTENSION = 'png'     # Or any extn for your thumbnails
 
 STATICFILES_STORAGE = 'mainscreen.util.DjsCompressedManifestStaticFilesStorage'
-
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': (
-#         'rest_framework.permissions.IsAuthenticated',
-#     ),
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.TokenAuthentication',
-#         'rest_framework.authentication.BasicAuthentication',  # only for dev
-#         'rest_framework.authentication.SessionAuthentication',  # only for dev
-#     )
-# }
 
 # outgoing mail SMTP host
 EMAIL_HOST = env('DJANGO_EMAIL_HOST', default='localhost')

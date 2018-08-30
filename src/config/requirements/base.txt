@@ -14,4 +14,3 @@ django-model-utils==3.0.0
 django-reversion==2.0.12
 icalendar==4.0.1
 autotask==0.5.4
-djangorestframework==3.8.2

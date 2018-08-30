@@ -4,12 +4,15 @@ from concurrent_log_handler import ConcurrentRotatingFileHandler
 
 ALLOWED_HOSTS = ['v-lab.ubrijk.nl',
                  'acc.v-lab.external-cloud.nl',
-                 'v-lab',
+                 'rijksconsultatiedag.nl',
+                 'acc.rijksconsultatiedag.external-cloud.nl',
                  'localhost',
                  ]
 
 CSRF_TRUSTED_ORIGINS = ['v-lab.ubrijk.nl',
                         'acc.v-lab.external-cloud.nl',
+                        'rijksconsultatiedag.nl',
+                        'acc.rijksconsultatiedag.external-cloud.nl',
                         'v-lab',
                         'localhost',
                         ]
@@ -83,7 +86,7 @@ LOGGING = {
             'handlers': ['django_log_file'],
             'propagate': True,
             'level': 'DEBUG',
-            },
+        },
         'django.template': {
             'handlers': ['django_log_file'],
             'level': 'INFO',

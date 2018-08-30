@@ -1,0 +1,64 @@
+{% extends "mainscreen/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ evenement.naam }} | Keuze parallelsessies | UBR|V-Lab{% endblock %}
+
+{% block navbar %}
+<nav class="breadCrumbNav">
+    <span class="assistive">U bevindt zich hier:</span>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/ubr-v-lab">UBR|V-Lab</a>
+    <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
+    <a href="{{ evenement.get_absolute_url }}">{{ evenement.naam }}</a>
+    <span>Keuze parallelsessies</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="article">
+    <h1 class="news">{{ evenement.naam }}</h1>
+    <p class="article-meta">Programma</p>
+    <dl>
+        <dt>Datum:</dt>
+        <dd>
+            <time itemprop="startDate">{{ evenement.start_datum|date:"d F Y" }}</time>
+            {% if evenement.einde_datum %} - <time itemprop="endDate">{{ evenement.einde_datum|date:"d F Y" }}</time>{% endif %}
+        </dd>
+        {% if evenement.locatie %}
+        <dt>Locatie:</dt>
+        <dd itemprop="location">{{ evenement.locatie }}</dd>
+        {% endif %}
+    </dl>
+    <p>Beste {{ deelnemer.naam }},</p>
+    <p>Geef hieronder uw keuze aan voor de parallelsessies die u wilt volgen.</p>
+    <p>Bekijk het volledige programma in een nieuw tabblad: <a href="{% url 'schedule:schedule_conference' slug=evenement.slug %}" target="_blank" class="external" aria-label="Toon het programma (opent nieuw tabblad)">Toon het programma</a>
+    </p>
+    <div class="form fancy">
+        <div id="usage_simple" style="position:relative;">
+            <form action="{% url 'progkeuze:keuze' token=deelnemer.token %}" method="post" id="keuze_form" autocomplete="off">
+                {% if response_form.non_field_errors %}
+                <div class="message error">
+                    <p>Er zijn één of meerdere velden niet of niet juist ingevuld. Controleer uw gegevens en verstuur het
+                        formulier opnieuw.
+                    </p>{{ response_form.non_field_errors }}
+                </div>
+                {% endif %}
+                {% csrf_token %}
+                <div class="formWrapper eform">
+                    <div id="page0" class="eforms-page conditionally-visible">
+                        <div class="eformText">
+                            <h2 class="req">Uw keuze</h2>
+                            <p class="meta req">* verplichte velden</p>
+                        </div>
+                        <h3>{% trans "Selecteer sessies" %}</h3>
+                        {% include "progkeuze/question.html" %}
+                    </div>
+                    <div class="eforms-buttons">
+                        <input type="submit" id="confirm-button" name="confirm" class="" value="Ga verder" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

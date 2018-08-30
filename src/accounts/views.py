@@ -66,6 +66,19 @@ class Huisregels(generic.TemplateView):
         return context
 
 
+class Privacy(generic.TemplateView):
+    template_name = "accounts/privacy.html"
+    http_method_names = ['get']
+
+    def get_context_data(self, **kwargs):
+        context = super(Privacy, self).get_context_data(**kwargs)
+        page = get_object_or_404(PageContent, naam='privacy')
+        if not page.published:
+            raise Http404()
+        context['page'] = page
+        return context
+
+
 class PasswordChangeView(authviews.PasswordChangeView):
     form_class = forms.PasswordChangeForm
     template_name = 'accounts/password-change.html'

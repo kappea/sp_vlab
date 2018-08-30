@@ -1,11 +1,11 @@
-{% extends "rcd/base.html" %}
+{% extends "mainscreen/base.html" %}
 
-{% block title %}{{ page.titel }}{% endblock %}
+{% block title %}{{ page.titel }} | UBR|V-Lab{% endblock %}
 
 {% block navbar %}
 <nav class="breadCrumbNav">
     <span class="assistive">U bevindt zich hier:</span>
-    <a href="{% url 'rcd:index' %}">{{ evenement.naam }}</a>
+    <a href="https://www.ubrijk.nl/organisatie/ubr/ubr-v-lab">UBR|V-Lab</a>
     <span>{{ page.titel }}</span>
 </nav>
 {% endblock %}
@@ -19,13 +19,13 @@
     {% endif %}
     {{ page.content|safe }}
 </div>
-{% if perms.rcd.change_pagecontent %}
+{% if perms.accounts.change_pagecontent %}
 <div id="aside">
     <div class="brick linkBlock">
         <h2>Beheer</h2>
         <ul class="common">
             <li>
-                <a href="{% url 'admin:rcd_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
+                <a href="{% url 'admin:accounts_pagecontent_change' page.pk %}" class="common">Wijzigen pagina inhoud</a>
             </li>
         </ul>
     </div>
