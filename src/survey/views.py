@@ -1,19 +1,35 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.text import slugify
 from django.views.generic import TemplateView, View
 
+from send_mail.models import EmailTemplate
+
 from .forms import ResponseForm
-from .models import Answer, Category, Survey
+from .models import Answer, Category, Response, Survey
+
+logger = logging.getLogger("project")
 
 
 class SurveyDetail(View):
 
     def get(self, request, *args, **kwargs):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
+        evenement = None
+        try:
+            if survey.aanmelding_evenement.all().count() == 1:
+                evenement = survey.aanmelding_evenement.all()[0]
+            else:
+                if survey.evaluatie_evenement.all().count() == 1:
+                    evenement = survey.evaluatie_evenement.all()[0]
+        except Exception as e:
+            logger.error('SurveyDetail: {}'.format(e))
         if survey.template is not None and len(survey.template) > 4:
             template_name = survey.template
         else:
@@ -28,6 +44,7 @@ class SurveyDetail(View):
                             step=kwargs.get('step', 0))
         context = {
             'response_form': form,
+            'evenement': evenement,
             'survey': survey,
             'categories': categories,
         }
@@ -97,14 +114,82 @@ class SurveyCompleted(TemplateView):
         return context
 
 
-class ConfirmView(TemplateView):
+class Beantwoording:
+    def __init__(self, vraag, antwoord):
+        self.vraag = vraag
+        self.antwoord = antwoord
 
-    template_name = 'survey/confirm.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(ConfirmView, self).get_context_data(**kwargs)
-        context['uuid'] = kwargs['uuid']
-        return context
+class ConfirmView(View):
+
+    def get(self, request, *args, **kwargs):
+        template_name = 'survey/confirm.html'
+        response = get_object_or_404(Response, interview_uuid=kwargs['uuid'])
+        survey = get_object_or_404(Survey, id=response.survey.id)
+        evenement = None
+        try:
+            if survey.aanmelding_evenement.all().count() == 1:
+                evenement = survey.aanmelding_evenement.all()[0]
+            else:
+                if survey.evaluatie_evenement.all().count() == 1:
+                    evenement = survey.evaluatie_evenement.all()[0]
+        except Exception as e:
+            logger.error('ConfirmView: {}'.format(e))
+        context = {
+            'evenement': evenement,
+            'survey': survey,
+        }
+        emailTemplate = survey.emailTemplate
+        if emailTemplate != None:
+            questions = survey.questions.all()
+            vragen = []
+            voornaam = achternaam = email = onderdeel = None
+            for question in questions:
+                try:
+                    answer = Answer.objects.get(
+                        question=question, response=response)
+                    if len(answer.values) == 1:
+                        antwoord = answer.values[0]
+                    else:
+                        lijst = ''
+                        for value in answer.values:
+                            lijst = lijst + value + ';'
+                        antwoord = lijst
+                except Answer.DoesNotExist:
+                    antwoord = ''
+                b = Beantwoording(question.text, antwoord)
+                vragen.append(b)
+                if slugify(question.text)[:6] == 'voorna':
+                    voornaam = antwoord
+                if slugify(question.text)[:8] == 'achterna':
+                    achternaam = antwoord
+                if slugify(question.text)[:6] == 'e-mail' or slugify(question.text)[:5] == 'email':
+                    email = antwoord
+                if 'onderdeel' in slugify(question.text):
+                    if antwoord != 'anders-namelijk':
+                        for choice in question.get_clean_choices():
+                            if antwoord == slugify(choice):
+                                onderdeel = choice
+                if question.text == "Indien 'anders', waar werk je dan?":
+                    if antwoord != '':
+                        onderdeel = antwoord
+            if email != None and email != '':
+                context = {
+                    'evenement': evenement,
+                    'survey': survey,
+                    'vragen': vragen,
+                    'voornaam': voornaam,
+                    'achternaam': achternaam,
+                    'email': email,
+                    'onderdeel': onderdeel,
+                }
+                EmailTemplate.send(
+                    emailTemplate.template_key,
+                    request,
+                    context,
+                    emails=email,
+                )
+        return render(request, template_name, context)
 
 # https://datatables.net/extensions/responsive/
 

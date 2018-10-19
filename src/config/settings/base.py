@@ -83,6 +83,7 @@ LOCAL_APPS = (
     'pitchit',
     'tools',
     'progkeuze',
+    'send_mail',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

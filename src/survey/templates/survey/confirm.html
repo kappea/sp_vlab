@@ -5,13 +5,16 @@
 
 {% block body %}
 <h1>{% trans "Formulier verzonden"%}</h1>
+{% if email %}
+<p>Er wordt een bevestigingsmail verzonden naar: {{ email }}</p>
+{% endif %}
 <p>
     <div class="alert alert-success">
        {% trans "Bedankt voor uw reactie!" %}
     </div>
 	{% if not user.is_anonymous %}
     <div class="alert alert-info">
-       {% trans "U kunt altijd terugkomen om het formulier aan te passen" %}
+       {% trans "U kunt terugkomen om het formulier aan te passen" %}
     </div>
 	{% endif %}
 </p>

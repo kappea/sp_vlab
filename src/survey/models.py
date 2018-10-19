@@ -7,6 +7,8 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
+from send_mail.models import EmailTemplate
+
 # Create your models here.
 
 
@@ -23,6 +25,19 @@ class Survey(models.Model):
     )
     description = models.TextField(
         verbose_name=("Toelichting"),
+    )
+    confirm = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=("Bevestiging tekst"),
+        help_text=(
+            'Deze tekst wordt opgenomen in de bevestigingsmail na het invullen van het formulier'),
+    )
+    emailTemplate = models.ForeignKey(
+        EmailTemplate,
+        blank=True,
+        null=True,
+        related_name="surveys",
     )
     is_published = models.BooleanField()
     need_logged_user = models.BooleanField()

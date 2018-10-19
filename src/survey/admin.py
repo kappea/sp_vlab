@@ -27,6 +27,7 @@ class SurveyAdminForm(forms.ModelForm):
         model = Survey
         widgets = {
             'description': SummernoteWidget(),
+            'confirm': SummernoteWidget(),
             'avg_tekst1': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),
             'avg_tekst2': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),
             'avg_tekst3': forms.Textarea(attrs={'cols': '80', 'rows': '3'}),

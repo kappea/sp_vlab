@@ -1,13 +1,16 @@
 {% extends "mainscreen/base.html" %}
 
-{% block title %}{{ evenement.naam }} | Evenement | UBR|V-Lab{% endblock %}
+{% block title %}{{ survey.name }} | Evenement | UBR|V-Lab{% endblock %}
 
 {% block navbar %}
 <nav class="breadCrumbNav">
   <span class="assistive">U bevindt zich hier:</span>
   <a href="https://www.ubrijk.nl/organisatie/ubr/ubr-v-lab">UBR|V-Lab</a>
-  <a href="/evenementen">Evenementen</a>
-  <span class="assistive">{{ evenement.naam }}</span>
+  <a href="{% url 'evenementen:evenementen' %}">Evenementen</a>
+  {% if evenement %}
+  <a href="{{ evenement.get_absolute_url }}">{{ evenement.naam }}</a>
+  {% endif %}
+  <span>{{ survey.name }}</span>
 </nav>
 {% endblock %}
 
